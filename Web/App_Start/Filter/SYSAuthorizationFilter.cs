@@ -1,12 +1,12 @@
-﻿using Common;
-using Common.Newtonsoft;
+﻿using IMS.Common;
+using IMS.Common.Newtonsoft;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Web.App_Start.Filter
+namespace IMS.Web.App_Start.Filter
 {
     public class SYSAuthorizationFilter : IAuthorizationFilter
     {

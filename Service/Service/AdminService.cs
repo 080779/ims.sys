@@ -1,11 +1,11 @@
-﻿using IService;
+﻿using IMS.IService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.Service
+namespace IMS.Service.Service
 {
     public class AdminService : IAdminService
     {

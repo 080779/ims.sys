@@ -1,6 +1,4 @@
-﻿using DTO;
-using IService;
-using Service.Entity;
+﻿using IMS.Service.Entity;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -8,8 +6,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using IMS.IService;
+using IMS.DTO;
 
-namespace Service.Service
+namespace IMS.Service.Service
 {
     public class NavBarService : INavBarService
     {

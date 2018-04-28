@@ -1,7 +1,4 @@
-﻿using Common;
-using IService;
-using Service;
-using Service.Entity;
+﻿using IMS.Service.Entity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,10 +7,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Web.App_Start.Filter;
+using IMS.Web.App_Start.Filter;
 using Web.Areas.Admin.Models.NavBar;
+using IMS.IService;
+using IMS.Common;
 
-namespace Web.Areas.Admin.Controllers
+namespace IMS.Web.Areas.Admin.Controllers
 {
     [Permission("afdf")]
     public class NavBarController : Controller

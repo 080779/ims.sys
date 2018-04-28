@@ -1,5 +1,5 @@
 ﻿using log4net;
-using Service.Entity;
+using IMS.Service.Entity;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -8,7 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service
+namespace IMS.Service
 {
     public class MyDbContext:DbContext
     {

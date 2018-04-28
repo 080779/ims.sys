@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
-namespace Common.Newtonsoft
+namespace IMS.Common.Newtonsoft
 {
     public class JsonNetResult:JsonResult
     {

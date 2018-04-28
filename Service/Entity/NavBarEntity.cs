@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.Entity
+namespace IMS.Service.Entity
 {
     public class NavBarEntity:BaseEntity
     {

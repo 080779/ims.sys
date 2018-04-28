@@ -1,4 +1,4 @@
-﻿using Service.Entity;
+﻿using IMS.Service.Entity;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.ModelConfiguration;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.Config
+namespace IMS.Service.Config
 {
     class NavBarConfig:EntityTypeConfiguration<NavBarEntity>
     {

@@ -7,23 +7,25 @@ using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
-using IService;
-using Common.Newtonsoft;
-using Web.App_Start.Filter;
+using IMS.IService;
+using IMS.Common.Newtonsoft;
+using IMS.Web.App_Start.Filter;
+using IMS.Web;
+using System.Web.Http;
 
-namespace Web
+namespace IMS.Web
 {
-    public class MvcApplication : System.Web.HttpApplication
+    public class Global : System.Web.HttpApplication
     {
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            RouteConfig.RegisterRoutes(RouteTable.Routes);            
 
             log4net.Config.XmlConfigurator.Configure();
 
             var builder = new ContainerBuilder();//把当前程序集中的 Controller 都注册,不要忘了.PropertiesAutowired()            
-            builder.RegisterControllers(typeof(MvcApplication).Assembly).PropertiesAutowired();
+            builder.RegisterControllers(typeof(Global).Assembly).PropertiesAutowired();
 
             Assembly[] assemblies = new Assembly[] { Assembly.Load("Service") };// 获取所有相关类库的程序集
             builder.RegisterAssemblyTypes(assemblies).
@@ -36,7 +38,7 @@ namespace Web
 
             GlobalFilters.Filters.Add(new JsonNetActionFilter());
             GlobalFilters.Filters.Add(new SYSExceptionFilter());
-            GlobalFilters.Filters.Add(new SYSAuthorizationFilter());
+            GlobalFilters.Filters.Add(new SYSAuthorizationFilter());            
         }
     }
 }

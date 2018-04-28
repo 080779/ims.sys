@@ -1,4 +1,4 @@
-﻿namespace IService
+﻿namespace IMS.IService
 {
     public interface IAdminService:IServiceSupport
     {

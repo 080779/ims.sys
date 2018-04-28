@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace IMS.Service.Entity
 {
     /// <summary>
-    /// 流水类型实体类
+    /// 权限类型实体
     /// </summary>
-    public class JournalTypeEntity:BaseEntity
+    public class PermissionTypeEntity:BaseEntity
     {
         public string Name { get; set; }
         public string Description { get; set; }

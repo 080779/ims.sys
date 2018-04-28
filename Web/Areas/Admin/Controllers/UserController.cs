@@ -1,12 +1,11 @@
-﻿using Common;
+﻿using IMS.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Web.App_Start.Filter;
 
-namespace Web.Areas.Admin.Controllers
+namespace IMS.Web.Areas.Admin.Controllers
 {
     [AllowAnonymous]
     public class UserController : Controller
