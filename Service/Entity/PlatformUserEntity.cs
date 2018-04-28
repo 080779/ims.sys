@@ -17,5 +17,9 @@ namespace IMS.Service.Entity
         public string Salt { get; set; }
         public string Password { get; set; }
         public bool IsEnabled { get; set; }
+        public long PlatformUserTypeId { get; set; }
+        public long IntegralTypeId { get; set; }
+        public virtual PlatformUserTypeEntity PlatformUserType { get; set; }
+        public virtual IntegralTypeEntity IntegralType { get; set; }
     }
 }
