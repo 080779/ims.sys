@@ -77,26 +77,26 @@ namespace IMS.Web.App_Start.Filter
                     }
                 }
             }
-            else
-            {
-                long? UserId = (long?)filterContext.HttpContext.Session["UserId"];
-                if (UserId == null)
-                {
-                    if (filterContext.ActionDescriptor.IsDefined(typeof(AllowAnonymousAttribute), true) || filterContext.ActionDescriptor.ControllerDescriptor.IsDefined(typeof(AllowAnonymousAttribute), true))
-                    {
-                        return;
-                    }
-                    if (filterContext.HttpContext.Request.IsAjaxRequest())//判断是否是ajax请求
-                    {
-                        filterContext.Result = new JsonNetResult { Data = new AjaxResult { Status = "401", Data = "/user/Login" } };
-                    }
-                    else
-                    {
-                        filterContext.Result = new RedirectResult("/user/login?msg="+v);
-                    }
-                    return;
-                }
-            }
+            //else
+            //{
+            //    long? UserId = (long?)filterContext.HttpContext.Session["UserId"];
+            //    if (UserId == null)
+            //    {
+            //        if (filterContext.ActionDescriptor.IsDefined(typeof(AllowAnonymousAttribute), true) || filterContext.ActionDescriptor.ControllerDescriptor.IsDefined(typeof(AllowAnonymousAttribute), true))
+            //        {
+            //            return;
+            //        }
+            //        if (filterContext.HttpContext.Request.IsAjaxRequest())//判断是否是ajax请求
+            //        {
+            //            filterContext.Result = new JsonNetResult { Data = new AjaxResult { Status = "401", Data = "/user/Login" } };
+            //        }
+            //        else
+            //        {
+            //            filterContext.Result = new RedirectResult("/user/login?msg="+v);
+            //        }
+            //        return;
+            //    }
+            //}
         }
     }
 }

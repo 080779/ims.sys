@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMS.IMS.Service.Entity
+namespace IMS.Service.Entity
 {
     /// <summary>
     /// 平台管理员实体类

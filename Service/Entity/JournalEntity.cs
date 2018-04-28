@@ -20,7 +20,6 @@ namespace IMS.Service.Entity
         public decimal? InAmount { get; set; }
         public decimal? OutAmount { get; set; }
         public decimal? Amount { get; set; }
-        public virtual IntegralTypeEntity IntegralType { get; set; }
         public virtual JournalTypeEntity JournalType { get; set; }
         public virtual PlatformUserEntity PlatformUser { get; set; }
         public virtual PlatformUserEntity ToPlatformUser { get; set; }

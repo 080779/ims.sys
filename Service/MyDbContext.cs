@@ -27,5 +27,15 @@ namespace IMS.Service
             return this.Set<T>().Where(e => e.IsDeleted == false);
         }
         public DbSet<NavBarEntity> NavBars { get; set; }
+        public DbSet<AdminEntity> Admins { get; set; }
+        public DbSet<AdminLogEntity> AdminLogs { get; set; }
+        public DbSet<IntegralTypeEntity> IntegralTypes { get; set; }
+        public DbSet<JournalEntity> Journals { get; set; }
+        public DbSet<JournalTypeEntity> JournalTypes { get; set; }
+        public DbSet<PermissionEntity> Permissions { get; set; }
+        public DbSet<PermissionTypeEntity> PermissionTypes { get; set; }
+        public DbSet<PlatformUserEntity> PlatformUsers { get; set; }
+        public DbSet<PlatformUserTypeEntity> PlatformUserTypes { get; set; }
+        public DbSet<StateEntity> States { get; set; }
     }
 }
