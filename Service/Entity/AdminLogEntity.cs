@@ -6,14 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMS.IMS.Service.Entity
+namespace IMS.Service.Entity
 {
     /// <summary>
     /// 管理员操作日志管理类
     /// </summary>
     public class AdminLogEntity:BaseEntity
     {
-        public string Name { get; set; }        
+        public string Mobile { get; set; }        
         public string IpAddress { get; set; }
         public string Description { get; set; }
         public string Tip { get; set; }

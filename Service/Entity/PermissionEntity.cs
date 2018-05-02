@@ -1,4 +1,4 @@
-﻿using IMS.IMS.Service.Entity;
+﻿using IMS.Service.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;

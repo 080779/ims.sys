@@ -51,7 +51,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseEntity.cs" />
+    <Compile Include="Config\AdminConfig.cs" />
+    <Compile Include="Config\AdminLogConfig.cs" />
+    <Compile Include="Config\IntegralTypeConfig.cs" />
+    <Compile Include="Config\JournalConfig.cs" />
+    <Compile Include="Config\JournalTypeConfig.cs" />
     <Compile Include="Config\NavBarConfig.cs" />
+    <Compile Include="Config\PermissionConfig.cs" />
+    <Compile Include="Config\PermissionTypeConfig.cs" />
+    <Compile Include="Config\PlatformUserConfig.cs" />
+    <Compile Include="Config\PlatformUserTypeConfig.cs" />
+    <Compile Include="Config\StateConfig.cs" />
     <Compile Include="Entity\AdminEntity.cs" />
     <Compile Include="Entity\AdminLogEntity.cs" />
     <Compile Include="Entity\IntegralTypeEntity.cs" />
