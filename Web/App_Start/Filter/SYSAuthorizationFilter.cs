@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace IMS.Web.App_Start.Filter
 {
-    public class SYSAuthorizationFilter : IAuthorizationFilter
+    public class SYSAuthorizationFilter:IAuthorizationFilter
     {
         //public IAdminService adminUserService = DependencyResolver.Current.GetService<IAdminService>();
         //public IPermissionService permissionService = DependencyResolver.Current.GetService<IPermissionService>();
@@ -16,7 +16,7 @@ namespace IMS.Web.App_Start.Filter
         public void OnAuthorization(AuthorizationContext filterContext)
         {
             var v = filterContext.HttpContext.Request.Url;
-            if(v.ToString().ToLower().Contains("/admin/"))
+            if (v.ToString().ToLower().Contains("/admin/"))
             {
                 PermissionAttribute attribute = (PermissionAttribute)filterContext.ActionDescriptor.ControllerDescriptor.GetCustomAttributes(typeof(PermissionAttribute), false).SingleOrDefault();
                 PermissionAttribute[] attributes = (PermissionAttribute[])filterContext.ActionDescriptor.GetCustomAttributes(typeof(PermissionAttribute), false);
@@ -55,7 +55,7 @@ namespace IMS.Web.App_Start.Filter
                     else
                     {
                         //filterContext.Result = new ContentResult() { Content = "没有" + permissionService.GetByName(attr.Permission).Description + "这个权限" };
-                        filterContext.Result = new RedirectResult("/admin/user/login?msg="+ "没有" + per + "这个权限" + v);
+                        filterContext.Result = new RedirectResult("/admin/user/login?msg=" + "没有" + per + "这个权限" + v);
                     }
                     return;
                 }
@@ -77,26 +77,26 @@ namespace IMS.Web.App_Start.Filter
                     }
                 }
             }
-            //else
-            //{
-            //    long? UserId = (long?)filterContext.HttpContext.Session["UserId"];
-            //    if (UserId == null)
-            //    {
-            //        if (filterContext.ActionDescriptor.IsDefined(typeof(AllowAnonymousAttribute), true) || filterContext.ActionDescriptor.ControllerDescriptor.IsDefined(typeof(AllowAnonymousAttribute), true))
-            //        {
-            //            return;
-            //        }
-            //        if (filterContext.HttpContext.Request.IsAjaxRequest())//判断是否是ajax请求
-            //        {
-            //            filterContext.Result = new JsonNetResult { Data = new AjaxResult { Status = "401", Data = "/user/Login" } };
-            //        }
-            //        else
-            //        {
-            //            filterContext.Result = new RedirectResult("/user/login?msg="+v);
-            //        }
-            //        return;
-            //    }
-            //}
+            else
+            {
+                long? UserId = (long?)filterContext.HttpContext.Session["UserId"];
+                if (UserId == null)
+                {
+                    if (filterContext.ActionDescriptor.IsDefined(typeof(AllowAnonymousAttribute), true) || filterContext.ActionDescriptor.ControllerDescriptor.IsDefined(typeof(AllowAnonymousAttribute), true))
+                    {
+                        return;
+                    }
+                    if (filterContext.HttpContext.Request.IsAjaxRequest())//判断是否是ajax请求
+                    {
+                        filterContext.Result = new JsonNetResult { Data = new AjaxResult { Status = "401", Data = "/login" } };
+                    }
+                    else
+                    {
+                        filterContext.Result = new RedirectResult("/login?msg=" + v);
+                    }
+                    return;
+                }
+            }
         }
     }
 }

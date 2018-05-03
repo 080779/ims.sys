@@ -13,7 +13,7 @@ namespace IMS.Service.Service
 {
     public class NavBarService : INavBarService
     {
-        public async Task<long> Add(long menuId, string menuName, string url, long sort)
+        public async Task<long> AddAsync(long menuId, string menuName, string url, long sort)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
@@ -28,7 +28,7 @@ namespace IMS.Service.Service
                 return entity.Id;
             }
         }
-        public async Task<bool> Update(long id, string menuName, string url, long sort)
+        public async Task<bool> UpdateAsync(long id, string menuName, string url, long sort)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
@@ -44,7 +44,7 @@ namespace IMS.Service.Service
                 return true;
             }
         }
-        public async Task<long> AddChild(string menuName, string url, long sort, long parentId)
+        public async Task<long> AddChildAsync(string menuName, string url, long sort, long parentId)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
@@ -59,7 +59,7 @@ namespace IMS.Service.Service
                 return entity.Id;
             }
         }
-        public async Task<NavBarDTO> GetById(long id)
+        public async Task<NavBarDTO> GetByIdAsync(long id)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
@@ -71,7 +71,7 @@ namespace IMS.Service.Service
                 return ToDTO(entity);
             }
         }
-        public async Task<NavBarDTO[]> GetByParentId(long id)
+        public async Task<NavBarDTO[]> GetByParentIdAsync(long id)
         {
             using (MyDbContext dbc = new MyDbContext())
             {

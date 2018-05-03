@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -12,7 +11,7 @@ namespace IMS.Web.App_Start.Filter
     /// 使用：给ASP.NET MVC中的控制器类名或者Action方法上面打上[ValidAuthorizer]标签
     /// 如果不需要验证用户是否登录就可以浏览，则给ASP.NET MVC中的控制器类名或者Action方法上面打上[AllowAnonymous]标签
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, Inherited = true,AllowMultiple =true)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
     public class PermissionAttribute : FilterAttribute
     {
         public string Permission { get; set; }

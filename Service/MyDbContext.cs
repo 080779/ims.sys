@@ -37,5 +37,7 @@ namespace IMS.Service
         public DbSet<PlatformUserEntity> PlatformUsers { get; set; }
         public DbSet<PlatformUserTypeEntity> PlatformUserTypes { get; set; }
         public DbSet<StateEntity> States { get; set; }
+        public DbSet<SettingEntity> Settings { get; set; }
+        public DbSet<SettingTypeEntity> SettingTypes { get; set; }
     }
 }

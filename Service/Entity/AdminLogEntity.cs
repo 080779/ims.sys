@@ -13,7 +13,6 @@ namespace IMS.Service.Entity
     /// </summary>
     public class AdminLogEntity:BaseEntity
     {
-        public string Mobile { get; set; }        
         public string IpAddress { get; set; }
         public string Description { get; set; }
         public string Tip { get; set; }

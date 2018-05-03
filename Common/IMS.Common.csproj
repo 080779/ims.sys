@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AjaxResult.cs" />
+    <Compile Include="CommonHelper.cs" />
     <Compile Include="Newtonsoft\JsonNetActionFilter.cs" />
     <Compile Include="Newtonsoft\JsonNetResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
