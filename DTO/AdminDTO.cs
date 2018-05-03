@@ -10,6 +10,7 @@ namespace IMS.DTO
     {
         public string Mobile { get; set; }
         public string Description { get; set; }
+        public bool IsEnabled { get; set; }
         public long[] PermissionIds { get; set; }
     }
 }

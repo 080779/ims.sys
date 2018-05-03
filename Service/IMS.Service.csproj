@@ -53,6 +53,7 @@
     <Compile Include="BaseEntity.cs" />
     <Compile Include="Config\AdminConfig.cs" />
     <Compile Include="Config\AdminLogConfig.cs" />
+    <Compile Include="Config\ChangeTypeConfig.cs" />
     <Compile Include="Config\IntegralTypeConfig.cs" />
     <Compile Include="Config\JournalConfig.cs" />
     <Compile Include="Config\JournalTypeConfig.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Config\StateConfig.cs" />
     <Compile Include="Entity\AdminEntity.cs" />
     <Compile Include="Entity\AdminLogEntity.cs" />
+    <Compile Include="Entity\ChangeTypeEntity.cs" />
     <Compile Include="Entity\IntegralTypeEntity.cs" />
     <Compile Include="Entity\PlatformUserEntity.cs" />
     <Compile Include="Entity\JournalEntity.cs" />

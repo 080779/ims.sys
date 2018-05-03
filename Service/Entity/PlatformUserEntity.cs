@@ -13,9 +13,12 @@ namespace IMS.Service.Entity
     {
         public string Mobile { get; set; }
         public string Description { get; set; }
-        public decimal Amount { get; set; }
+        public decimal GivingAmount { get; set; }
+        public decimal UseAmount { get; set; } = 0;
         public string Salt { get; set; }
         public string Password { get; set; }
+        public int ErrorCount { get; set; } = 0;
+        public DateTime ErrorTime { get; set; } = DateTime.Now;
         public bool IsEnabled { get; set; }
         public long PlatformUserTypeId { get; set; }
         public long IntegralTypeId { get; set; }

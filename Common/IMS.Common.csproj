@@ -51,6 +51,7 @@
     <Compile Include="CommonHelper.cs" />
     <Compile Include="Newtonsoft\JsonNetActionFilter.cs" />
     <Compile Include="Newtonsoft\JsonNetResult.cs" />
+    <Compile Include="Pagination.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

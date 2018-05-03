@@ -10,6 +10,7 @@ namespace IMS.Service.Config
             ToTable("T_Journals");
             HasRequired(j => j.PlatformUser).WithMany().HasForeignKey(j => j.PlatformUserId).WillCascadeOnDelete(false);
             HasRequired(j => j.ToPlatformUser).WithMany().HasForeignKey(j => j.ToPlatformUserId).WillCascadeOnDelete(false);
+            HasRequired(j => j.ChangeType).WithMany().HasForeignKey(j => j.ChangeTypeId).WillCascadeOnDelete(false);
             HasRequired(j => j.State).WithMany().HasForeignKey(j => j.StateId).WillCascadeOnDelete(false);
             Property(j => j.Description).HasMaxLength(100);
         }

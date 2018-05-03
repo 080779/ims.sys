@@ -17,6 +17,7 @@ namespace IMS.Service.Entity
         public string Description { get; set; }
         public string Salt { get; set; }
         public string Password { get; set; }
+        public bool IsEnabled { get; set; } = true;
         public virtual ICollection<PermissionEntity> Permissions { get; set; } = new List<PermissionEntity>();
     }
 }

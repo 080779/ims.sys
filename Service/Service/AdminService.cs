@@ -20,6 +20,7 @@ namespace IMS.Service.Service
             dto.Description = entity.Description;
             dto.Id = entity.Id;
             dto.Mobile = entity.Mobile;
+            dto.IsEnabled = entity.IsEnabled;
             dto.PermissionIds = entity.Permissions.Select(p => p.Id).ToArray();
             return dto;
         }

@@ -73,7 +73,7 @@ body
 	hidden;float:left
 }
 .Manager_style,
-.search_style{ border:1px solid #ddd; padding:30px 20px; position:relative; margin-top:20px; }
+.search_style{ border:1px solid #ddd; padding:15px 20px; position:relative; margin-top:20px; }
 #parentIframe,#parentIfour{ display:none;}
 .Manager_style .title_name,
 .search_style .title_names{ position:absolute; top:-20px; font-size:18px; background-color:#ffffff; padding:5px 20px; left:10px;}
@@ -582,6 +582,34 @@ body
 .member_content li .label_name { width:80px; text-align:right; float:left; line-height:30px;}
 .add_menber li .add_name{ float:left; margin-left:10px; line-height:30px;}
 .add_menber li .add_name .lbl{ top:-5px; left:10px;}
+/******用户信息********/
+/*****************************添加管理员用户样式属性************************/
+.add_admin_menber {}
+.add_admin_menber li {
+        margin: 10px 0px;
+        height: 40px;
+        line-height: 40px;
+        width: 50%
+    }
+.add_admin_menber li.adderss {
+            width: 100%
+        }
+.add_admin_menber li .label_name,
+.member_content li .label_name {
+            width: 100px;
+            text-align: right;
+            float: left;
+            line-height: 30px;
+        }
+.add_admin_menber li .add_name {
+            float: left;
+            margin-left: 10px;
+            line-height: 30px;
+        }
+.add_admin_menber li .add_name .lbl {
+                top: -5px;
+                left: 10px;
+            }
 /******用户信息********/
 .member_show{}
 .member_show .member_jbxx{background-color:#5bacb6; padding:10px;}

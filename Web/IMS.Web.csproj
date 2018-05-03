@@ -235,6 +235,8 @@
     <Content Include="assets\layer\skin\layer.ext.css" />
     <Content Include="css\easyui_style.css" />
     <Content Include="css\login.css" />
+    <Content Include="css\my_pagination.css" />
+    <Content Include="js\my_pagination.js" />
     <Content Include="css\style.css" />
     <Content Include="font\css\font-awesome.css" />
     <Content Include="font\css\font-awesome.min.css" />
@@ -282,6 +284,11 @@
     <Compile Include="App_Start\Filter\SYSAuthorizationFilter.cs" />
     <Compile Include="App_Start\Filter\SYSExceptionFilter.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
+    <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\LoginController.cs" />
+    <Compile Include="Areas\Admin\Models\Admin\ListViewModel.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Global.asax.cs">
@@ -304,6 +311,11 @@
     <Content Include="font\fonts\fontawesome-webfont.woff" />
     <Content Include="font\fonts\fontawesome-webfont.woff2" />
     <Content Include="font\fonts\FontAwesome.otf" />
+    <Content Include="Areas\Admin\Views\web.config" />
+    <Content Include="Areas\Admin\Views\Home\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Home\Home.cshtml" />
+    <Content Include="Areas\Admin\Views\Admin\List.cshtml" />
+    <Content Include="Areas\Admin\Views\Login\Login.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Home.cshtml" />
