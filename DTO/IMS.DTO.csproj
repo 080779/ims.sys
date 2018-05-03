@@ -43,8 +43,10 @@
     <Compile Include="AdminDTO.cs" />
     <Compile Include="AdminLogDTO.cs" />
     <Compile Include="BaseDTO.cs" />
+    <Compile Include="JournalDTO.cs" />
     <Compile Include="NavBarDTO.cs" />
     <Compile Include="PermissionDTO.cs" />
+    <Compile Include="PlatformUserDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
