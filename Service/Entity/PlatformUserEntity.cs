@@ -12,18 +12,18 @@ namespace IMS.Service.Entity
     public class PlatformUserEntity : BaseEntity
     {
         public string Mobile { get; set; }
-        public string UserCode { get; set; }
+        public string Code { get; set; }
         public string Description { get; set; }
-        public decimal GivingAmount { get; set; }
-        public decimal UseAmount { get; set; } = 0;
-        public string Salt { get; set; }
+        public long PlatformIntegral { get; set; } = 0;
+        public long GivingIntegral { get; set; } = 0;
+        public long UseIntegral { get; set; } = 0;
+        public string Salt { get; set; } = string.Empty;
         public string Password { get; set; }
+        public string TradePassword { get; set; }
         public int ErrorCount { get; set; } = 0;
         public DateTime ErrorTime { get; set; } = DateTime.Now;
-        public bool IsEnabled { get; set; }
+        public bool IsEnabled { get; set; } = true;
         public long PlatformUserTypeId { get; set; }
-        public long IntegralTypeId { get; set; }
         public virtual PlatformUserTypeEntity PlatformUserType { get; set; }
-        public virtual IntegralTypeEntity IntegralType { get; set; }
     }
 }

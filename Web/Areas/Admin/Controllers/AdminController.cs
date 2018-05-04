@@ -13,6 +13,7 @@ namespace IMS.Web.Areas.Admin.Controllers
     public class AdminController : Controller
     {
         public IAdminService adminService { get; set; }
+        public IPlatformUserService platformUserService { get; set; }        
         private int pageSize = 3;
         public async Task<ActionResult> List(string mobile, DateTime? startTime, DateTime? endTime, int pageIndex = 1)
         {
@@ -34,6 +35,12 @@ namespace IMS.Web.Areas.Admin.Controllers
                 model.PageHtml = pager.GetPagerHtml();
             }
             return View(model);
+        }
+        public async Task<ActionResult> test()
+        {
+            //await platformUserService.AddAsync("商家", "15615615612", "15615615612", "123456", "123456");
+            await platformUserService.ProvideAsync(2, 4, 50, "商家积分", "消费积分", "赠送");
+            return View();
         }
     }
 }

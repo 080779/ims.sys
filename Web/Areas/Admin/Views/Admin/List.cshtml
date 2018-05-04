@@ -103,8 +103,8 @@
     layer.open({
         type: 1,
         title: '添加管理员账户',
-		maxmin: true,
-		shadeClose: true, //点击遮罩关闭层
+        maxmin: true,
+        shadeClose: false, //点击遮罩关闭层
         area : ['600px' , ''],
         content:$('#add_menber_style'),
 		btn:['提交','取消'],
@@ -135,7 +135,8 @@
                 title: '提示框',
 			    icon:1,
 			  });
-			  layer.close(index);
+              layer.close(index);
+              window.location.href = "/admin/admin/list";
 		  }
 		}
     });
