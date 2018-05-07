@@ -46,6 +46,7 @@
     <Compile Include="JournalDTO.cs" />
     <Compile Include="NavBarDTO.cs" />
     <Compile Include="PermissionDTO.cs" />
+    <Compile Include="PermissionTypeDTO.cs" />
     <Compile Include="PlatformUserDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

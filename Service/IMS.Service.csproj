@@ -85,6 +85,8 @@
     <Compile Include="Service\AdminLogService.cs" />
     <Compile Include="Service\AdminService.cs" />
     <Compile Include="Service\NavBarService.cs" />
+    <Compile Include="Service\PermissionService.cs" />
+    <Compile Include="Service\PermissionTypeService.cs" />
     <Compile Include="Service\PlatformUserService.cs" />
   </ItemGroup>
   <ItemGroup>

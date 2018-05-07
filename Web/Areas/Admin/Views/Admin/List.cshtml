@@ -89,10 +89,24 @@
     </div>
     <!--添加用户图层-->
     <div class="add_admin_menber" id="add_menber_style" style="display:none">
-        <ul class=" page-content">
+        <ul class="page-content">
             <li><label class="label_name">管理员账户：</label><span class="add_name"><input value="" placeholder="管理员账户" id="mobile" name="管理员账户" type="text" class="text_add" /></span><div class="prompt r_f"></div></li>            
             <li><label class="label_name">密码：</label><span class="add_name"><input placeholder="密码" name="密码" type="password" id="password" class="text_add" /></span><div class="prompt r_f"></div></li>
             <li><label class="label_name">确认密码：</label><span class="add_name"><input name="确认密码" placeholder="确认密码" type="password" id="password1" class="text_add" /></span><div class="prompt r_f"></div></li>            
+        </ul>
+        <ul class="page-content">
+            @foreach (var type in Model.PermissionTypes)
+            {
+                <li>
+                @type.Name
+                </li>
+                <li>
+                    @foreach(var perm in type.Permissions)
+                    {
+                        <input type="checkbox" value="@perm.Id" />@perm.Name
+                    }
+                </li>                               
+            }
         </ul>
     </div>
 </body>

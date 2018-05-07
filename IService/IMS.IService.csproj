@@ -44,6 +44,8 @@
     <Compile Include="IAdminService.cs" />
     <Compile Include="IJournal.cs" />
     <Compile Include="INavBarService.cs" />
+    <Compile Include="IPermissionService.cs" />
+    <Compile Include="IPermissionTypeService.cs" />
     <Compile Include="IPlatformUserService.cs" />
     <Compile Include="IServiceSupport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

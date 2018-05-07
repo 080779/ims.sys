@@ -1,4 +1,5 @@
 ﻿using IMS.Common;
+using IMS.DTO;
 using IMS.IService;
 using IMS.Web.Areas.Admin.Models.Admin;
 using System;
@@ -13,13 +14,26 @@ namespace IMS.Web.Areas.Admin.Controllers
     public class AdminController : Controller
     {
         public IAdminService adminService { get; set; }
-        public IPlatformUserService platformUserService { get; set; }        
+        public IPlatformUserService platformUserService { get; set; }
+        public IPermissionService permissionService { get; set; }
+        public IPermissionTypeService permissionTypeService { get; set; }
         private int pageSize = 3;
         public async Task<ActionResult> List(string mobile, DateTime? startTime, DateTime? endTime, int pageIndex = 1)
         {
             var result = await adminService.GetModelListAsync(mobile, startTime, endTime, pageIndex, pageSize);
             ListViewModel model = new ListViewModel();
             model.Admins = result.Admins;
+            var types = await permissionTypeService.GetModelList();
+            List<PermissionType> permissionTypes = new List<PermissionType>();
+            foreach(var type in types)
+            {
+                PermissionType permissionType = new PermissionType();
+                permissionType.Name = type.Name;
+                var permissions = await permissionService.GetByTypeId(type.Id);
+                permissionType.Permissions = permissions.ToList();
+                permissionTypes.Add(permissionType);
+            }
+            model.PermissionTypes = permissionTypes;
 
             Pagination pager = new Pagination();
             pager.PageIndex = pageIndex;
