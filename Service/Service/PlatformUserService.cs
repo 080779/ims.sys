@@ -55,12 +55,12 @@ namespace IMS.Service.Service
             }
         }
 
-        public async Task<bool> ProvideAsync(long userId, long toUserId, long Integral, string typeName,string toTypeName, string description)
+        public async Task<bool> ProvideAsync(long userId, long toUserId, long integral, string typeName,string toTypeName, string description)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
-                var type = await dbc.IntegralTypes.SingleOrDefaultAsync(i => i.Name == typeName);
-                var toType = await dbc.IntegralTypes.SingleOrDefaultAsync(i => i.Name == toTypeName);
+                var type = await dbc.GetAll<IntegralTypeEntity>().SingleOrDefaultAsync(i => i.Name == typeName);
+                var toType = await dbc.GetAll<IntegralTypeEntity>().SingleOrDefaultAsync(i => i.Name == toTypeName);
                 if (type == null)
                 {
                     return false;
@@ -69,12 +69,12 @@ namespace IMS.Service.Service
                 {
                     return false;
                 }
-                var user = await dbc.PlatformUsers.SingleOrDefaultAsync(p=>p.Id==userId);
+                var user = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p=>p.Id==userId);
                 if(user==null)
                 {
                     return false;
                 }
-                var toUser = await dbc.PlatformUsers.SingleOrDefaultAsync(p => p.Id == toUserId);
+                var toUser = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Id == toUserId);
                 if(toUser==null)
                 {
                     return false;
@@ -83,113 +83,113 @@ namespace IMS.Service.Service
                 {
                     if(toType.Name== "平台积分")
                     {
-                        toUser.PlatformIntegral = toUser.PlatformIntegral + Integral;
+                        toUser.PlatformIntegral = toUser.PlatformIntegral + integral;
                         JournalEntity journal = new JournalEntity();
-                        journal.ChangeTypeId = dbc.ChangeTypes.SingleOrDefault(c => c.Description == description).Id;
                         journal.Description = description;
-                        journal.InIntegral = Integral;
+                        journal.InIntegral = integral;
                         journal.Integral = toUser.PlatformIntegral;
                         journal.IntegralTypeId = type.Id;
+                        journal.ToIntegralTypeId = toType.Id;
                         journal.ToPlatformUserId = toUser.Id;
+                        journal.FormPlatformUserId = toUser.Id;
                         journal.PlatformUserId = user.Id;
-                        journal.JournalUserTypeId = dbc.JournalUserTypes.SingleOrDefault(c => c.Description == "空类型").Id;
-                        journal.JournalTypeId = dbc.JournalTypes.SingleOrDefault(c => c.Description == "空类型").Id;
+                        journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(journal);
                     }
                     else if(toType.Name == "商家积分" && toUser.PlatformUserType.Name == "商家")
                     {
-                        if(user.PlatformIntegral < Integral)
+                        if(user.PlatformIntegral < integral)
                         {
                             return false;
                         }
-                        user.PlatformIntegral = user.PlatformIntegral - Integral;
+                        user.PlatformIntegral = user.PlatformIntegral - integral;
                         JournalEntity journal = new JournalEntity();
-                        journal.ChangeTypeId = dbc.ChangeTypes.SingleOrDefault(c => c.Description == description).Id;
                         journal.Description = description;
-                        journal.OutIntegral = Integral;
+                        journal.OutIntegral = integral;
                         journal.Integral = user.PlatformIntegral;
                         journal.IntegralTypeId = type.Id;
+                        journal.ToIntegralTypeId = toType.Id;
                         journal.ToPlatformUserId = toUser.Id;
+                        journal.FormPlatformUserId = user.Id;
                         journal.PlatformUserId = user.Id;
-                        journal.JournalUserTypeId = dbc.JournalUserTypes.SingleOrDefault(c => c.Description == "空类型").Id;
-                        journal.JournalTypeId = dbc.JournalTypes.SingleOrDefault(c => c.Description == "空类型").Id;
+                        journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(journal);
 
-                        toUser.GivingIntegral = toUser.GivingIntegral + Integral;
+                        toUser.GivingIntegral = toUser.GivingIntegral + integral;
                         JournalEntity toJournal = new JournalEntity();
-                        toJournal.ChangeTypeId = dbc.ChangeTypes.SingleOrDefault(c => c.Description == "空类型").Id;
                         toJournal.Description = description;
-                        toJournal.InIntegral = Integral;
+                        toJournal.InIntegral = integral;
                         toJournal.Integral = toUser.GivingIntegral;
-                        toJournal.IntegralTypeId = toType.Id;
+                        toJournal.IntegralTypeId = type.Id;
+                        toJournal.ToIntegralTypeId = toType.Id;
                         toJournal.ToPlatformUserId = toUser.Id;
                         toJournal.PlatformUserId = toUser.Id;
-                        toJournal.JournalUserTypeId = dbc.JournalUserTypes.SingleOrDefault(c => c.Description == "空类型").Id;
-                        toJournal.JournalTypeId = dbc.JournalTypes.SingleOrDefault(c => c.Description == description).Id;
+                        toJournal.FormPlatformUserId = user.Id;
+                        toJournal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(toJournal);
                     }
                     else if (toType.Name == "消费积分" && toUser.PlatformUserType.Name == "商家")
                     {
-                        if (user.PlatformIntegral < Integral)
+                        if (user.PlatformIntegral < integral)
                         {
                             return false;
                         }
-                        user.PlatformIntegral = user.PlatformIntegral - Integral;
+                        user.PlatformIntegral = user.PlatformIntegral - integral;
                         JournalEntity journal = new JournalEntity();
-                        journal.ChangeTypeId = dbc.ChangeTypes.SingleOrDefault(c => c.Description == description).Id;
                         journal.Description = description;
-                        journal.OutIntegral = Integral;
+                        journal.OutIntegral = integral;
                         journal.Integral = user.PlatformIntegral;
                         journal.IntegralTypeId = type.Id;
+                        journal.ToIntegralTypeId = toType.Id;
                         journal.ToPlatformUserId = toUser.Id;
                         journal.PlatformUserId = user.Id;
-                        journal.JournalUserTypeId = dbc.JournalUserTypes.SingleOrDefault(c => c.Description == "空类型").Id;
-                        journal.JournalTypeId = dbc.JournalTypes.SingleOrDefault(c => c.Description == "空类型").Id;
+                        journal.FormPlatformUserId = user.Id;
+                        journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(journal);
 
-                        toUser.UseIntegral = toUser.UseIntegral + Integral;
+                        toUser.UseIntegral = toUser.UseIntegral + integral;
                         JournalEntity toJournal = new JournalEntity();
-                        toJournal.ChangeTypeId = dbc.ChangeTypes.SingleOrDefault(c => c.Description == "空类型").Id;
                         toJournal.Description = description;
-                        toJournal.InIntegral = Integral;
+                        toJournal.InIntegral = integral;
                         toJournal.Integral = toUser.UseIntegral;
-                        toJournal.IntegralTypeId = toType.Id;
+                        toJournal.IntegralTypeId = type.Id;
+                        toJournal.ToIntegralTypeId = toType.Id;
                         toJournal.ToPlatformUserId = toUser.Id;
                         toJournal.PlatformUserId = toUser.Id;
-                        toJournal.JournalUserTypeId = dbc.JournalUserTypes.SingleOrDefault(c => c.Description == "空类型").Id;
-                        toJournal.JournalTypeId = dbc.JournalTypes.SingleOrDefault(c => c.Description == description).Id;
+                        toJournal.FormPlatformUserId = user.Id;
+                        toJournal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(toJournal);
                     }
                     else if (toType.Name == "消费积分" && toUser.PlatformUserType.Name == "客户")
                     {
-                        if (user.PlatformIntegral < Integral)
+                        if (user.PlatformIntegral < integral)
                         {
                             return false;
                         }
-                        user.PlatformIntegral = user.PlatformIntegral - Integral;
+                        user.PlatformIntegral = user.PlatformIntegral - integral;
                         JournalEntity journal = new JournalEntity();
-                        journal.ChangeTypeId = dbc.ChangeTypes.SingleOrDefault(c => c.Description == description).Id;
                         journal.Description = description;
-                        journal.OutIntegral = Integral;
+                        journal.OutIntegral = integral;
                         journal.Integral = user.PlatformIntegral;
                         journal.IntegralTypeId = type.Id;
+                        journal.ToIntegralTypeId = toType.Id;
                         journal.ToPlatformUserId = toUser.Id;
                         journal.PlatformUserId = user.Id;
-                        journal.JournalUserTypeId = dbc.JournalUserTypes.SingleOrDefault(c => c.Description == "空类型").Id;
-                        journal.JournalTypeId = dbc.JournalTypes.SingleOrDefault(c => c.Description == "空类型").Id;
+                        journal.FormPlatformUserId = user.Id;
+                        journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(journal);
 
-                        toUser.UseIntegral = toUser.UseIntegral + Integral;
+                        toUser.UseIntegral = toUser.UseIntegral + integral;
                         JournalEntity toJournal = new JournalEntity();
-                        toJournal.ChangeTypeId = dbc.ChangeTypes.SingleOrDefault(c => c.Description == "空类型").Id;
                         toJournal.Description = description;
-                        toJournal.InIntegral = Integral;
+                        toJournal.InIntegral = integral;
                         toJournal.Integral = toUser.UseIntegral;
-                        toJournal.IntegralTypeId = toType.Id;
+                        toJournal.IntegralTypeId = type.Id;
+                        toJournal.ToIntegralTypeId = toType.Id;
                         toJournal.ToPlatformUserId = toUser.Id;
                         toJournal.PlatformUserId = toUser.Id;
-                        toJournal.JournalUserTypeId = dbc.JournalUserTypes.SingleOrDefault(c => c.Description == description).Id;
-                        toJournal.JournalTypeId = dbc.JournalTypes.SingleOrDefault(c => c.Description == "空类型").Id;
+                        toJournal.FormPlatformUserId = user.Id;
+                        toJournal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(toJournal);
                     }
                     else
@@ -201,66 +201,105 @@ namespace IMS.Service.Service
                 {
                     if(toType.Name=="消费积分" && toUser.PlatformUserType.Name=="商家" && user!=toUser)
                     {
-                        if (user.GivingIntegral < Integral)
+                        if (user.GivingIntegral < integral)
                         {
                             return false;
                         }
-                        user.GivingIntegral = user.GivingIntegral - Integral;
+                        user.GivingIntegral = user.GivingIntegral - integral;
                         JournalEntity journal = new JournalEntity();
-                        journal.ChangeTypeId = dbc.ChangeTypes.SingleOrDefault(c => c.Description == "空类型").Id;
                         journal.Description = description;
-                        journal.OutIntegral = Integral;
+                        journal.OutIntegral = integral;
                         journal.Integral = user.GivingIntegral;
                         journal.IntegralTypeId = type.Id;
+                        journal.ToIntegralTypeId = toType.Id;
                         journal.ToPlatformUserId = toUser.Id;
                         journal.PlatformUserId = user.Id;
-                        journal.JournalUserTypeId = dbc.JournalUserTypes.SingleOrDefault(c => c.Description == "空类型").Id;
-                        journal.JournalTypeId = dbc.JournalTypes.SingleOrDefault(c => c.Description == description).Id;
+                        journal.FormPlatformUserId = user.Id;
+                        journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(journal);
 
-                        toUser.UseIntegral = toUser.UseIntegral + Integral;
+                        toUser.UseIntegral = toUser.UseIntegral + integral;
                         JournalEntity toJournal = new JournalEntity();
-                        toJournal.ChangeTypeId = dbc.ChangeTypes.SingleOrDefault(c => c.Description == "空类型").Id;
                         toJournal.Description = description;
-                        toJournal.InIntegral = Integral;
+                        toJournal.InIntegral = integral;
                         toJournal.Integral = toUser.UseIntegral;
-                        toJournal.IntegralTypeId = toType.Id;
+                        toJournal.IntegralTypeId = type.Id;
+                        toJournal.ToIntegralTypeId = toType.Id;
                         toJournal.ToPlatformUserId = toUser.Id;
                         toJournal.PlatformUserId = toUser.Id;
-                        toJournal.JournalUserTypeId = dbc.JournalUserTypes.SingleOrDefault(c => c.Description == description).Id;
-                        toJournal.JournalTypeId = dbc.JournalTypes.SingleOrDefault(c => c.Description == "空类型").Id;
+                        toJournal.FormPlatformUserId = user.Id;
+                        toJournal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(toJournal);
                     }
                     else if (toType.Name == "消费积分" && toUser.PlatformUserType.Name == "客户")
                     {
-                        if (user.GivingIntegral < Integral)
+                        if (user.GivingIntegral < integral)
                         {
                             return false;
                         }
-                        user.GivingIntegral = user.GivingIntegral - Integral;
+                        user.GivingIntegral = user.GivingIntegral - integral;
                         JournalEntity journal = new JournalEntity();
-                        journal.ChangeTypeId = dbc.ChangeTypes.SingleOrDefault(c => c.Description == "空类型").Id;
                         journal.Description = description;
-                        journal.OutIntegral = Integral;
+                        journal.OutIntegral = integral;
                         journal.Integral = user.GivingIntegral;
                         journal.IntegralTypeId = type.Id;
+                        journal.ToIntegralTypeId = toType.Id;
                         journal.ToPlatformUserId = toUser.Id;
                         journal.PlatformUserId = user.Id;
-                        journal.JournalUserTypeId = dbc.JournalUserTypes.SingleOrDefault(c => c.Description == "空类型").Id;
-                        journal.JournalTypeId = dbc.JournalTypes.SingleOrDefault(c => c.Description == description).Id;
+                        journal.FormPlatformUserId = user.Id;
+                        journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(journal);
 
-                        toUser.UseIntegral = toUser.UseIntegral + Integral;
+                        toUser.UseIntegral = toUser.UseIntegral + integral;
                         JournalEntity toJournal = new JournalEntity();
-                        toJournal.ChangeTypeId = dbc.ChangeTypes.SingleOrDefault(c => c.Description == "空类型").Id;
                         toJournal.Description = description;
-                        toJournal.InIntegral = Integral;
+                        toJournal.InIntegral = integral;
                         toJournal.Integral = toUser.UseIntegral;
-                        toJournal.IntegralTypeId = toType.Id;
+                        toJournal.IntegralTypeId = type.Id;
+                        toJournal.ToIntegralTypeId = toType.Id;
                         toJournal.ToPlatformUserId = toUser.Id;
                         toJournal.PlatformUserId = toUser.Id;
-                        toJournal.JournalUserTypeId = dbc.JournalUserTypes.SingleOrDefault(c => c.Description == description).Id;
-                        toJournal.JournalTypeId = dbc.JournalTypes.SingleOrDefault(c => c.Description == "空类型").Id;
+                        toJournal.FormPlatformUserId = user.Id;
+                        toJournal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
+                        dbc.Journals.Add(toJournal);
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else if(user.PlatformUserType.Name=="客户" && type.Name=="消费积分")
+                {
+                    if(toUser.PlatformUserType.Name=="商家")
+                    {
+                        if (user.UseIntegral < integral)
+                        {
+                            return false;
+                        }
+                        user.UseIntegral = user.UseIntegral - integral;
+                        JournalEntity journal = new JournalEntity();
+                        journal.Description = description;
+                        journal.OutIntegral = integral;
+                        journal.Integral = user.UseIntegral;
+                        journal.IntegralTypeId = type.Id;
+                        journal.ToIntegralTypeId = type.Id;
+                        journal.ToPlatformUserId = toUser.Id;
+                        journal.PlatformUserId = user.Id;
+                        journal.FormPlatformUserId = user.Id;
+                        journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
+                        dbc.Journals.Add(journal);
+
+                        toUser.UseIntegral = toUser.UseIntegral + integral;
+                        JournalEntity toJournal = new JournalEntity();
+                        toJournal.Description = description;
+                        toJournal.InIntegral = integral;
+                        toJournal.Integral = toUser.UseIntegral;
+                        toJournal.IntegralTypeId = type.Id;
+                        toJournal.ToIntegralTypeId = type.Id;
+                        toJournal.ToPlatformUserId = toUser.Id;
+                        toJournal.PlatformUserId = toUser.Id;
+                        toJournal.FormPlatformUserId = user.Id;
+                        toJournal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(toJournal);
                     }
                     else
@@ -273,7 +312,231 @@ namespace IMS.Service.Service
                     return false;
                 }
                 await dbc.SaveChangesAsync();
-                return true; ;
+                return true;
+            }
+        }
+
+        public async Task<bool> TakeOut(long userId, long integral, string typeName, string description)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var type = await dbc.GetAll<IntegralTypeEntity>().SingleOrDefaultAsync(i => i.Name == typeName);
+                if(type==null)
+                {
+                    return false;
+                }
+                var user = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Id == userId);
+                if (user == null)
+                {
+                    return false;
+                }
+                if(user.PlatformUserType.Name=="商家" && type.Name=="商家积分")
+                {
+                    if(user.GivingIntegral<integral)
+                    {
+                        return false;
+                    }
+                    user.GivingIntegral = user.GivingIntegral - integral;
+                    JournalEntity journal = new JournalEntity();
+                    journal.Description = description;
+                    journal.OutIntegral = integral;
+                    journal.Integral = user.GivingIntegral;
+                    journal.IntegralTypeId = type.Id;
+                    journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
+                    journal.PlatformUserId = user.Id;
+                    journal.FormPlatformUserId = user.Id;
+                    journal.ToPlatformUserId = user.Id;
+                    journal.ToIntegralTypeId = type.Id;
+                    dbc.Journals.Add(journal);
+                }
+                else if(user.PlatformUserType.Name == "商家" && type.Name == "消费积分")
+                {
+                    if (user.UseIntegral < integral)
+                    {
+                        return false;
+                    }
+                    user.UseIntegral = user.UseIntegral - integral;
+                    JournalEntity journal = new JournalEntity();
+                    journal.Description = description;
+                    journal.OutIntegral = integral;
+                    journal.Integral = user.UseIntegral;
+                    journal.IntegralTypeId = type.Id;
+                    journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
+                    journal.PlatformUserId = user.Id;
+                    journal.FormPlatformUserId = user.Id;
+                    journal.ToPlatformUserId = user.Id;
+                    journal.ToIntegralTypeId = type.Id;
+                    dbc.Journals.Add(journal);
+                }
+                else if(user.PlatformUserType.Name == "客户" && type.Name == "消费积分")
+                {
+                    if (user.UseIntegral < integral)
+                    {
+                        return false;
+                    }
+                    user.UseIntegral = user.UseIntegral - integral;
+                    JournalEntity journal = new JournalEntity();
+                    journal.Description = description;
+                    journal.OutIntegral = integral;
+                    journal.Integral = user.UseIntegral;
+                    journal.IntegralTypeId = type.Id;
+                    journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
+                    journal.PlatformUserId = user.Id;
+                    journal.FormPlatformUserId = user.Id;
+                    journal.ToPlatformUserId = user.Id;
+                    journal.ToIntegralTypeId = type.Id;
+                    dbc.Journals.Add(journal);
+                }
+                else
+                {
+                    return false;
+                }
+                await dbc.SaveChangesAsync();
+                return true;
+            }
+        }
+
+        public async Task<bool> TakeCashApply(long userId, long integral, string typeName, string description)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var type = await dbc.GetAll<IntegralTypeEntity>().SingleOrDefaultAsync(i => i.Name == typeName);
+                if (type == null)
+                {
+                    return false;
+                }
+                var user = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Id == userId);
+                if (user == null)
+                {
+                    return false;
+                }
+                if (user.PlatformUserType.Name == "商家" && type.Name == "商家积分")
+                {
+                    if (user.GivingIntegral < integral)
+                    {
+                        return false;
+                    }
+                    TakeCashEntity takeCash = new TakeCashEntity();
+                    takeCash.Description = description;
+                    takeCash.Amount = integral * (Convert.ToDecimal(dbc.GetAll<SettingEntity>().SingleOrDefault(s => s.Description == "商家积分提现比率").Name));
+                    takeCash.Integral = integral;
+                    takeCash.IntegralTypeId = type.Id;
+                    takeCash.PlatformUserId = user.Id;
+                    takeCash.StateId = dbc.GetAll<StateEntity>().SingleOrDefault(s => s.Description == "未转账").Id;
+                    dbc.TakeCashes.Add(takeCash);
+                }
+                else if (user.PlatformUserType.Name == "商家" && type.Name == "消费积分")
+                {
+                    if (user.UseIntegral < integral)
+                    {
+                        return false;
+                    }
+                    TakeCashEntity takeCash = new TakeCashEntity();
+                    takeCash.Description = description;
+                    takeCash.Amount = integral * (Convert.ToDecimal(dbc.GetAll<SettingEntity>().SingleOrDefault(s => s.Description == "消费积分提现比率").Name));
+                    takeCash.Integral = integral;
+                    takeCash.IntegralTypeId = type.Id;
+                    takeCash.PlatformUserId = user.Id;
+                    takeCash.StateId = dbc.GetAll<StateEntity>().SingleOrDefault(s => s.Description == "未转账").Id;
+                    dbc.TakeCashes.Add(takeCash);
+                }
+                else if (user.PlatformUserType.Name == "客户" && type.Name == "消费积分")
+                {
+                    if (user.UseIntegral < integral)
+                    {
+                        return false;
+                    }
+                    TakeCashEntity takeCash = new TakeCashEntity();
+                    takeCash.Description = description;
+                    takeCash.Amount = integral * (Convert.ToDecimal(dbc.GetAll<SettingEntity>().SingleOrDefault(s => s.Description == "消费积分提现比率").Name));
+                    takeCash.Integral = integral;
+                    takeCash.IntegralTypeId = type.Id;
+                    takeCash.PlatformUserId = user.Id;
+                    takeCash.StateId = dbc.GetAll<StateEntity>().SingleOrDefault(s => s.Description == "未转账").Id;
+                    dbc.TakeCashes.Add(takeCash);
+                }
+                else
+                {
+                    return false;
+                }
+                await dbc.SaveChangesAsync();
+                return true;
+            }
+        }
+
+        public async Task<bool> TakeCashConfirm(long id)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var takeCash = await dbc.GetAll<TakeCashEntity>().SingleOrDefaultAsync(i => i.Id == id);
+                if(takeCash==null)
+                {
+                    return false;
+                }
+                takeCash.StateId = dbc.GetAll<StateEntity>().SingleOrDefault(s => s.Description == "已转账").Id;
+                var user = dbc.GetAll<PlatformUserEntity>().SingleOrDefault(p => p.Id == takeCash.PlatformUserId);
+                if(user==null)
+                {
+                    return false;
+                }
+                if(takeCash.IntegralType.Name=="商家积分" && user.PlatformUserType.Name=="商家")
+                {
+                    user.GivingIntegral = user.GivingIntegral - takeCash.Integral;
+
+                    JournalEntity journal = new JournalEntity();
+                    journal.Description = takeCash.Description;
+                    journal.OutIntegral = takeCash.Integral;
+                    journal.Integral = user.GivingIntegral;
+                    journal.IntegralTypeId = takeCash.IntegralTypeId;
+                    journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == takeCash.Description).Id;
+                    journal.PlatformUserId = user.Id;
+                    journal.FormPlatformUserId = user.Id;
+                    journal.ToPlatformUserId = user.Id;
+                    journal.ToIntegralTypeId = takeCash.IntegralTypeId;
+                    journal.Amount = takeCash.Amount;
+                    dbc.Journals.Add(journal);
+
+                }
+                else if(takeCash.IntegralType.Name == "消费积分" && user.PlatformUserType.Name == "商家")
+                {
+                    user.UseIntegral = user.UseIntegral - takeCash.Integral;
+
+                    JournalEntity journal = new JournalEntity();
+                    journal.Description = takeCash.Description;
+                    journal.OutIntegral = takeCash.Integral;
+                    journal.Integral = user.UseIntegral;
+                    journal.IntegralTypeId = takeCash.IntegralTypeId;
+                    journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == takeCash.Description).Id;
+                    journal.PlatformUserId = user.Id;
+                    journal.FormPlatformUserId = user.Id;
+                    journal.ToPlatformUserId = user.Id;
+                    journal.ToIntegralTypeId = takeCash.IntegralTypeId;
+                    journal.Amount = takeCash.Amount;
+                    dbc.Journals.Add(journal);
+                }
+                else if(takeCash.IntegralType.Name == "消费积分" && user.PlatformUserType.Name == "客户")
+                {
+                    user.UseIntegral = user.UseIntegral - takeCash.Integral;
+
+                    JournalEntity journal = new JournalEntity();
+                    journal.Description = takeCash.Description;
+                    journal.OutIntegral = takeCash.Integral;
+                    journal.Integral = user.UseIntegral;
+                    journal.IntegralTypeId = takeCash.IntegralTypeId;
+                    journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == takeCash.Description).Id;
+                    journal.PlatformUserId = user.Id;
+                    journal.FormPlatformUserId = user.Id;
+                    journal.ToPlatformUserId = user.Id;
+                    journal.ToIntegralTypeId = takeCash.IntegralTypeId;
+                    journal.Amount = takeCash.Amount;
+                    dbc.Journals.Add(journal);
+                }
+                else
+                {
+                    return false;
+                }
+                await dbc.SaveChangesAsync();
+                return true;
             }
         }
     }

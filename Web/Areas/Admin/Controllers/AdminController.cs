@@ -39,7 +39,10 @@ namespace IMS.Web.Areas.Admin.Controllers
         public async Task<ActionResult> test()
         {
             //await platformUserService.AddAsync("商家", "15615615612", "15615615612", "123456", "123456");
-            await platformUserService.ProvideAsync(2, 4, 50, "商家积分", "消费积分", "赠送");
+            //await platformUserService.ProvideAsync(1, 1, 315, "平台积分", "平台积分", "积分增加");
+            //await platformUserService.TakeOut(2, 5, "消费积分", "平台扣除");
+            //await platformUserService.TakeCashApply(2, 50, "商家积分", "积分变现");
+            await platformUserService.TakeCashConfirm(1);
             return View();
         }
     }

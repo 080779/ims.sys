@@ -12,6 +12,9 @@ namespace IMS.Service.Entity
     public class JournalTypeEntity:BaseEntity
     {
         public string Name { get; set; }
+        public string Platform { get; set; }
+        public string Merchant { get; set; }
+        public string Customer { get; set; }
         public string Description { get; set; }
     }
 }

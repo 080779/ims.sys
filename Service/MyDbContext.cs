@@ -40,7 +40,5 @@ namespace IMS.Service
         public DbSet<SettingEntity> Settings { get; set; }
         public DbSet<SettingTypeEntity> SettingTypes { get; set; }
         public DbSet<TakeCashEntity> TakeCashes { get; set; }
-        public DbSet<ChangeTypeEntity> ChangeTypes { get; set; }
-        public DbSet<JournalUserTypeEntity> JournalUserTypes { get; set; }
     }
 }
