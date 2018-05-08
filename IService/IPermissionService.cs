@@ -9,6 +9,7 @@ namespace IMS.IService
 {
     public interface IPermissionService:IServiceSupport
     {
-        Task<PermissionDTO[]> GetByTypeId(long id);
+        Task<PermissionDTO[]> GetByTypeIdAsync(long id);
+        PermissionDTO GetByDesc(string description);
     }
 }

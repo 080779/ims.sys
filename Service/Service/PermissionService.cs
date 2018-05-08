@@ -24,13 +24,22 @@ namespace IMS.Service.Service
             dto.Id = entity.Id;
             return dto;
         }
-        public async Task<PermissionDTO[]> GetByTypeId(long id)
+        public async Task<PermissionDTO[]> GetByTypeIdAsync(long id)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
                 var entities = dbc.GetAll<PermissionEntity>().Where(p => p.PermissionTypeId == id);
                 var permissions = await entities.ToListAsync();
                 return permissions.Select(p => ToDTO(p)).ToArray();
+            }
+        }
+
+        public PermissionDTO GetByDesc(string description)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var entity = dbc.GetAll<PermissionEntity>().SingleOrDefault(p => p.Description == description);
+                return ToDTO(entity);
             }
         }
     }

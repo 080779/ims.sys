@@ -11,6 +11,7 @@ namespace IMS.IService
         Task<bool> DeleteAsync(long id);
         Task<AdminDTO> GetModelAsync(long id);
         Task<AdminSearchResult> GetModelListAsync(string mobile,DateTime? startTime,DateTime? endTime,int pageIndex,int pageSize);
+        bool HasPermission(long id,string description);
     }
     public class AdminSearchResult
     {

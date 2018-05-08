@@ -29,7 +29,7 @@ namespace IMS.Web.Areas.Admin.Controllers
             {
                 PermissionType permissionType = new PermissionType();
                 permissionType.Name = type.Name;
-                var permissions = await permissionService.GetByTypeId(type.Id);
+                var permissions = await permissionService.GetByTypeIdAsync(type.Id);
                 permissionType.Permissions = permissions.ToList();
                 permissionTypes.Add(permissionType);
             }

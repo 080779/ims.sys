@@ -106,5 +106,18 @@ namespace IMS.Service.Service
                 return result;
             }
         }
+
+        public bool HasPermission(long id, string description)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var admin = dbc.GetAll<AdminEntity>().SingleOrDefault(a => a.Id == id);
+                if(admin==null)
+                {
+                    return false;
+                }
+                return admin.Permissions.Any(p => p.Description.Contains(description));
+            }
+        }
     }
 }
