@@ -16,7 +16,7 @@ namespace IMS.Web.App_Start.Filter
         public void OnAuthorization(AuthorizationContext filterContext)
         {
             var v = filterContext.HttpContext.Request.Url;
-            if (v.ToString().ToLower().Contains("/admin/"))
+            if (v.ToString().ToLower().Contains("/admin"))
             {
                 PermissionAttribute attribute = (PermissionAttribute)filterContext.ActionDescriptor.ControllerDescriptor.GetCustomAttributes(typeof(PermissionAttribute), false).SingleOrDefault();
                 PermissionAttribute[] attributes = (PermissionAttribute[])filterContext.ActionDescriptor.GetCustomAttributes(typeof(PermissionAttribute), false);
