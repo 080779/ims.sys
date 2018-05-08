@@ -74,7 +74,7 @@ namespace IMS.Service.Service
             }
         }
 
-        public async Task<PlatformUserDTO> GetModel(long id)
+        public async Task<PlatformUserDTO> GetModelAsync(long id)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
@@ -83,7 +83,7 @@ namespace IMS.Service.Service
             }
         }
 
-        public async Task<long> CheckLogin(string mobile, string password)
+        public async Task<long> CheckLoginAsync(string mobile, string password)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
@@ -386,7 +386,7 @@ namespace IMS.Service.Service
             }
         }
 
-        public async Task<bool> TakeOut(long userId, long integral, string typeName, string description)
+        public async Task<bool> TakeOutAsync(long userId, long integral, string typeName, string description)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
@@ -466,7 +466,7 @@ namespace IMS.Service.Service
             }
         }
 
-        public async Task<bool> TakeCashApply(long userId, long integral, string typeName, string description)
+        public async Task<bool> TakeCashApplyAsync(long userId, long integral, string typeName, string description)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
@@ -534,7 +534,7 @@ namespace IMS.Service.Service
             }
         }
 
-        public async Task<bool> TakeCashConfirm(long id)
+        public async Task<bool> TakeCashConfirmAsync(long id)
         {
             using (MyDbContext dbc = new MyDbContext())
             {

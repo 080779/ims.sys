@@ -18,9 +18,9 @@ namespace IMS.Web.Areas.Admin.Controllers
         public IPermissionService permissionService { get; set; }
         public IPermissionTypeService permissionTypeService { get; set; }
         private int pageSize = 3;
-        public async Task<ActionResult> List(string mobile, DateTime? startTime, DateTime? endTime, int pageIndex = 1)
+        public async Task<ActionResult> List()
         {
-            var result = await adminService.GetModelListAsync(mobile, startTime, endTime, pageIndex, pageSize);
+            var result = await adminService.GetModelListAsync(null, null, null, 1, pageSize);
             ListViewModel model = new ListViewModel();
             model.Admins = result.Admins;
             var types = await permissionTypeService.GetModelList();
@@ -36,7 +36,7 @@ namespace IMS.Web.Areas.Admin.Controllers
             model.PermissionTypes = permissionTypes;
 
             Pagination pager = new Pagination();
-            pager.PageIndex = pageIndex;
+            pager.PageIndex = 1;
             pager.PageSize = pageSize;
             pager.TotalCount = result.TotalCount;
 
@@ -49,6 +49,28 @@ namespace IMS.Web.Areas.Admin.Controllers
                 model.PageHtml = pager.GetPagerHtml();
             }
             return View(model);
+        }
+        [HttpPost]
+        public async Task<ActionResult> GetList(string mobile, DateTime? startTime, DateTime? endTime, int pageIndex = 1)
+        {
+            var result = await adminService.GetModelListAsync(mobile, startTime, endTime, pageIndex, pageSize);
+            GetListViewModel model = new GetListViewModel();
+            model.Admins = result.Admins;
+
+            Pagination pager = new Pagination();
+            pager.PageIndex = pageIndex;
+            pager.PageSize = pageSize;
+            pager.TotalCount = result.TotalCount;
+
+            if (result.TotalCount <= pageSize)
+            {
+                model.PageHtml = "";
+            }
+            else
+            {
+                model.PageHtml = pager.GetPagerHtml();
+            }
+            return Json(new AjaxResult { Status = 1, Data = model });
         }
         public async Task<ActionResult> test()
         {

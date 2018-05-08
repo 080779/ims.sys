@@ -35,7 +35,7 @@ namespace IMS.Service.Service
             dto.ToPlatformUserMobile = entity.ToPlatformUser.Mobile;
             return dto;
         }
-        public async Task<JournalSearchResult> GetModelList(long? id, long? typeId, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize)
+        public async Task<JournalSearchResult> GetModelListAsync(long? id, long? typeId, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize)
         {
             using (MyDbContext dbc = new MyDbContext())
             {

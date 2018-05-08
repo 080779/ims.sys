@@ -32,7 +32,7 @@ namespace IMS.Web.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "密码不能为空" });
             }
-            long result = await platformUserService.CheckLogin(mobile, password);
+            long result = await platformUserService.CheckLoginAsync(mobile, password);
             if (result == -1)
             {
                 return Json(new AjaxResult { Status = 0, Msg = "账号或密码错误" });
