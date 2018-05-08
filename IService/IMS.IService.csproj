@@ -42,7 +42,7 @@
   <ItemGroup>
     <Compile Include="IAdminLogService.cs" />
     <Compile Include="IAdminService.cs" />
-    <Compile Include="IJournal.cs" />
+    <Compile Include="IJournalService.cs" />
     <Compile Include="INavBarService.cs" />
     <Compile Include="IPermissionService.cs" />
     <Compile Include="IPermissionTypeService.cs" />

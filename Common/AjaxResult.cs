@@ -8,7 +8,7 @@ namespace IMS.Common
 {
     public class AjaxResult
     {
-        public string Status { get; set; }
+        public int Status { get; set; }
         public string Msg { get; set; }
         public object Data { get; set; }
     }

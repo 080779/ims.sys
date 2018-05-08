@@ -13,6 +13,25 @@ namespace IMS.Service.Service
 {
     public class PlatformUserService : IPlatformUserService
     {
+        public PlatformUserDTO ToDTO(PlatformUserEntity entity)
+        {
+            PlatformUserDTO dto = new PlatformUserDTO();
+            dto.Code = entity.Code;
+            dto.CreateTime = entity.CreateTime;
+            dto.Description = entity.Description;
+            dto.ErrorCount = entity.ErrorCount;
+            dto.ErrorTime = entity.ErrorTime;
+            dto.GivingIntegral = entity.GivingIntegral;
+            dto.Id = entity.Id;
+            dto.IsEnabled = entity.IsEnabled;
+            dto.Mobile = entity.Mobile;
+            dto.PlatformIntegral = entity.PlatformIntegral;
+            dto.PlatformUserTypeId = entity.PlatformUserTypeId;
+            dto.PlatformUserTypeName = entity.PlatformUserType.Name;
+            dto.UseIntegral = entity.UseIntegral;
+            return dto;
+        }
+
         public async Task<long> AddAsync(string typeName, string mobile, string code, string password, string tradePassword)
         {
             using (MyDbContext dbc = new MyDbContext())
@@ -55,7 +74,45 @@ namespace IMS.Service.Service
             }
         }
 
-        public async Task<bool> ProvideAsync(long userId, long toUserId, long integral, string typeName,string toTypeName, string description)
+        public async Task<PlatformUserDTO> GetModel(long id)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var user= await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Id == id);
+                return ToDTO(user);
+            }
+        }
+
+        public async Task<long> CheckLogin(string mobile, string password)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var user = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Mobile == mobile);
+                if(user==null)
+                {
+                    return -1;
+                }
+                if (user.PlatformUserType.Name != "商家")
+                {
+                    return -2;
+                }
+                if (user.ErrorCount >= 5)
+                {
+                    return -3;
+                }
+                if (user.IsEnabled==false)
+                {
+                    return -4;
+                }
+                if (user.Password != CommonHelper.GetMD5(password + user.Salt))
+                {
+                    return -5;
+                }
+                return user.Id;
+            }
+        }
+
+        public async Task<bool> ProvideAsync(long userId, long toUserId, long integral, string typeName,string toTypeName, string description,string tip)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
@@ -93,6 +150,7 @@ namespace IMS.Service.Service
                         journal.ToPlatformUserId = toUser.Id;
                         journal.FormPlatformUserId = toUser.Id;
                         journal.PlatformUserId = user.Id;
+                        journal.Tip = tip;
                         journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(journal);
                     }
@@ -112,6 +170,7 @@ namespace IMS.Service.Service
                         journal.ToPlatformUserId = toUser.Id;
                         journal.FormPlatformUserId = user.Id;
                         journal.PlatformUserId = user.Id;
+                        journal.Tip = tip;
                         journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(journal);
 
@@ -125,6 +184,7 @@ namespace IMS.Service.Service
                         toJournal.ToPlatformUserId = toUser.Id;
                         toJournal.PlatformUserId = toUser.Id;
                         toJournal.FormPlatformUserId = user.Id;
+                        toJournal.Tip = tip;
                         toJournal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(toJournal);
                     }
@@ -144,6 +204,7 @@ namespace IMS.Service.Service
                         journal.ToPlatformUserId = toUser.Id;
                         journal.PlatformUserId = user.Id;
                         journal.FormPlatformUserId = user.Id;
+                        journal.Tip = tip;
                         journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(journal);
 
@@ -157,6 +218,7 @@ namespace IMS.Service.Service
                         toJournal.ToPlatformUserId = toUser.Id;
                         toJournal.PlatformUserId = toUser.Id;
                         toJournal.FormPlatformUserId = user.Id;
+                        toJournal.Tip = tip;
                         toJournal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(toJournal);
                     }
@@ -176,6 +238,7 @@ namespace IMS.Service.Service
                         journal.ToPlatformUserId = toUser.Id;
                         journal.PlatformUserId = user.Id;
                         journal.FormPlatformUserId = user.Id;
+                        journal.Tip = tip;
                         journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(journal);
 
@@ -189,6 +252,7 @@ namespace IMS.Service.Service
                         toJournal.ToPlatformUserId = toUser.Id;
                         toJournal.PlatformUserId = toUser.Id;
                         toJournal.FormPlatformUserId = user.Id;
+                        toJournal.Tip = tip;
                         toJournal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(toJournal);
                     }
@@ -215,6 +279,7 @@ namespace IMS.Service.Service
                         journal.ToPlatformUserId = toUser.Id;
                         journal.PlatformUserId = user.Id;
                         journal.FormPlatformUserId = user.Id;
+                        journal.Tip = tip;
                         journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(journal);
 
@@ -228,6 +293,7 @@ namespace IMS.Service.Service
                         toJournal.ToPlatformUserId = toUser.Id;
                         toJournal.PlatformUserId = toUser.Id;
                         toJournal.FormPlatformUserId = user.Id;
+                        toJournal.Tip = tip;
                         toJournal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(toJournal);
                     }
@@ -247,6 +313,7 @@ namespace IMS.Service.Service
                         journal.ToPlatformUserId = toUser.Id;
                         journal.PlatformUserId = user.Id;
                         journal.FormPlatformUserId = user.Id;
+                        journal.Tip = tip;
                         journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(journal);
 
@@ -260,6 +327,7 @@ namespace IMS.Service.Service
                         toJournal.ToPlatformUserId = toUser.Id;
                         toJournal.PlatformUserId = toUser.Id;
                         toJournal.FormPlatformUserId = user.Id;
+                        toJournal.Tip = tip;
                         toJournal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(toJournal);
                     }
@@ -286,6 +354,7 @@ namespace IMS.Service.Service
                         journal.ToPlatformUserId = toUser.Id;
                         journal.PlatformUserId = user.Id;
                         journal.FormPlatformUserId = user.Id;
+                        journal.Tip = tip;
                         journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(journal);
 
@@ -299,6 +368,7 @@ namespace IMS.Service.Service
                         toJournal.ToPlatformUserId = toUser.Id;
                         toJournal.PlatformUserId = toUser.Id;
                         toJournal.FormPlatformUserId = user.Id;
+                        toJournal.Tip = tip;
                         toJournal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
                         dbc.Journals.Add(toJournal);
                     }

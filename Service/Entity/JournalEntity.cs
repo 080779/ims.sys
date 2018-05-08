@@ -22,6 +22,7 @@ namespace IMS.Service.Entity
         public long? OutIntegral { get; set; }
         public long? Integral { get; set; }
         public decimal? Amount { get; set; }
+        public string Tip { get; set; }
         public virtual JournalTypeEntity JournalType { get; set; }
         public virtual PlatformUserEntity PlatformUser { get; set; }
         public virtual PlatformUserEntity ToPlatformUser { get; set; }

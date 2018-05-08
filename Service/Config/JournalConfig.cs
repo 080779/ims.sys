@@ -15,6 +15,7 @@ namespace IMS.Service.Config
             HasRequired(j => j.ToIntegralType).WithMany().HasForeignKey(j => j.ToIntegralTypeId).WillCascadeOnDelete(false);
             HasRequired(j => j.JournalType).WithMany().HasForeignKey(j => j.JournalTypeId).WillCascadeOnDelete(false);
             Property(j => j.Description).HasMaxLength(100);
+            Property(j => j.Tip).HasMaxLength(100);
         }
     }
 }
