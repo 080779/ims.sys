@@ -14,30 +14,78 @@ namespace IMS.Web.Controllers
     {
         public IJournalService journalService { get; set; }
         public IJournalTypeService journalTypeService { get; set; }
+        public IPlatformUserService platformUserService { get; set; }
         private int pageSize = 3;
-        public async Task<ActionResult> List()
+        public ActionResult List()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<ActionResult> List(string mobile,string code,DateTime? startTime,DateTime? endTime,int pageIndex=1)
         {
             long id = Convert.ToInt64(Session["Merchant_User_Id"]);
             long? typeId = await journalTypeService.GetIdByDescAsync("赠送");
-            var result = await journalService.GetModelListAsync(id, typeId, null,null,null,null,1,pageSize);
+            var result = await journalService.GetModelListAsync(id, typeId, mobile, code, startTime, endTime, pageIndex, pageSize);
             ListViewModel model = new ListViewModel();
             model.Journals = result.Journals;
 
             Pagination pager = new Pagination();
-            pager.PageIndex = 1;
+            pager.PageIndex = pageIndex;
             pager.PageSize = pageSize;
             pager.TotalCount = result.TotalCount;
 
             if (result.TotalCount <= pageSize)
             {
-                model.PageHtml = "";
+                model.PageHtml = "test";
             }
             else
             {
                 model.PageHtml = pager.GetPagerHtml();
             }
-            //return Json(new AjaxResult { Status = 1, Data = model });
-            return View(model);
+            return Json(new AjaxResult { Status = 1, Data = model });
+            //return View(model);
+        }
+
+        public async Task<ActionResult> Provide(string mobile,string strIntegral,string tip)
+        {
+            if(string.IsNullOrEmpty(mobile))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "赠送账户不能为空" });
+            }
+            if (string.IsNullOrEmpty(strIntegral))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "赠送积分额度不能为空" });
+            }
+            long integral;
+            if(!long.TryParse(strIntegral,out integral))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "赠送积分额度必须是数字" });
+            }
+            if(integral<=0)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "赠送积分额度必须大于零" });
+            }
+            long id = Convert.ToInt64(Session["Merchant_User_Id"]);            
+            var toUser= await platformUserService.GetModelAsync(mobile);
+            if(toUser==null)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "赠送客户账号不存在" });
+            }
+            if(toUser.PlatformUserTypeName=="平台")
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "请填写其他客户账号" });
+            }
+            var user = await platformUserService.GetModelAsync(id);
+            if (user.GivingIntegral<integral)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "积分不足" });
+            }
+            if(toUser.Id==id)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "请填写其他客户账号" });
+            }
+            await platformUserService.ProvideAsync(id, toUser.Id, integral, "商家积分", "消费积分", "赠送", tip);
+            return Json(new AjaxResult { Status = 1, Msg="赠送成功" });
         }
     }
 }

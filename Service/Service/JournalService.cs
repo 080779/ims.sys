@@ -51,11 +51,11 @@ namespace IMS.Service.Service
                 }
                 if (!string.IsNullOrEmpty(mobile))
                 {
-                    journals = journals.Where(j => j.PlatformUser.Mobile == mobile);
+                    journals = journals.Where(j => j.ToPlatformUser.Mobile == mobile);
                 }
                 if (!string.IsNullOrEmpty(code))
                 {
-                    journals = journals.Where(j => j.PlatformUser.Code == code);
+                    journals = journals.Where(j => j.ToPlatformUser.Code == code);
                 }
                 if(startTime!=null)
                 {

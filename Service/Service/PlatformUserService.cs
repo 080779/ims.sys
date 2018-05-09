@@ -79,6 +79,23 @@ namespace IMS.Service.Service
             using (MyDbContext dbc = new MyDbContext())
             {
                 var user= await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Id == id);
+                if (user == null)
+                {
+                    return null;
+                }
+                return ToDTO(user);
+            }
+        }
+
+        public async Task<PlatformUserDTO> GetModelAsync(string mobile)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var user = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Mobile == mobile);
+                if(user==null)
+                {
+                    return null;
+                }
                 return ToDTO(user);
             }
         }
