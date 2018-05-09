@@ -82,9 +82,9 @@
                         <ul id='page' class="pagination">
                             <li><a href="javascript:;" v-on:click="getPage(1)">首页</a></li>
                             <li><a href="javascript:;" v-on:click="getPage(uppage)">上一页</a></li>
-                            <li v-for="page in pages"><a href="javascript:;" v-on:click="getPage(page)">{{page}}</a></li>
-                            <li>下一页</li>
-                            <li>尾页</li>
+                            <li v-for="page in pages" v-on:click="getPage(page.pageIndex)" v-bind:class="page.current"><a href="javascript:;">{{page.pageIndex}}</a></li>
+                            <li><a href="javascript:;" v-on:click="getPage(nextpage)">下一页</a></li>
+                            <li><a href="javascript:;" v-on:click="getPage(pagecount)">尾页</a></li>
                         </ul>
                     </div>
                 </div>
@@ -107,15 +107,17 @@
     var vue = new Vue({
         el: "#app",
         data: {
-            mobile: "", code: "", pages: [1, 2, 3, 4, 5], uppage: 1, nextpage: 1, journals: []
+            mobile: "", code: "", class: "", pages: [], uppage: 1, nextpage: 2, journals: [],pagecount: 1
         },
         methods: {
             search: function () {
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime }, { emulateJSON: true }).then(function (result) {
+                this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
                     this.journals = result.data.data.journals;
                     this.pageHtml = result.data.data.pageHtml;
+                    this.pages = result.data.data.pages;
+                    this.pagecount = result.data.data.pageCount;
                 });
             },
             getPage: function (page) {
@@ -125,20 +127,29 @@
                 }
                 else if (page > 1) {
                     this.uppage = page - 1;
-                    this.nextpage = page + 1;
+                    if (this.nextpage < this.pagecount) {
+                        this.nextpage = page + 1;
+                    }
+                    else {
+                        this.nextpage = this.pagecount;
+                    }
                 }
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
                 this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {
                     this.journals = result.data.data.journals;
                     this.pageHtml = result.data.data.pageHtml;
+                    this.pages = result.data.data.pages;
+                    this.pagecount = result.data.data.pageCount;
                 });
             }
         },
         mounted: function () {
-            this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime }, { emulateJSON: true }).then(function (result) {
+            this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
                 this.journals = result.data.data.journals;
                 this.pageHtml = result.data.data.pageHtml;
+                this.pages = result.data.data.pages;
+                this.pagecount = result.data.data.pageCount;
             });
         }
     });

@@ -36,6 +36,9 @@ namespace IMS.Common
         /// </summary>
         public string CurrentLinkClassName { get; set; }
 
+        public List<Page> Pages { get; set; }
+        public int PageCount { get; set; }
+
         public Pagination()
         {
             this.PageSize = 10;
@@ -60,9 +63,9 @@ namespace IMS.Common
         {
             StringBuilder sb = new StringBuilder();
             //算出来的页数
-            int pageCount = (int)Math.Ceiling(TotalCount * 1.0f / PageSize);
+            PageCount = (int)Math.Ceiling(TotalCount * 1.0f / PageSize);
             int startPageIndex = Math.Max(1, PageIndex - MaxPagerCount / 2);//第一个页码
-            int endPageIndex = Math.Min(pageCount, startPageIndex + MaxPagerCount - 1);//最后一个页码
+            int endPageIndex = Math.Min(PageCount, startPageIndex + MaxPagerCount - 1);//最后一个页码
             sb.AppendLine("<div style='margin-top: 50px;'>");
             sb.AppendLine("<ul id='page' class='pagination'>");
             if (PageIndex > 1)
@@ -75,20 +78,27 @@ namespace IMS.Common
                 sb.AppendLine("<li><a data-original-title='' title=''>首页</a></li>");
                 sb.AppendLine("<li><a data-original-title='' title=''>上一页</a></li>");
             }
+            List<Page> lists = new List<Page>();
             for (int i = startPageIndex; i <= endPageIndex; i++)
             {
+                Page page = new Page();
                 if (i == PageIndex)
                 {
+                    page.PageIndex = i;
+                    page.Current = "active";
                     sb.Append("<li class='").Append(CurrentLinkClassName).Append(" active'><a data-original-title='' title=''>").Append(i).Append("</a></li>").AppendLine();
                 }
                 else
                 {
+                    page.PageIndex = i;
+                    page.Current = "";
                     sb.Append("<li><a data-original-title='' title='' href='").Append(UrlPattern.Replace("{pn}", i.ToString())).Append("'>").Append(i).Append("</a></li>").AppendLine();
                 }
+                lists.Add(page);
             }
-            if (PageIndex < pageCount)
+            if (PageIndex < PageCount)
             {
-                sb.Append("<li><a href='").Append(UrlPattern.Replace("{pn}", (pageCount).ToString())).Append("' data -original-title='' title=''>尾页</a></li>");
+                sb.Append("<li><a href='").Append(UrlPattern.Replace("{pn}", (PageCount).ToString())).Append("' data -original-title='' title=''>尾页</a></li>");
                 sb.Append("<li><a href='").Append(UrlPattern.Replace("{pn}", (PageIndex + 1).ToString())).Append("' data -original-title='' title=''>下一页</a></li>").AppendLine();
             }
             else
@@ -99,7 +109,13 @@ namespace IMS.Common
             sb.AppendLine("<li><span><input type='text'id='txtPage' style='width: 30px;height: 20px;'></span></li><li><span><a id='go' data-original-title='' title=''>跳转</a></span></li>");
             sb.AppendLine("</ul>");
             sb.AppendLine("</div>");
+            Pages = lists;
             return sb.ToString();
+        }
+        public class Page
+        {
+            public long PageIndex { get; set; }
+            public string Current { get; set; }
         }
     }
 }

@@ -18,3 +18,7 @@
 .curPager {
     color: brown;
 }
+
+.active {
+    color: brown;
+}

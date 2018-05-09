@@ -15,7 +15,7 @@ namespace IMS.Web.Controllers
         public IJournalService journalService { get; set; }
         public IJournalTypeService journalTypeService { get; set; }
         public IPlatformUserService platformUserService { get; set; }
-        private int pageSize = 3;
+        private int pageSize = 1;
         public ActionResult List()
         {
             return View();
@@ -42,6 +42,8 @@ namespace IMS.Web.Controllers
             {
                 model.PageHtml = pager.GetPagerHtml();
             }
+            model.Pages = pager.Pages;
+            model.PageCount = pager.PageCount;
             return Json(new AjaxResult { Status = 1, Data = model });
             //return View(model);
         }
