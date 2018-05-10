@@ -67,7 +67,7 @@ namespace IMS.Web.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "赠送积分额度必须大于零" });
             }
-            long id = Convert.ToInt64(Session["Merchant_User_Id"]);            
+            long id = Convert.ToInt64(Session["Merchant_User_Id"]);
             var toUser= await platformUserService.GetModelAsync(mobile);
             if(toUser==null)
             {

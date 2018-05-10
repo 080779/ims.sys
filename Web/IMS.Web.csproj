@@ -294,12 +294,14 @@
     <Compile Include="Areas\Admin\Models\Admin\ListViewModel.cs" />
     <Compile Include="Controllers\GivingController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\JournalController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\SpendController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Giving\ListViewModel.cs" />
+    <Compile Include="Models\Journal\ListViewModel.cs" />
     <Compile Include="Models\Login\LoginViewModel.cs" />
     <Compile Include="Models\Spend\ListViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -331,6 +333,7 @@
     <Content Include="Views\Login\Login.cshtml" />
     <Content Include="Views\Giving\List.cshtml" />
     <Content Include="Views\Spend\List.cshtml" />
+    <Content Include="Views\Journal\List.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

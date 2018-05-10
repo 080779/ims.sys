@@ -1,4 +1,5 @@
-﻿using IMS.IService;
+﻿using IMS.DTO;
+using IMS.IService;
 using IMS.Service.Entity;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,18 @@ namespace IMS.Service.Service
 {
     public class JournalTypeService : IJournalTypeService
     {
+        public JournalTypeDTO ToDTO(JournalTypeEntity entity)
+        {
+            JournalTypeDTO dto = new JournalTypeDTO();
+            dto.CreateTime = entity.CreateTime;
+            dto.Customer = entity.Customer;
+            dto.Description = entity.Description;
+            dto.Id = entity.Id;
+            dto.Merchant = entity.Merchant;
+            dto.Name = entity.Name;
+            dto.Platform = entity.Platform;
+            return dto;
+        }
         public async Task<long?> GetIdByDescAsync(string description)
         {
             using (MyDbContext dbc = new MyDbContext())
@@ -21,6 +34,24 @@ namespace IMS.Service.Service
                     return null;
                 }
                 return type.Id;
+            }
+        }
+
+        public async Task<JournalTypeDTO[]> GetModelList(string userTypeName)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var types = dbc.GetAll<JournalTypeEntity>();
+                List<JournalTypeEntity> typesRes;
+                if (userTypeName == "平台")
+                {
+                    typesRes = await types.ToListAsync();
+                }
+                else
+                {
+                    typesRes = await types.Where(j=>j.Name!= "积分增加").ToListAsync();
+                }
+                return typesRes.Select(j=>ToDTO(j)).ToArray();
             }
         }
     }
