@@ -129,6 +129,23 @@ namespace IMS.Service.Service
             }
         }
 
+        public async Task<bool> CheckTradePasswordAsync(long id, string password)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var user = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Id == id);
+                if (user == null)
+                {
+                    return false;
+                }                
+                if (user.TradePassword != CommonHelper.GetMD5(password + user.Salt))
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+
         public async Task<bool> ProvideAsync(long userId, long toUserId, long integral, string typeName,string toTypeName, string description,string tip)
         {
             using (MyDbContext dbc = new MyDbContext())

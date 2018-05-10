@@ -22,6 +22,7 @@ namespace IMS.IService
         Task<PlatformUserDTO> GetModelAsync(long id);
         Task<PlatformUserDTO> GetModelAsync(string mobile);
         Task<long> CheckLoginAsync(string mobile,string password);
+        Task<bool> CheckTradePasswordAsync(long id, string password);
         Task<bool> ProvideAsync(long userId, long toUserId, long Integral, string typeName, string toTypeName, string description,string tip);
         Task<bool> TakeOutAsync(long userId,long integral, string typeName, string description);
         Task<bool> TakeCashApplyAsync(long userId,long integral,string typeName,string description);

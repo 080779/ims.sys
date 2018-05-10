@@ -26,14 +26,14 @@
                 var ischecked = $('#remember_password').is(":checked");
                 if ($("#remember_password").is(":checked")) {                    
                     var remember_password = $('#remember_password').is(":checked");
-                    $.cookie("userName", userName, { expires: 7 });
-                    $.cookie('passWord', pwd, { expires: 7 });
-                    $.cookie('remember_password', remember_password, { expires: 7 });
+                    $.cookie("userName", userName, { expires: 7, path: "/login" });
+                    $.cookie('passWord', pwd, { expires: 7, path: "/login" });
+                    $.cookie('remember_password', remember_password, { expires: 7, path: "/login" });
                 }
                 else {
-                    $.cookie("userName", "", { expires: 7 });
-                    $.cookie('passWord', "", { expires: 7 });
-                    $.cookie('remember_password', false, { expires: 7 });
+                    $.removeCookie("userName", "", { expires: 7, path: "/login" });
+                    $.removeCookie('passWord', "", { expires: 7, path: "/login" });
+                    $.removeCookie('remember_password', false, { expires: 7, path: "/login" });
                 }
                 $.ajax({
                     url: '/login', type: 'post', data: { mobile: userName, password: pwd, ischecked: ischecked },

@@ -35,15 +35,16 @@
 </head>
 
 <body>
-    <div class="page-content clearfix">
-        <div id="Member_Ratings">
-            <div class="d_Confirm_Order_style">
-                <div class="clearfix" style="margin-top:20px">
-                    <span class="l_f">
-                        <a href="javascript:void()" id="member_add" class="btn btn-warning"><i class="icon-plus"></i>赠送积分</a>
-                    </span>
-                </div>
-                <div id="app">
+    <div id="app">
+        <div class="page-content clearfix">
+            <div id="Member_Ratings">
+                <div class="d_Confirm_Order_style">
+                    <div class="clearfix" style="margin-top:20px">
+                        <span class="l_f">
+                            <a href="javascript:void()" v-on:click="member_add(true)" class="btn btn-warning"><i class="icon-plus"></i>积分消费</a>
+                        </span>
+                    </div>
+
                     <!---->
                     <div class="search_style">
                         <ul class="search_content clearfix">
@@ -61,7 +62,7 @@
                                     <th width="80">编号</th>
                                     <th width="120">接收账户</th>
                                     <th width="180">商家账户</th>
-                                    <th width="70">受增积分</th>
+                                    <th width="70">消费数额</th>
                                     <th width="250">备注</th>
                                     <th width="250">时间</th>
                                 </tr>
@@ -69,9 +70,9 @@
                             <tbody v-for="journal in journals">
                                 <tr>
                                     <td v-html="journal.id"></td>
-                                    <td v-html="journal.toPlatformUserMobile"></td>
+                                    <td v-html="journal.fromPlatformUserMobile"></td>
                                     <td v-html="journal.platformUserMobile"></td>
-                                    <td v-html="journal.outIntegral"></td>
+                                    <td v-html="journal.inIntegral"></td>
                                     <td v-html="journal.tip"></td>
                                     <td v-html="journal.createTime"></td>
                                 </tr>
@@ -90,14 +91,24 @@
                 </div>
             </div>
         </div>
-    </div>
-    <!--添加用户图层-->
-    <div class="add_menber" id="add_menber_style" style="display:none">
-        <ul class="page-content">
-            <li><label class="label_name">受赠客户账号：</label><span class="add_name"><input value="" placeholder="受赠客户账号" id="mobile" name="受赠客户账号" type="text" class="text_add" /></span><div class="prompt r_f"></div></li>
-            <li><label class="label_name">赠送额度：</label><span class="add_name"><input placeholder="赠送额度" name="赠送额度" type="text" id="strIntegral" class="text_add" /></span><div class="prompt r_f"></div></li>
-            <li><label class="label_name">备注：</label><span class="add_name"><textarea id="tip" placeholder="备注" class="text_add"></textarea></span><div class="prompt r_f"></div></li>
-        </ul>
+        <!--添加用户图层-->
+        <div class="add_menber" id="add_menber_style" style="display:none">
+            <ul class="page-content">
+                <li><label class="label_name">客户账号：</label><span class="add_name"><input value="" placeholder="客户账号" id="mobile" v-model="spendmobile" name="客户账号" type="text" class="text_add" /></span><div class="prompt r_f"></div></li>
+                <li><label class="label_name">扣除额度：</label><span class="add_name"><input placeholder="扣除额度" name="扣除额度" type="text" v-model="spendintegral" id="spendintegral" class="text_add" /></span><div class="prompt r_f"></div></li>
+                <li><label class="label_name">备注：</label><span class="add_name"><textarea id="spendtip" placeholder="备注" v-model="spendtip" class="text_add"></textarea></span><div class="prompt r_f"></div></li>
+            </ul>
+        </div>
+        <!--添加用户图层-->
+        <div class="add_menber" id="next" style="display:none">
+            <ul class="page-content">
+                <li><label class="label_name">客户账号：</label><span class="add_name" v-html="spendmobile"></span><div class="prompt r_f"></div></li>
+                <li><label class="label_name">扣除额度：</label><span class="add_name" v-html="spendintegral"></span><div class="prompt r_f"></div></li>
+                <li><label class="label_name">备注：</label><span class="add_name" v-html="spendtip"></span><div class="prompt r_f"></div></li>
+                <li><label class="label_name" style="color:red">客户支付密码：</label><span class="add_name"><input placeholder="客户支付密码" name="客户支付密码" type="password" v-model="tradepassword" id="tradepassword" class="text_add" /></span><div class="prompt r_f"></div></li>
+                <li><label class="label_name"></label><span style="color:red" v-html="msg"></span><div class="prompt r_f"></div></li>
+            </ul>
+        </div>
     </div>
 </body>
 </html>
@@ -107,13 +118,13 @@
     var vue = new Vue({
         el: "#app",
         data: {
-            mobile: "", code: "", class: "", pages: [], uppage: 1, nextpage: 2, journals: [],pagecount: 1
+            mobile: "", code: "", class: "", pages: [], uppage: 1, nextpage: 2, journals: [], pagecount: 1, spendmobile: "", spendintegral: "", spendtip: "", tradepassword: "", msg: ""
         },
         methods: {
             search: function () {
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
+                this.$http.post('/spend/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
                     this.journals = result.data.data.journals;
                     this.pageHtml = result.data.data.pageHtml;
                     this.pages = result.data.data.pages;
@@ -136,16 +147,76 @@
                 }
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {
+                this.$http.post('/spend/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {
                     this.journals = result.data.data.journals;
                     this.pageHtml = result.data.data.pageHtml;
                     this.pages = result.data.data.pages;
                     this.pagecount = result.data.data.pageCount;
                 });
+            },
+            member_add: function (flag) {
+                if (flag == true) {
+                    this.spendmobile = "";
+                    this.spendintegral = "";
+                    this.spendtip = "";
+                    this.tradepassword = "";
+                }
+                var that = this;
+                layer.open({
+                    type: 1,
+                    title: '转出客户积分',
+                    maxmin: true,
+                    shadeClose: false, //点击遮罩关闭层
+                    area: ['600px', ''],
+                    content: $('#add_menber_style'),
+                    btn: ['下一步', '取消'],
+                    yes: function (index, layero) {
+                        if (that.spendmobile == "") {
+                            layer.alert('客户账号不能为空', { icon: 0, title: '提示框' });
+                        }
+                        else if (that.spendintegral == "")
+                        {
+                            var r = /^ [0 - 9] * [1 - 9][0 - 9] * $/;
+                            if (!r.test(that.spendintegral)) {
+                                layer.alert('扣除额度必须是正整数', { icon: 0, title: '提示框' });
+                            }
+                        }
+                        else {
+                            layer.close(index);
+                            layer.open({
+                                type: 1,
+                                title: '转出客户积分',
+                                maxmin: true,
+                                shadeClose: false, //点击遮罩关闭层
+                                area: ['600px', ''],
+                                content: $('#next'),
+                                btn: ['提交', '上一步'],
+                                yes: function (index, layero) {
+                                    that.$http.post('/spend/spend', { mobile: that.spendmobile, strIntegral: that.spendintegral, tip: that.spendtip, tradePassword: that.tradepassword }, { emulateJSON: true }).then(function (result) {
+                                        if (result.data.status == 1) {
+                                            layer.alert(result.data.msg, { icon: 6, title: '提示框' });
+                                            layer.close(index);
+                                            window.parent.location.reload();
+                                        }
+                                        else if (result.data.status == 0) {
+                                            //layer.alert(result.data.msg, { icon: 0, title: '提示框' });
+                                            that.msg = result.data.msg;
+                                        }
+                                    });
+                                    return false;
+                                },
+                                btn2: function (index, layero) {
+                                    that.member_add(false);
+                                    that.msg = "";
+                                }
+                            });
+                        } 
+                    }
+                });
             }
         },
         mounted: function () {
-            this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
+            this.$http.post('/spend/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
                 this.journals = result.data.data.journals;
                 this.pageHtml = result.data.data.pageHtml;
                 this.pages = result.data.data.pages;
@@ -153,75 +224,6 @@
             });
         }
     });
-
-    /*用户-添加*/
-    $('#member_add').on('click', function () {
-        layer.open({
-            type: 1,
-            title: '赠送客户积分',
-            maxmin: true,
-            shadeClose: false, //点击遮罩关闭层
-            area: ['600px', ''],
-            content: $('#add_menber_style'),
-            btn: ['提交', '取消'],
-            yes: function (index, layero) {
-                var num = 0;
-                var str = "";
-                $(".add_menber input").each(function (n) {
-                    if ($(this).val() == "" && $(this) != $("#tip")) {
-                        layer.alert(str += "" + $(this).attr("name") + "不能为空！\r\n", {
-                            title: '提示框',
-                            icon: 0,
-                        });
-                        num++;
-                        return false;
-                    }
-                });
-                if (num > 0) { return false; }
-                else {
-                    var mobile = $("#mobile").val();
-                    var strIntegral = $("#strIntegral").val();
-                    var tip = $("#tip").val();
-                    $.ajax({
-                        url: '/giving/provide', type: 'post', data: { mobile: mobile, strIntegral: strIntegral, tip: tip },
-                        success: function (res) {
-                            if (res.status == 0) {
-                                layer.alert(res.msg, { icon: 0, title: '提示框' });
-                            }
-                            else if (res.status == 1) {
-                                layer.alert(res.msg, { icon: 1, title: '提示框' }, function () {
-                                    window.parent.location.reload();
-                                    parent.layer.close(index);
-                                });
-                            }
-                            else if (res.status == 302) {
-                                //layer.alert("登录成功", { icon: 6, title: '提示框' }, function () {
-                                //    window.location.href = res.data;
-                                //});
-                                window.location.href = res.data;
-                            }
-                            else if (res.status == 401) {
-                                layer.alert("没有权限", { icon: 0, title: '提示框' }, function () {
-                                    window.location.href = res.data;
-                                });
-                            }
-                            else {
-                                layer.alert('未知错误', { icon: 0, title: '提示框' });
-                            }
-                        },
-                        error: function () { layer.alert('网络错误', { icon: 0, title: '提示框' }); }
-                    });
-                }
-            }
-        });
-        add_clear();
-    });
-
-    function add_clear() {
-        $("#mobile").val("");
-        $("#strIntegral").val("");
-        $("#tip").val("");
-    }
 
     laydate({
         elem: '#startTime',
