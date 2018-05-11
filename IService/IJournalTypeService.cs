@@ -10,6 +10,7 @@ namespace IMS.IService
     public interface IJournalTypeService:IServiceSupport
     {
         Task<long?> GetIdByDescAsync(string description);
-        Task<JournalTypeDTO[]> GetModelList(string userTypeName);
+        Task<JournalTypeDTO[]> GetModelListAsync(string userTypeName);
+        Task<JournalTypeDTO[]> GetModelListAsync(bool platform);
     }
 }

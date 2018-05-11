@@ -28,7 +28,7 @@ namespace IMS.Web.Controllers
             var result = await journalService.GetModelListAsync(id, typeId, null, null, startTime, endTime, pageIndex, pageSize);
             ListViewModel model = new ListViewModel();
             model.Journals = result.Journals;
-            model.JournalTypes = await journalTypeService.GetModelList("商家");
+            model.JournalTypes = await journalTypeService.GetModelListAsync("商家");
             var user = await platformUserService.GetModelAsync(id);
             model.GivingIntegral = user.GivingIntegral;
             model.UseIntegral = user.UseIntegral;

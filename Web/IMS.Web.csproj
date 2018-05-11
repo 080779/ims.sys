@@ -298,6 +298,7 @@
     <Compile Include="Areas\Admin\Controllers\UserController.cs" />
     <Compile Include="Areas\Admin\Models\Admin\GetListViewModel.cs" />
     <Compile Include="Areas\Admin\Models\Admin\ListViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\Integral\ListViewModel.cs" />
     <Compile Include="Areas\Admin\Models\Log\ListViewModel.cs" />
     <Compile Include="Areas\Admin\Models\Merchant\ListViewModel.cs" />
     <Compile Include="Areas\Admin\Models\User\ListViewModel.cs" />

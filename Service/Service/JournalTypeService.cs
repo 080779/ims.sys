@@ -37,7 +37,7 @@ namespace IMS.Service.Service
             }
         }
 
-        public async Task<JournalTypeDTO[]> GetModelList(string userTypeName)
+        public async Task<JournalTypeDTO[]> GetModelListAsync(string userTypeName)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
@@ -52,6 +52,17 @@ namespace IMS.Service.Service
                     typesRes = await types.Where(j=>j.Name!= "积分增加").ToListAsync();
                 }
                 return typesRes.Select(j=>ToDTO(j)).ToArray();
+            }
+        }
+
+        public async Task<JournalTypeDTO[]> GetModelListAsync(bool platform)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var types = dbc.GetAll<JournalTypeEntity>();
+                List<JournalTypeEntity> typesRes;
+                typesRes = await types.Where(j => j.Name == "平台发放" && j.Name == "平台扣除" && j.Name == "积分增加").ToListAsync();
+                return typesRes.Select(j => ToDTO(j)).ToArray();
             }
         }
     }
