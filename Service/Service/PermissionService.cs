@@ -41,6 +41,6 @@ namespace IMS.Service.Service
                 var entity = dbc.GetAll<PermissionEntity>().SingleOrDefault(p => p.Description == description);
                 return ToDTO(entity);
             }
-        }
+        }        
     }
 }

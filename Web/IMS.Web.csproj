@@ -289,14 +289,24 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\IntegralController.cs" />
+    <Compile Include="Areas\Admin\Controllers\JournalController.cs" />
+    <Compile Include="Areas\Admin\Controllers\LogController.cs" />
     <Compile Include="Areas\Admin\Controllers\LoginController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MerchantController.cs" />
+    <Compile Include="Areas\Admin\Controllers\TakeCashController.cs" />
+    <Compile Include="Areas\Admin\Controllers\UserController.cs" />
     <Compile Include="Areas\Admin\Models\Admin\GetListViewModel.cs" />
     <Compile Include="Areas\Admin\Models\Admin\ListViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\Log\ListViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\Merchant\ListViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\User\ListViewModel.cs" />
     <Compile Include="Controllers\GivingController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\JournalController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\SpendController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -327,6 +337,12 @@
     <Content Include="Areas\Admin\Views\Admin\List.cshtml" />
     <Content Include="Areas\Admin\Views\Login\Login.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\test.cshtml" />
+    <Content Include="Areas\Admin\Views\User\List.cshtml" />
+    <Content Include="Areas\Admin\Views\Merchant\List.cshtml" />
+    <Content Include="Areas\Admin\Views\Integral\List.cshtml" />
+    <Content Include="Areas\Admin\Views\TakeCash\List.cshtml" />
+    <Content Include="Areas\Admin\Views\Journal\List.cshtml" />
+    <Content Include="Areas\Admin\Views\Log\List.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Home.cshtml" />
@@ -334,6 +350,8 @@
     <Content Include="Views\Giving\List.cshtml" />
     <Content Include="Views\Spend\List.cshtml" />
     <Content Include="Views\Journal\List.cshtml" />
+    <Content Include="Views\User\Add.cshtml" />
+    <Content Include="Views\User\Search.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

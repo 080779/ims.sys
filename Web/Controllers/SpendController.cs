@@ -71,7 +71,7 @@ namespace IMS.Web.Controllers
                 return Json(new AjaxResult { Status = 0, Msg = "转出额度必须大于零" });
             }
             long id = Convert.ToInt64(Session["Merchant_User_Id"]);
-            var toUser = await platformUserService.GetModelAsync(mobile);
+            var toUser = await platformUserService.GetModelAsync("mobile", mobile);
             if (toUser == null)
             {
                 return Json(new AjaxResult { Status = 0, Msg = "客户账号不存在" });

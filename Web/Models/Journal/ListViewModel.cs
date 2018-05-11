@@ -14,5 +14,7 @@ namespace IMS.Web.Models.Journal
         public string PageHtml { get; set; }
         public List<Page> Pages { get; set; }
         public long PageCount { get; set; }
+        public long GivingIntegral { get; set; }
+        public long UseIntegral { get; set; }
     }
 }

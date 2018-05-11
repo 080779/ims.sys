@@ -29,6 +29,9 @@ namespace IMS.Web.Controllers
             ListViewModel model = new ListViewModel();
             model.Journals = result.Journals;
             model.JournalTypes = await journalTypeService.GetModelList("商家");
+            var user = await platformUserService.GetModelAsync(id);
+            model.GivingIntegral = user.GivingIntegral;
+            model.UseIntegral = user.UseIntegral;
 
             Pagination pager = new Pagination();
             pager.PageIndex = pageIndex;

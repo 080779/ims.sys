@@ -119,5 +119,22 @@ namespace IMS.Service.Service
                 return admin.Permissions.Any(p => p.Description.Contains(description));
             }
         }
+
+        public async Task<long> CheckLogin(string mobile, string password)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var admin = await dbc.GetAll<AdminEntity>().SingleOrDefaultAsync(a => a.Mobile == mobile);
+                if (admin == null)
+                {
+                    return -1;
+                }
+                if(admin.Password!=CommonHelper.GetMD5(password+admin.Salt))
+                {
+                    return -2;
+                }
+                return admin.Id;
+            }
+        }
     }
 }

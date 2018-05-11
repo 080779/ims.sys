@@ -19,10 +19,14 @@ namespace IMS.IService
         /// <param name="tradePassword">交易密码</param>
         /// <returns></returns>
         Task<long> AddAsync(string typeName,string mobile,string code,string password,string tradePassword);
+        Task<bool> Del(long id);
         Task<PlatformUserDTO> GetModelAsync(long id);
-        Task<PlatformUserDTO> GetModelAsync(string mobile);
+        Task<PlatformUserDTO> GetModelAsync(string type, string str);
+        Task<PlatformUserSearchResult> GetModelListAsync(string mobile, string code, string type, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize);
+        Task<bool> Frozen(long id);
         Task<long> CheckLoginAsync(string mobile,string password);
         Task<bool> CheckTradePasswordAsync(long id, string password);
+        Task<bool> IsExist(string type, string str);
         Task<bool> ProvideAsync(long userId, long toUserId, long Integral, string typeName, string toTypeName, string description,string tip);
         Task<bool> TakeOutAsync(long userId,long integral, string typeName, string description);
         Task<bool> TakeCashApplyAsync(long userId,long integral,string typeName,string description);

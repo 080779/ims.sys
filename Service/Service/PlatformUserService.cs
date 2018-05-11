@@ -74,6 +74,21 @@ namespace IMS.Service.Service
             }
         }
 
+        public async Task<bool> Del(long id)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var user = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Id == id);
+                if(user==null)
+                {
+                    return false;
+                }
+                user.IsDeleted = true;
+                await dbc.SaveChangesAsync();
+                return true;
+            }
+        }
+
         public async Task<PlatformUserDTO> GetModelAsync(long id)
         {
             using (MyDbContext dbc = new MyDbContext())
@@ -87,16 +102,72 @@ namespace IMS.Service.Service
             }
         }
 
-        public async Task<PlatformUserDTO> GetModelAsync(string mobile)
+        public async Task<PlatformUserDTO> GetModelAsync(string type,string str)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
-                var user = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Mobile == mobile);
+                PlatformUserEntity user;
+                if (type=="mobile")
+                {
+                    user = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Mobile == str);
+                }
+                else
+                {
+                    user = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Code == str);
+                }
                 if(user==null)
                 {
                     return null;
                 }
                 return ToDTO(user);
+            }
+        }
+
+        public async Task<PlatformUserSearchResult> GetModelListAsync(string mobile, string code,string type, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                PlatformUserSearchResult result = new PlatformUserSearchResult();
+                var users=dbc.GetAll<PlatformUserEntity>();
+                if(!string.IsNullOrEmpty(mobile))
+                {
+                    users = users.Where(u=>u.Mobile==mobile);
+                }
+                if (!string.IsNullOrEmpty(code))
+                {
+                    users = users.Where(u => u.Code == code);
+                }
+                if (!string.IsNullOrEmpty(type))
+                {
+                    users = users.Where(u => u.PlatformUserType.Name == type);
+                }
+                if (startTime!=null)
+                {
+                    users = users.Where(u => u.CreateTime>=startTime);
+                }
+                if (endTime != null)
+                {
+                    users = users.Where(u => u.CreateTime <= endTime);
+                }
+                result.TotalCount = users.LongCount();
+                var usersRes = await users.OrderByDescending(u => u.CreateTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+                result.PlatformUsers = usersRes.Select(u => ToDTO(u)).ToArray();
+                return result;
+            }
+        }
+
+        public async Task<bool> Frozen(long id)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var user = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Id == id);
+                if (user == null)
+                {
+                    return false;
+                }
+                user.IsEnabled = false;
+                await dbc.SaveChangesAsync();
+                return true;
             }
         }
 
@@ -141,6 +212,31 @@ namespace IMS.Service.Service
                 if (user.TradePassword != CommonHelper.GetMD5(password + user.Salt))
                 {
                     return false;
+                }
+                return true;
+            }
+        }
+
+        public async Task<bool> IsExist(string type, string str)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                PlatformUserEntity entity;
+                if (type == "mobile")
+                {
+                    entity = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Mobile == str);
+                    if(entity==null)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    entity = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Code == str);
+                    if (entity == null)
+                    {
+                        return false;
+                    }
                 }
                 return true;
             }

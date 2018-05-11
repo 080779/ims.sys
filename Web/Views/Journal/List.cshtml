@@ -39,11 +39,24 @@
         <div id="Member_Ratings">
             <div class="d_Confirm_Order_style">
                 <div id="app">
+                    <div>
+                        <ul>
+                            <li>
+                                当前商家积分
+                                <p v-html="g_integral"></p>
+                            </li>
+                            <li>
+                                当前消费积分
+                                <p v-html="u_integral"></p>
+                            </li>
+                        </ul>
+                    </div>
                     <!---->
                     <div class="search_style">
                         <ul class="search_content clearfix">
                             <li>
                                 <select v-model="typeId">
+                                    <option value="">变动类型</option>
                                     <option v-for="type in journalTypes" v-bind:value="type.id" v-html="type.name"></option>
                                 </select>
                             </li>
@@ -57,9 +70,10 @@
                             <thead>
                                 <tr>
                                     <th width="80">编号</th>
-                                    <th width="120">接收账户</th>
-                                    <th width="180">商家账户</th>
-                                    <th width="70">受增积分</th>
+                                    <th width="120">类型</th>
+                                    <th width="180">积分类型</th>
+                                    <th width="70">积分变动</th>
+                                    <th width="70">账号</th>
                                     <th width="250">备注</th>
                                     <th width="250">时间</th>
                                 </tr>
@@ -67,9 +81,10 @@
                             <tbody v-for="journal in journals">
                                 <tr>
                                     <td v-html="journal.id"></td>
-                                    <td v-html="journal.toPlatformUserMobile"></td>
-                                    <td v-html="journal.platformUserMobile"></td>
-                                    <td v-html="journal.outIntegral"></td>
+                                    <td v-html="journal.journalTypeName"></td>
+                                    <td v-html="(journal.integralTypeName=='平台积分')?journal.toIntegralTypeName:journal.integralTypeName"></td>
+                                    <td v-html="(journal.inIntegral)!=null?'+'+journal.inIntegral:'-'+journal.outIntegral"></td>
+                                    <td v-html="(journal.journalTypeName=='积分消费')?journal.fromPlatformUserMobile:journal.toPlatformUserMobile"></td>
                                     <td v-html="journal.tip"></td>
                                     <td v-html="journal.createTime"></td>
                                 </tr>
@@ -97,17 +112,19 @@
     var vue = new Vue({
         el: "#app",
         data: {
-            class: "", pages: [], uppage: 1, nextpage: 2, journals: [],pagecount: 1,journalTypes:[],typeId:""
+            class: "", pages: [], uppage: 1, nextpage: 2, journals: [], pagecount: 1, journalTypes: [], typeId: "", g_integral: "", u_integral: ""
         },
         methods: {
             search: function () {
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/journal/list', { typeId: "", startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
+                this.$http.post('/journal/list', { typeId: this.typeId, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
                     this.journals = result.data.data.journals;
                     this.pageHtml = result.data.data.pageHtml;
                     this.pages = result.data.data.pages;
                     this.pagecount = result.data.data.pageCount;
+                    this.g_integral = result.data.data.givingIntegral;
+                    this.u_integral = result.data.data.useIntegral;
                 });
             },
             getPage: function (page) {
@@ -126,21 +143,25 @@
                 }
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/journal/list', { typeId: "", startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {
+                this.$http.post('/journal/list', { typeId: this.typeId, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {
                     this.journals = result.data.data.journals;
                     this.pageHtml = result.data.data.pageHtml;
                     this.pages = result.data.data.pages;
                     this.pagecount = result.data.data.pageCount;
+                    this.g_integral = result.data.data.givingIntegral;
+                    this.u_integral = result.data.data.useIntegral;
                 });
             }
         },
         mounted: function () {
-            this.$http.post('/journal/list', { typeId: "", startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
+            this.$http.post('/journal/list', { typeId: this.typeId, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
                 this.journals = result.data.data.journals;
                 this.pageHtml = result.data.data.pageHtml;
                 this.pages = result.data.data.pages;
                 this.pagecount = result.data.data.pageCount;
                 this.journalTypes = result.data.data.journalTypes;
+                this.g_integral = result.data.data.givingIntegral;
+                this.u_integral = result.data.data.useIntegral;
             });
         }
     });

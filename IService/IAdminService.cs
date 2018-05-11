@@ -12,6 +12,7 @@ namespace IMS.IService
         Task<AdminDTO> GetModelAsync(long id);
         Task<AdminSearchResult> GetModelListAsync(string mobile,DateTime? startTime,DateTime? endTime,int pageIndex,int pageSize);
         bool HasPermission(long id,string description);
+        Task<long> CheckLogin(string mobile, string password);
     }
     public class AdminSearchResult
     {

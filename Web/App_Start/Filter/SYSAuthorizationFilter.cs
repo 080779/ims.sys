@@ -21,23 +21,23 @@ namespace IMS.Web.App_Start.Filter
                 PermissionAttribute attribute = (PermissionAttribute)filterContext.ActionDescriptor.ControllerDescriptor.GetCustomAttributes(typeof(PermissionAttribute), false).SingleOrDefault();
                 PermissionAttribute[] attributes = (PermissionAttribute[])filterContext.ActionDescriptor.GetCustomAttributes(typeof(PermissionAttribute), false);
                 //var attributes = filterContext.ActionDescriptor.ControllerDescriptor.GetCustomAttributes(true);
-                long? adminUserId = (long?)filterContext.HttpContext.Session["AdminUserId"];
-                if (adminUserId == null)
-                {
-                    if (filterContext.ActionDescriptor.IsDefined(typeof(AllowAnonymousAttribute), true) || filterContext.ActionDescriptor.ControllerDescriptor.IsDefined(typeof(AllowAnonymousAttribute), true))
-                    {
-                        return;
-                    }
-                    if (filterContext.HttpContext.Request.IsAjaxRequest())//判断是否是ajax请求
-                    {
-                        filterContext.Result = new JsonNetResult { Data = new AjaxResult { Status = 302, Data = "/admin/user/Login" } };
-                    }
-                    else
-                    {
-                        filterContext.Result = new RedirectResult("/admin/user/login");
-                    }
-                    return;
-                }
+                //long? adminUserId = (long?)filterContext.HttpContext.Session["AdminUserId"];
+                //if (adminUserId == null)
+                //{
+                //    if (filterContext.ActionDescriptor.IsDefined(typeof(AllowAnonymousAttribute), true) || filterContext.ActionDescriptor.ControllerDescriptor.IsDefined(typeof(AllowAnonymousAttribute), true))
+                //    {
+                //        return;
+                //    }
+                //    if (filterContext.HttpContext.Request.IsAjaxRequest())//判断是否是ajax请求
+                //    {
+                //        filterContext.Result = new JsonNetResult { Data = new AjaxResult { Status = 302, Data = "/admin/login/login" } };
+                //    }
+                //    else
+                //    {
+                //        filterContext.Result = new RedirectResult("/admin/login/login");
+                //    }
+                //    return;
+                //}
                 //if (attribute == null)
                 //{
                 //    if (attributes.Length <= 0)

@@ -19,6 +19,8 @@ namespace IMS.DTO
         public long? Integral { get; set; }
         public decimal? Amount { get; set; }
         public string JournalTypeName { get; set; }
+        public string IntegralTypeName { get; set; }
+        public string ToIntegralTypeName { get; set; }
         public string PlatformUserMobile { get; set; }
         public string ToPlatformUserMobile { get; set; }
         public string FromPlatformUserMobile { get; set; }
