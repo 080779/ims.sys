@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using static IMS.Common.Pagination;
 
 namespace IMS.Web.Areas.Admin.Models.Admin
 {
@@ -11,6 +12,8 @@ namespace IMS.Web.Areas.Admin.Models.Admin
         public AdminDTO[] Admins { get; set; }
         public string PageHtml { get; set; }
         public List<PermissionType> PermissionTypes { get; set; }
+        public List<Page> Pages { get; set; }
+        public long PageCount { get; set; }
     }
     public class PermissionType
     {

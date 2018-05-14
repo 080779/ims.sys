@@ -24,7 +24,7 @@ namespace IMS.Service.Service
             dto.PermissionIds = entity.Permissions.Select(p => p.Id).ToArray();
             return dto;
         }
-        public async Task<long> AddAsync(string mobile, string description, string password, long[] permissionIds)
+        public async Task<long> AddAsync(string mobile, string description, string password)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
@@ -49,6 +49,41 @@ namespace IMS.Service.Service
                 }
                 entity.Mobile = mobile;
                 entity.Description = description;
+                entity.Password = CommonHelper.GetMD5(password + entity.Salt);
+                entity.Permissions.Clear();
+                var perms = dbc.GetAll<PermissionEntity>().Where(p => permissionIds.Contains(p.Id));
+                await perms.ForEachAsync(p => entity.Permissions.Add(p));
+                await dbc.SaveChangesAsync();
+                return true;
+            }
+        }
+
+        public async Task<bool> UpdateAsync(long id, long[] permissionIds)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var entity = await dbc.GetAll<AdminEntity>().SingleOrDefaultAsync(a => a.Id == id);
+                if (entity == null)
+                {
+                    return false;
+                }
+                entity.Permissions.Clear();
+                var perms = dbc.GetAll<PermissionEntity>().Where(p => permissionIds.Contains(p.Id));
+                await perms.ForEachAsync(p => entity.Permissions.Add(p));
+                await dbc.SaveChangesAsync();
+                return true;
+            }
+        }
+
+        public async Task<bool> UpdateAsync(long id, string password)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var entity = await dbc.GetAll<AdminEntity>().SingleOrDefaultAsync(a => a.Id == id);
+                if (entity == null)
+                {
+                    return false;
+                }
                 entity.Password = CommonHelper.GetMD5(password + entity.Salt);
                 await dbc.SaveChangesAsync();
                 return true;

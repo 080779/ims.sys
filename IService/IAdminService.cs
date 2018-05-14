@@ -6,8 +6,10 @@ namespace IMS.IService
 {
     public interface IAdminService:IServiceSupport
     {
-        Task<long> AddAsync(string mobile,string description,string password,long[] permissionIds);
+        Task<long> AddAsync(string mobile,string description,string password);
         Task<bool> UpdateAsync(long id, string mobile, string description, string password, long[] permissionIds);
+        Task<bool> UpdateAsync(long id, long[] permissionIds);
+        Task<bool> UpdateAsync(long id, string password);
         Task<bool> DeleteAsync(long id);
         Task<AdminDTO> GetModelAsync(long id);
         Task<AdminSearchResult> GetModelListAsync(string mobile,DateTime? startTime,DateTime? endTime,int pageIndex,int pageSize);
