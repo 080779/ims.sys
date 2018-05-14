@@ -49,6 +49,8 @@
     <Compile Include="IPermissionTypeService.cs" />
     <Compile Include="IPlatformUserService.cs" />
     <Compile Include="IServiceSupport.cs" />
+    <Compile Include="IStateService.cs" />
+    <Compile Include="ITakeCashService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

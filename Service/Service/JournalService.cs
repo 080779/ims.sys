@@ -82,5 +82,44 @@ namespace IMS.Service.Service
                 return result;
             }
         }
+
+        public async Task<JournalSearchResult> GetModelListAsync(string typeName, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                JournalSearchResult result = new JournalSearchResult();
+                var journals = dbc.GetAll<JournalEntity>();
+                long useId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j=>j.Description=="消费").Id;
+                long givingId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == "赠送").Id;
+                if (typeName == "交易")
+                {
+                    journals = journals.Where(j=>j.PlatformUserId!=j.ToPlatformUserId).Where(j => j.JournalTypeId == useId || j.JournalTypeId==givingId);
+                }
+                if (!string.IsNullOrEmpty(mobile))
+                {
+                    journals = journals.Where(j => j.ToPlatformUser.Mobile == mobile);
+                }
+                if (!string.IsNullOrEmpty(code))
+                {
+                    journals = journals.Where(j => j.ToPlatformUser.Code == code);
+                }
+                if (startTime != null)
+                {
+                    journals = journals.Where(j => j.CreateTime >= startTime);
+                }
+                if (endTime != null)
+                {
+                    journals = journals.Where(j => j.CreateTime <= endTime);
+                }
+                result.TotalCount = await journals.LongCountAsync();
+
+                result.GivingIntegralCount = await journals.Where(j=>j.JournalTypeId==givingId).SumAsync(j => j.OutIntegral);
+                result.UseIntegralCount = await journals.Where(j=>j.JournalTypeId==useId).SumAsync(j => j.OutIntegral);
+
+                var journalResult = await journals.OrderByDescending(j => j.CreateTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+                result.Journals = journalResult.Select(j => ToDTO(j)).ToArray();
+                return result;
+            }
+        }
     }
 }

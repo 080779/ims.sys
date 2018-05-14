@@ -50,6 +50,8 @@
     <Compile Include="PermissionTypeDTO.cs" />
     <Compile Include="PlatformUserDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StateDTO.cs" />
+    <Compile Include="TakeCashDTO.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

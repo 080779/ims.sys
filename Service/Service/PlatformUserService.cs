@@ -681,7 +681,7 @@ namespace IMS.Service.Service
                 }
                 if(takeCash.IntegralType.Name=="商家积分" && user.PlatformUserType.Name=="商家")
                 {
-                    user.GivingIntegral = user.GivingIntegral - takeCash.Integral;
+                    user.GivingIntegral = user.GivingIntegral - takeCash.Integral.Value;
 
                     JournalEntity journal = new JournalEntity();
                     journal.Description = takeCash.Description;
@@ -699,7 +699,7 @@ namespace IMS.Service.Service
                 }
                 else if(takeCash.IntegralType.Name == "消费积分" && user.PlatformUserType.Name == "商家")
                 {
-                    user.UseIntegral = user.UseIntegral - takeCash.Integral;
+                    user.UseIntegral = user.UseIntegral - takeCash.Integral.Value;
 
                     JournalEntity journal = new JournalEntity();
                     journal.Description = takeCash.Description;
@@ -716,7 +716,7 @@ namespace IMS.Service.Service
                 }
                 else if(takeCash.IntegralType.Name == "消费积分" && user.PlatformUserType.Name == "客户")
                 {
-                    user.UseIntegral = user.UseIntegral - takeCash.Integral;
+                    user.UseIntegral = user.UseIntegral - takeCash.Integral.Value;
 
                     JournalEntity journal = new JournalEntity();
                     journal.Description = takeCash.Description;

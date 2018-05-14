@@ -89,6 +89,8 @@
     <Compile Include="Service\PermissionService.cs" />
     <Compile Include="Service\PermissionTypeService.cs" />
     <Compile Include="Service\PlatformUserService.cs" />
+    <Compile Include="Service\StateService.cs" />
+    <Compile Include="Service\TakeCashService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

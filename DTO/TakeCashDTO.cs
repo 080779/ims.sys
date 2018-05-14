@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMS.Service.Entity
+namespace IMS.DTO
 {
-    public class TakeCashEntity:BaseEntity
+    public class TakeCashDTO:BaseDTO
     {
         public long PlatformUserId { get; set; }
         public long IntegralTypeId { get; set; }
@@ -14,8 +14,8 @@ namespace IMS.Service.Entity
         public long? Integral { get; set; }
         public decimal? Amount { get; set; }
         public string Description { get; set; }
-        public virtual PlatformUserEntity PlatformUser { get; set; }
-        public virtual IntegralTypeEntity IntegralType { get; set; }
-        public virtual StateEntity State { get; set; }
+        public string PlatformUserMobile { get; set; }
+        public string IntegralTypeName { get; set; }
+        public string StateName { get; set; }
     }
 }
