@@ -40,7 +40,7 @@
             <div class="d_Confirm_Order_style">
                 <div class="clearfix" style="margin-top:20px">
                     <span class="l_f">
-                        <a href="javascript:void()" id="member_add" class="btn btn-warning"><i class="icon-plus"></i>赠送积分</a>
+                        <a href="javascript:void()" v-on:click="giving" class="btn btn-warning"><i class="icon-plus"></i>赠送积分</a>
                     </span>
                 </div>
                 <div id="app">
@@ -113,14 +113,9 @@
             search: function () {
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
-                    this.journals = result.data.data.journals;
-                    this.pageHtml = result.data.data.pageHtml;
-                    this.pages = result.data.data.pages;
-                    this.pagecount = result.data.data.pageCount;
+                this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {                    
                     if (result.data.status == 1) {
-                        this.admins = result.data.data.admins;
-                        //this.permissionTypes = result.data.data.permissionTypes;
+                        this.journals = result.data.data.journals;
                         this.pageHtml = result.data.data.pageHtml;
                         this.pages = result.data.data.pages;
                         this.pagecount = result.data.data.pageCount;
@@ -146,14 +141,9 @@
                 }
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {
-                    this.journals = result.data.data.journals;
-                    this.pageHtml = result.data.data.pageHtml;
-                    this.pages = result.data.data.pages;
-                    this.pagecount = result.data.data.pageCount;
+                this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {                    
                     if (result.data.status == 1) {
-                        this.admins = result.data.data.admins;
-                        //this.permissionTypes = result.data.data.permissionTypes;
+                        this.journals = result.data.data.journals;
                         this.pageHtml = result.data.data.pageHtml;
                         this.pages = result.data.data.pages;
                         this.pagecount = result.data.data.pageCount;
@@ -162,17 +152,72 @@
                         window.location.href = result.data.data;
                     }
                 });
+            },
+            giving: function () {
+                layer.open({
+                    type: 1,
+                    title: '赠送客户积分',
+                    maxmin: true,
+                    shadeClose: false, //点击遮罩关闭层
+                    area: ['600px', ''],
+                    content: $('#add_menber_style'),
+                    btn: ['提交', '取消'],
+                    yes: function (index, layero) {
+                        var num = 0;
+                        var str = "";
+                        $(".add_menber input").each(function (n) {
+                            if ($(this).val() == "" && $(this) != $("#tip")) {
+                                layer.alert(str += "" + $(this).attr("name") + "不能为空！\r\n", {
+                                    title: '提示框',
+                                    icon: 0,
+                                });
+                                num++;
+                                return false;
+                            }
+                        });
+                        if (num > 0) { return false; }
+                        else {
+                            var mobile = $("#mobile").val();
+                            var strIntegral = $("#strIntegral").val();
+                            var tip = $("#tip").val();
+                            $.ajax({
+                                url: '/giving/provide', type: 'post', data: { mobile: mobile, strIntegral: strIntegral, tip: tip },
+                                success: function (res) {
+                                    if (res.status == 0) {
+                                        layer.alert(res.msg, { icon: 0, title: '提示框' });
+                                    }
+                                    else if (res.status == 1) {
+                                        layer.alert(res.msg, { icon: 1, title: '提示框' }, function () {
+                                            window.location.reload();
+                                            parent.layer.close(index);
+                                        });
+                                    }
+                                    else if (res.status == 302) {
+                                        //layer.alert("登录成功", { icon: 6, title: '提示框' }, function () {
+                                        //    window.location.href = res.data;
+                                        //});
+                                        window.location.href = res.data;
+                                    }
+                                    else if (res.status == 401) {
+                                        layer.alert("没有权限", { icon: 0, title: '提示框' }, function () {
+                                            window.location.href = res.data;
+                                        });
+                                    }
+                                    else {
+                                        layer.alert('未知错误', { icon: 0, title: '提示框' });
+                                    }
+                                },
+                                error: function () { layer.alert('网络错误', { icon: 0, title: '提示框' }); }
+                            });
+                        }
+                    }
+                });
             }
         },
         mounted: function () {
-            this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
-                this.journals = result.data.data.journals;
-                this.pageHtml = result.data.data.pageHtml;
-                this.pages = result.data.data.pages;
-                this.pagecount = result.data.data.pageCount;
+            this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {                
                 if (result.data.status == 1) {
-                    this.admins = result.data.data.admins;
-                    //this.permissionTypes = result.data.data.permissionTypes;
+                    this.journals = result.data.data.journals;
                     this.pageHtml = result.data.data.pageHtml;
                     this.pages = result.data.data.pages;
                     this.pagecount = result.data.data.pageCount;
@@ -183,75 +228,6 @@
             });
         }
     });
-
-    /*用户-添加*/
-    $('#member_add').on('click', function () {
-        layer.open({
-            type: 1,
-            title: '赠送客户积分',
-            maxmin: true,
-            shadeClose: false, //点击遮罩关闭层
-            area: ['600px', ''],
-            content: $('#add_menber_style'),
-            btn: ['提交', '取消'],
-            yes: function (index, layero) {
-                var num = 0;
-                var str = "";
-                $(".add_menber input").each(function (n) {
-                    if ($(this).val() == "" && $(this) != $("#tip")) {
-                        layer.alert(str += "" + $(this).attr("name") + "不能为空！\r\n", {
-                            title: '提示框',
-                            icon: 0,
-                        });
-                        num++;
-                        return false;
-                    }
-                });
-                if (num > 0) { return false; }
-                else {
-                    var mobile = $("#mobile").val();
-                    var strIntegral = $("#strIntegral").val();
-                    var tip = $("#tip").val();
-                    $.ajax({
-                        url: '/giving/provide', type: 'post', data: { mobile: mobile, strIntegral: strIntegral, tip: tip },
-                        success: function (res) {
-                            if (res.status == 0) {
-                                layer.alert(res.msg, { icon: 0, title: '提示框' });
-                            }
-                            else if (res.status == 1) {
-                                layer.alert(res.msg, { icon: 1, title: '提示框' }, function () {
-                                    window.parent.location.reload();
-                                    parent.layer.close(index);
-                                });
-                            }
-                            else if (res.status == 302) {
-                                //layer.alert("登录成功", { icon: 6, title: '提示框' }, function () {
-                                //    window.location.href = res.data;
-                                //});
-                                window.location.href = res.data;
-                            }
-                            else if (res.status == 401) {
-                                layer.alert("没有权限", { icon: 0, title: '提示框' }, function () {
-                                    window.location.href = res.data;
-                                });
-                            }
-                            else {
-                                layer.alert('未知错误', { icon: 0, title: '提示框' });
-                            }
-                        },
-                        error: function () { layer.alert('网络错误', { icon: 0, title: '提示框' }); }
-                    });
-                }
-            }
-        });
-        add_clear();
-    });
-
-    function add_clear() {
-        $("#mobile").val("");
-        $("#strIntegral").val("");
-        $("#tip").val("");
-    }
 
     laydate({
         elem: '#startTime',

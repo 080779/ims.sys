@@ -355,6 +355,7 @@
     <Content Include="Views\Journal\List.cshtml" />
     <Content Include="Views\User\Add.cshtml" />
     <Content Include="Views\User\Search.cshtml" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

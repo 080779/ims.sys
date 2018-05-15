@@ -60,5 +60,14 @@ namespace IMS.Service.Service
                 return result;
             }
         }
+
+        public async Task<decimal> CalcAsync(string description, long integral)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var setting = await dbc.GetAll<SettingEntity>().SingleOrDefaultAsync(s => s.Description == description);
+                return Convert.ToDecimal(setting.Name) * integral;
+            }
+        }
     }
 }

@@ -10,6 +10,7 @@ namespace IMS.IService
     public interface ITakeCashService:IServiceSupport
     {
         Task<TakeCashSearchResult> GetModelListAsync(long? stateId,string mobile,DateTime? startTime,DateTime? endTime,int pageIndex,int pageSize);
+        Task<decimal> CalcAsync(string description,long integral);
     }
     public class TakeCashSearchResult
     {
