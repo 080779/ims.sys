@@ -66,9 +66,9 @@
                                 <tr>
                                     <th width="80">编号</th>
                                     <th width="120">类型</th>
-                                    <th width="180">积分类型</th>
-                                    <th width="70">积分变动</th>
-                                    <th width="70">账号</th>
+                                    <th width="70">变动额度</th>
+                                    <th width="70">商家账号</th>
+                                    <th width="70">客户账号</th>
                                     <th width="250">备注</th>
                                     <th width="250">时间</th>
                                 </tr>
@@ -76,10 +76,10 @@
                             <tbody v-for="journal in journals">
                                 <tr>
                                     <td v-html="journal.id"></td>
-                                    <td v-html="journal.journalTypeName"></td>
-                                    <td v-html="(journal.integralTypeName=='平台积分')?journal.toIntegralTypeName:journal.integralTypeName"></td>
-                                    <td v-html="(journal.inIntegral)!=null?'+'+journal.inIntegral:'-'+journal.outIntegral"></td>
-                                    <td v-html="(journal.journalTypeName=='积分消费')?journal.fromPlatformUserMobile:journal.toPlatformUserMobile"></td>
+                                    <td v-html="(journal.journalTypeName=='积分消费')?'消费':'赠送'"></td>
+                                    <td v-html="(journal.inIntegral)!=null?journal.inIntegral:journal.outIntegral"></td>
+                                    <td v-html="journal.platformUserMobile"></td>
+                                    <td v-html="journal.toPlatformUserMobile"></td>
                                     <td v-html="journal.tip"></td>
                                     <td v-html="journal.createTime"></td>
                                 </tr>
@@ -113,13 +113,18 @@
             search: function () {
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/admin/journal/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
-                    this.journals = result.data.data.journals;
-                    this.pageHtml = result.data.data.pageHtml;
-                    this.pages = result.data.data.pages;
-                    this.pagecount = result.data.data.pageCount;
-                    this.g_integral_c = result.data.data.givingIntegralCount;
-                    this.u_integral_c = result.data.data.useIntegralCount;
+                this.$http.post('/admin/journal/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {                    
+                    if (result.data.status == 1) {
+                        this.journals = result.data.data.journals;
+                        this.pageHtml = result.data.data.pageHtml;
+                        this.pages = result.data.data.pages;
+                        this.pagecount = result.data.data.pageCount;
+                        this.g_integral_c = result.data.data.givingIntegralCount;
+                        this.u_integral_c = result.data.data.useIntegralCount;
+                    }
+                    else if (result.data.status == 302) {
+                        window.location.href = result.data.data;
+                    }
                 });
             },
             getPage: function (page) {
@@ -138,24 +143,34 @@
                 }
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/admin/journal/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {
+                this.$http.post('/admin/journal/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {                    
+                    if (result.data.status == 1) {
+                        this.journals = result.data.data.journals;
+                        this.pageHtml = result.data.data.pageHtml;
+                        this.pages = result.data.data.pages;
+                        this.pagecount = result.data.data.pageCount;
+                        this.g_integral_c = result.data.data.givingIntegralCount;
+                        this.u_integral_c = result.data.data.useIntegralCount;
+                    }
+                    else if (result.data.status == 302) {
+                        window.location.href = result.data.data;
+                    }
+                });
+            }
+        },
+        mounted: function () {
+            this.$http.post('/admin/journal/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {               
+                if (result.data.status == 1) {
                     this.journals = result.data.data.journals;
                     this.pageHtml = result.data.data.pageHtml;
                     this.pages = result.data.data.pages;
                     this.pagecount = result.data.data.pageCount;
                     this.g_integral_c = result.data.data.givingIntegralCount;
                     this.u_integral_c = result.data.data.useIntegralCount;
-                });
-            }
-        },
-        mounted: function () {
-            this.$http.post('/admin/journal/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
-                this.journals = result.data.data.journals;
-                this.pageHtml = result.data.data.pageHtml;
-                this.pages = result.data.data.pages;
-                this.pagecount = result.data.data.pageCount;
-                this.g_integral_c = result.data.data.givingIntegralCount;
-                this.u_integral_c = result.data.data.useIntegralCount;
+                }
+                else if (result.data.status == 302) {
+                    window.location.href = result.data.data;
+                }
             });
         }
     });

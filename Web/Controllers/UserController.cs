@@ -55,11 +55,11 @@ namespace IMS.Web.Controllers
         {
             if(string.IsNullOrEmpty(type))
             {
-                return Json(new AjaxResult { Status = 0, Msg = "请选择客户编号或用户编号" });
+                return Json(new AjaxResult { Status = 0, Msg = "请选择客户账号或会员编号" });
             }
             if (string.IsNullOrEmpty(code))
             {
-                return Json(new AjaxResult { Status = 0, Msg = "客户编号或用户编号不能为空" });
+                return Json(new AjaxResult { Status = 0, Msg = "客户账号或会员编号不能为空" });
             }
             if (string.IsNullOrEmpty(password))
             {
@@ -68,12 +68,12 @@ namespace IMS.Web.Controllers
             var user = await platformUserService.GetModelAsync(type, code);
             if (user==null)
             {
-                return Json(new AjaxResult { Status = 0, Msg = "客户编号或用户编号不存在" });
+                return Json(new AjaxResult { Status = 0, Msg = "客户账号或会员编号不存在" });
             }
-            if(user.PlatformUserTypeName!="客户")
-            {
-                return Json(new AjaxResult { Status = 0, Msg = "客户编号或用户编号不是客户" });
-            }
+            //if(user.PlatformUserTypeName!="客户")
+            //{
+            //    return Json(new AjaxResult { Status = 0, Msg = "客户账号或会员编号不是客户" });
+            //}
             if(!await platformUserService.CheckTradePasswordAsync(user.Id,password))
             {
                 return Json(new AjaxResult { Status = 0, Msg = "支付密码错误" });

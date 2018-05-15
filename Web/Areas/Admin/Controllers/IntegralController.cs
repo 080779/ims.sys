@@ -29,8 +29,8 @@ namespace IMS.Web.Areas.Admin.Controllers
             ListViewModel model = new ListViewModel();
             model.Journals = result.Journals;
             model.JournalTypes = await journalTypeService.GetModelListAsync(true);
-            model.GivingIntegralCount = user.GivingIntegral;
-            model.UseIntegralCount = user.UseIntegral;
+            model.GivingIntegralCount = result.GivingIntegrals;
+            model.UseIntegralCount = result.UseIntegrals;
             model.PlatformIntegral = user.PlatformIntegral;
 
             Pagination pager = new Pagination();

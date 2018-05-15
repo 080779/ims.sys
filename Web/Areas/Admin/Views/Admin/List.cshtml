@@ -48,7 +48,7 @@
                     <!---->
                     <div class="search_style">
                         <ul class="search_content clearfix">
-                            <li><label class="l_f">管理员账户</label><input name="" type="text" class="text_add" placeholder="管理员账户" style=" width:150px" /></li>
+                            <li><label class="l_f">管理员账户</label><input name="" v-model="mobile" type="text" class="text_add" placeholder="管理员账户" style=" width:150px" /></li>
                             <li><label class="l_f">添加时间</label><input class="inline laydate-icon" id="startTime" style=" margin-left:10px;" />至<input class="inline laydate-icon" id="endTime" style=" margin-left:10px;" /></li>
                             <li style="width:90px;"><button type="button" v-on:click="search" class="btn_search"><i class="icon-search"></i>查询</button></li>
                         </ul>
@@ -70,12 +70,12 @@
                                     <td v-html="admin.id"></td>
                                     <td v-html="admin.mobile"></td>
                                     <td v-html="admin.createTime"></td>
-                                    <td class="td-status"><span class="label label-success radius" v-html="admin.isEnabled?'正常使用':'已冻结'"></span></td>
+                                    <td class="td-status"><span class="label label-success radius" v-html="admin.isEnabled?'正常':'已冻结'"></span></td>
                                     <td class="td-manage">
-                                        <a v-on:click="member_edit(admin.id)" href="javascript:;" title="修改密码" class="btn btn-xs btn-success">修改密码</a>
+                                        <a v-on:click="member_edit(admin.id,admin.mobile)" href="javascript:;" title="修改密码" class="btn btn-xs btn-success">修改密码</a>
                                         <a title="编辑" v-on:click="perm_edit(admin.id, admin.mobile,admin.permissionIds)" href="javascript:;" class="btn btn-xs btn-info">权限管理</a>
-                                        <a title="删除" href="javascript:;" onclick="member_del(this,'1')" class="btn btn-xs btn-warning">冻结账户</a>
-                                        <a title="删除" href="javascript:;" onclick="member_del(this,'1')" class="btn btn-xs btn-warning">删除账户</a>
+                                        <a title="删除" href="javascript:;" v-on:click="frozen(admin.id,admin.isEnabled)" class="btn btn-xs btn-warning" v-html="admin.isEnabled?'冻结账户':'解冻账户'"></a>
+                                        <a title="删除" href="javascript:;" v-on:click="del(admin.id)" class="btn btn-xs btn-warning">删除账户</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -137,11 +137,16 @@
             search: function () {
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/admin/admin/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
-                    this.admins = result.data.data.admins;
-                    this.pageHtml = result.data.data.pageHtml;
-                    this.pages = result.data.data.pages;
-                    this.pagecount = result.data.data.pageCount;
+                this.$http.post('/admin/admin/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {                    
+                    if (result.data.status == 1) {
+                        this.admins = result.data.data.admins;
+                        this.pageHtml = result.data.data.pageHtml;
+                        this.pages = result.data.data.pages;
+                        this.pagecount = result.data.data.pageCount;
+                    }
+                    else if (result.data.status == 302) {
+                        window.location.href = result.data.data;
+                    }
                 });
             },
             getPage: function (page) {
@@ -160,11 +165,16 @@
                 }
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/admin/admin/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {
-                    this.admins = result.data.data.admins;
-                    this.pageHtml = result.data.data.pageHtml;
-                    this.pages = result.data.data.pages;
-                    this.pagecount = result.data.data.pageCount;
+                this.$http.post('/admin/admin/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {                    
+                    if (result.data.status == 1) {
+                        this.admins = result.data.data.admins;
+                        this.pageHtml = result.data.data.pageHtml;
+                        this.pages = result.data.data.pages;
+                        this.pagecount = result.data.data.pageCount;
+                    }
+                    else if (result.data.status == 302) {
+                        window.location.href = result.data.data;
+                    }
                 });
             },
             add: function () {
@@ -178,15 +188,31 @@
                     content: $('#add'),
                     btn: ['确认', '取消'],
                     yes: function (index, layero) {
+                        if (that.add_mobile == "") {
+                            layer.alert('管理员账号不能为空', { icon: 0, title: '提示框' });
+                            return;
+                        }
+                        if (that.add_password == "") {
+                            layer.alert('管理员密码不能为空', { icon: 0, title: '提示框' });
+                            return;
+                        }
+                        if (that.add_password != that.add_password1) {
+                            layer.alert('两次输入的密码不一致', { icon: 0, title: '提示框' });
+                            return;
+                        }
                         that.$http.post('/admin/admin/add', { mobile: that.add_mobile, password: that.add_password }, { emulateJSON: true }).then(function (result) {
                             if (result.data.status == 1) {
-                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
-                                layer.close(index);
-                                window.parent.location.reload();
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' }, function () {
+                                    layer.close(index);
+                                    window.parent.location.reload();
+                                });
                             }
                             else if (result.data.status == 0) {
                                 layer.alert(result.data.msg, { icon: 0, title: '提示框' });
                                 //that.msg = result.data.msg;
+                            }
+                            else if (result.data.status == 302) {
+                                window.location.href = result.data.data;
                             }
                         });
                     }
@@ -194,7 +220,7 @@
             },
             perm_edit: function (id, mobile,permissionIds) {
                 var that = this;
-                that.$http.post('/admin/admin/getperm', { id: id }, { emulateJSON: true }).then(function (result) {
+                that.$http.post('/admin/admin/getperm', { id: id, permissionIds: permissionIds }, { emulateJSON: true }).then(function (result) {
                     that.permissionTypes = result.data.data;
                 });
                 this.edit_mobile = mobile;
@@ -213,20 +239,25 @@
                         });
                         that.$http.post('/admin/admin/editpermission', { id: id, permissionIds: that.permissionIds }, { emulateJSON: true }).then(function (result) {
                             if (result.data.status == 1) {
-                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
-                                layer.close(index);
-                                window.parent.location.reload();
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' }, function () {
+                                    layer.close(index);
+                                    window.parent.location.reload();
+                                });                                
                             }
                             else if (result.data.status == 0) {
                                 layer.alert(result.data.msg, { icon: 0, title: '提示框' });
                                 //that.msg = result.data.msg;
                             }
+                            else if (result.data.status == 302) {
+                                window.location.href = result.data.data;
+                            }
                         });
                     }
                 });
             },
-            member_edit: function (id) {
+            member_edit: function (id,mobile) {
                 var that = this;
+                this.edit_mobile = mobile;
                 layer.open({
                     type: 1,
                     title: '添加客户',
@@ -236,28 +267,91 @@
                     content: $('#edit_pwd'),
                     btn: ['确认', '取消'],
                     yes: function (index, layero) {
+                        if (that.edit_password == "") {
+                            layer.alert('密码不能为空', { icon: 0, title: '提示框' });
+                            return;
+                        }
+                        if (that.edit_password != that.edit_password1) {
+                            layer.alert('两次输入的密码不一致', { icon: 0, title: '提示框' });
+                            return;
+                        }
                         that.$http.post('/admin/admin/editpassword', { id: id, password: that.edit_password }, { emulateJSON: true }).then(function (result) {
                             if (result.data.status == 1) {
-                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
-                                layer.close(index);
-                                window.parent.location.reload();
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' }, function () {
+                                    layer.close(index);
+                                    window.parent.location.reload();
+                                });                                
                             }
                             else if (result.data.status == 0) {
                                 layer.alert(result.data.msg, { icon: 0, title: '提示框' });
                                 //that.msg = result.data.msg;
                             }
+                            else if (result.data.status == 302) {
+                                window.location.href = result.data.data;
+                            }
                         });
                     }
+                });
+            },
+            frozen: function (id,isenabled) {
+                var that = this;
+                var msg = '管理员冻结后将无法登陆管理后台，确认冻结吗？';
+                var msg1 = '是否冻结管理员';
+                if (!isenabled) {
+                    msg = '确认解冻管理员账号吗？';
+                    msg1 = '是否解冻管理员';
+                }
+                layer.confirm(msg, { icon: 0, title: msg1 }, function () {
+                    that.$http.post('/admin/admin/frozen', { id: id }, { emulateJSON: true }).then(function (result) {
+                        if (result.data.status == 1) {
+                            layer.alert(result.data.msg, { icon: 0, title: '提示框' }, function () {
+                                layer.closeAll('dialog');
+                                that.search();
+                            });
+                        }
+                        else if (result.data.status == 0) {
+                            layer.alert(result.data.msg, { icon: 0, title: '提示框' });
+                            //that.msg = result.data.msg;
+                        }
+                        else if (result.data.status == 302) {
+                            window.location.href = result.data.data;
+                        }
+                    });
+                });
+            },
+            del: function (id) {
+                var that = this;
+                layer.confirm("用户删除后无法恢复，确认删除吗？", { icon: 0, title: '是否删除用户' }, function (index) {
+                    that.$http.post('/admin/admin/del', { id: id }, { emulateJSON: true }).then(function (result) {
+                        if (result.data.status == 1) {
+                            layer.alert(result.data.msg, { icon: 6, title: '提示框' }, function () {
+                                layer.closeAll('dialog');
+                                that.search();
+                            });
+                        }
+                        else if (result.data.status == 0) {
+                            layer.alert(result.data.msg, { icon: 0, title: '提示框' });
+                            //that.msg = result.data.msg;
+                        }
+                        else if (result.data.status == 302) {
+                            window.location.href = result.data.data;
+                        }
+                    });
                 });
             }
         },
         mounted: function () {
             this.$http.post('/admin/admin/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
-                this.admins = result.data.data.admins;
-                //this.permissionTypes = result.data.data.permissionTypes;
-                this.pageHtml = result.data.data.pageHtml;
-                this.pages = result.data.data.pages;
-                this.pagecount = result.data.data.pageCount;
+                if (result.data.status == 1) {
+                    this.admins = result.data.data.admins;
+                    //this.permissionTypes = result.data.data.permissionTypes;
+                    this.pageHtml = result.data.data.pageHtml;
+                    this.pages = result.data.data.pages;
+                    this.pagecount = result.data.data.pageCount;
+                }
+                else if (result.data.status == 302) {
+                    window.location.href = result.data.data;
+                }
             });
         }
     });

@@ -127,11 +127,16 @@
             search: function () {
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/admin/merchant/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
-                    this.platformUsers = result.data.data.platformUsers;
-                    this.pageHtml = result.data.data.pageHtml;
-                    this.pages = result.data.data.pages;
-                    this.pagecount = result.data.data.pageCount;
+                this.$http.post('/admin/merchant/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {                    
+                    if (result.data.status == 1) {
+                        this.platformUsers = result.data.data.platformUsers;
+                        this.pageHtml = result.data.data.pageHtml;
+                        this.pages = result.data.data.pages;
+                        this.pagecount = result.data.data.pageCount;
+                    }
+                    else if (result.data.status == 302) {
+                        window.location.href = result.data.data;
+                    }
                 });
             },
             getPage: function (page) {
@@ -150,11 +155,16 @@
                 }
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/admin/merchant/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {
-                    this.platformUsers = result.data.data.platformUsers;
-                    this.pageHtml = result.data.data.pageHtml;
-                    this.pages = result.data.data.pages;
-                    this.pagecount = result.data.data.pageCount;
+                this.$http.post('/admin/merchant/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {                    
+                    if (result.data.status == 1) {
+                        this.platformUsers = result.data.data.platformUsers;
+                        this.pageHtml = result.data.data.pageHtml;
+                        this.pages = result.data.data.pages;
+                        this.pagecount = result.data.data.pageCount;
+                    }
+                    else if (result.data.status == 302) {
+                        window.location.href = result.data.data;
+                    }
                 });
             },
             member_add: function () {
@@ -178,6 +188,9 @@
                                 layer.alert(result.data.msg, { icon: 0, title: '提示框' });
                                 //that.msg = result.data.msg;
                             }
+                            else if (result.data.status == 302) {
+                                window.location.href = result.data.data;
+                            }
                         });
                     }
                 });
@@ -196,6 +209,9 @@
                             layer.alert(result.data.msg, { icon: 0, title: '提示框' });
                             //that.msg = result.data.msg;
                         }
+                        else if (result.data.status == 302) {
+                            window.location.href = result.data.data;
+                        }
                     });
                 });
             },
@@ -213,16 +229,24 @@
                             layer.alert(result.data.msg, { icon: 0, title: '提示框' });
                             //that.msg = result.data.msg;
                         }
+                        else if (result.data.status == 302) {
+                            window.location.href = result.data.data;
+                        }
                     });
                 });
             }
         },
         mounted: function () {
-            this.$http.post('/admin/merchant/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
-                this.platformUsers = result.data.data.platformUsers;
-                this.pageHtml = result.data.data.pageHtml;
-                this.pages = result.data.data.pages;
-                this.pagecount = result.data.data.pageCount;
+            this.$http.post('/admin/merchant/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {                
+                if (result.data.status == 1) {
+                    this.platformUsers = result.data.data.platformUsers;
+                    this.pageHtml = result.data.data.pageHtml;
+                    this.pages = result.data.data.pages;
+                    this.pagecount = result.data.data.pageCount;
+                }
+                else if (result.data.status == 302) {
+                    window.location.href = result.data.data;
+                }
             });
         }
     });

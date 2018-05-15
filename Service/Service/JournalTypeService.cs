@@ -61,7 +61,7 @@ namespace IMS.Service.Service
             {
                 var types = dbc.GetAll<JournalTypeEntity>();
                 List<JournalTypeEntity> typesRes;
-                typesRes = await types.Where(j => j.Name == "平台发放" && j.Name == "平台扣除" && j.Name == "积分增加").ToListAsync();
+                typesRes = await types.Where(j => j.Name == "平台发放" || j.Name == "平台扣除" || j.Name == "积分增加").ToListAsync();
                 return typesRes.Select(j => ToDTO(j)).ToArray();
             }
         }

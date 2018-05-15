@@ -15,7 +15,7 @@ namespace IMS.Web.Areas.Admin.Models.Integral
         public List<Page> Pages { get; set; }
         public long PageCount { get; set; }
         public long PlatformIntegral { get; set; }
-        public long GivingIntegralCount { get; set; }
-        public long UseIntegralCount { get; set; }
+        public long? GivingIntegralCount { get; set; }
+        public long? UseIntegralCount { get; set; }
     }
 }

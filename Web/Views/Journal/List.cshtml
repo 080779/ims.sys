@@ -125,6 +125,16 @@
                     this.pagecount = result.data.data.pageCount;
                     this.g_integral = result.data.data.givingIntegral;
                     this.u_integral = result.data.data.useIntegral;
+                    if (result.data.status == 1) {
+                        this.admins = result.data.data.admins;
+                        //this.permissionTypes = result.data.data.permissionTypes;
+                        this.pageHtml = result.data.data.pageHtml;
+                        this.pages = result.data.data.pages;
+                        this.pagecount = result.data.data.pageCount;
+                    }
+                    else if (result.data.status == 302) {
+                        window.location.href = result.data.data;
+                    }
                 });
             },
             getPage: function (page) {
@@ -150,6 +160,16 @@
                     this.pagecount = result.data.data.pageCount;
                     this.g_integral = result.data.data.givingIntegral;
                     this.u_integral = result.data.data.useIntegral;
+                    if (result.data.status == 1) {
+                        this.admins = result.data.data.admins;
+                        //this.permissionTypes = result.data.data.permissionTypes;
+                        this.pageHtml = result.data.data.pageHtml;
+                        this.pages = result.data.data.pages;
+                        this.pagecount = result.data.data.pageCount;
+                    }
+                    else if (result.data.status == 302) {
+                        window.location.href = result.data.data;
+                    }
                 });
             }
         },
@@ -162,6 +182,16 @@
                 this.journalTypes = result.data.data.journalTypes;
                 this.g_integral = result.data.data.givingIntegral;
                 this.u_integral = result.data.data.useIntegral;
+                if (result.data.status == 1) {
+                    this.admins = result.data.data.admins;
+                    //this.permissionTypes = result.data.data.permissionTypes;
+                    this.pageHtml = result.data.data.pageHtml;
+                    this.pages = result.data.data.pages;
+                    this.pagecount = result.data.data.pageCount;
+                }
+                else if (result.data.status == 302) {
+                    window.location.href = result.data.data;
+                }
             });
         }
     });

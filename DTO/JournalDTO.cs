@@ -13,6 +13,7 @@ namespace IMS.DTO
         public long ToPlatformUserId { get; set; }
         public long JournalTypeId { get; set; }
         public long IntegralTypeId { get; set; }
+        public string Journal01 { get; set; }
         public string Description { get; set; }
         public long? InIntegral { get; set; }
         public long? OutIntegral { get; set; }

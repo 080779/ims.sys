@@ -11,6 +11,7 @@ namespace IMS.IService
         Task<bool> UpdateAsync(long id, long[] permissionIds);
         Task<bool> UpdateAsync(long id, string password);
         Task<bool> DeleteAsync(long id);
+        Task<bool> FrozenAsync(long id);
         Task<AdminDTO> GetModelAsync(long id);
         Task<AdminSearchResult> GetModelListAsync(string mobile,DateTime? startTime,DateTime? endTime,int pageIndex,int pageSize);
         bool HasPermission(long id,string description);

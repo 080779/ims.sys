@@ -34,7 +34,8 @@ namespace IMS.Service.Service
             dto.ToPlatformUserId = entity.ToPlatformUserId;
             dto.ToPlatformUserMobile = entity.ToPlatformUser.Mobile;
             dto.IntegralTypeName = entity.IntegralType.Name;
-            dto.ToIntegralTypeName = entity.ToIntegralType.Name;
+            dto.ToIntegralTypeName = entity.ToIntegralType.Name;           
+            dto.Journal01 = entity.Journal01;
             return dto;
         }
         public async Task<JournalSearchResult> GetModelListAsync(long? id, long? typeId, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize)

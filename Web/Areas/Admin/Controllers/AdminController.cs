@@ -77,9 +77,9 @@ namespace IMS.Web.Areas.Admin.Controllers
         }
         public async Task<ActionResult> EditPermission(long id,long[] permissionIds)
         {
-            if(permissionIds.Count()<=0)
+            if (permissionIds==null)
             {
-                return Json(new AjaxResult { Status = 1, Msg = "请选择权限项" });
+                permissionIds = new long[] { };
             }
             bool res = await adminService.UpdateAsync(id,permissionIds);
             if(!res)
@@ -101,9 +101,12 @@ namespace IMS.Web.Areas.Admin.Controllers
             }
             return Json(new AjaxResult { Status = 1, Msg = "编辑管理员密码成功", Data = "/admin/admin/list" });
         }
-        public async Task<ActionResult> GetPerm(long id)
+        public async Task<ActionResult> GetPerm(long id,long[] permissionIds)
         {
-            AdminDTO user = await adminService.GetModelAsync(id);
+            if(permissionIds==null)
+            {
+                permissionIds = new long[] { };
+            }
             PermissionTypeDTO[] types = await permissionTypeService.GetModelList();
             List<PermissionType> permissionTypes = new List<PermissionType>();
             foreach (var type in types)
@@ -113,7 +116,7 @@ namespace IMS.Web.Areas.Admin.Controllers
                 PermissionDTO[] permissions = await permissionService.GetByTypeIdAsync(type.Id);
                 foreach(var perm in permissions)
                 {
-                    if(user.PermissionIds.Contains(perm.Id))
+                    if(permissionIds.Contains(perm.Id))
                     {
                         perm.IsChecked = true;
                     }
@@ -122,6 +125,24 @@ namespace IMS.Web.Areas.Admin.Controllers
                 permissionTypes.Add(permissionType);
             }
             return Json(new AjaxResult { Status = 1, Data = permissionTypes });
+        }
+        public async Task<ActionResult> Frozen(long id)
+        {
+            bool res= await adminService.FrozenAsync(id);
+            if(!res)
+            {
+                return Json(new AjaxResult { Status = 1, Msg = "冻结、解冻管理员账户操作失败" });
+            }
+            return Json(new AjaxResult { Status = 1, Msg = "冻结、解冻管理员账户操作成功" });
+        }
+        public async Task<ActionResult> Del(long id)
+        {
+            bool res = await adminService.DeleteAsync(id);
+            if (!res)
+            {
+                return Json(new AjaxResult { Status = 1, Msg = "删除管理员账户失败" });
+            }
+            return Json(new AjaxResult { Status = 1, Msg = "删除管理员账户成功" });
         }
     }
 }

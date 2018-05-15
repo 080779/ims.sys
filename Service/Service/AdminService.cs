@@ -104,6 +104,21 @@ namespace IMS.Service.Service
             }
         }
 
+        public async Task<bool> FrozenAsync(long id)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var entity = await dbc.GetAll<AdminEntity>().SingleOrDefaultAsync(a => a.Id == id);
+                if (entity == null)
+                {
+                    return false;
+                }
+                entity.IsEnabled = !entity.IsEnabled;
+                await dbc.SaveChangesAsync();
+                return true;
+            }
+        }
+
         public async Task<AdminDTO> GetModelAsync(long id)
         {
             using (MyDbContext dbc = new MyDbContext())

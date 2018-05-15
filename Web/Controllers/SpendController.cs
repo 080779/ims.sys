@@ -15,7 +15,7 @@ namespace IMS.Web.Controllers
         public IJournalTypeService journalTypeService { get; set; }
         public IPlatformUserService platformUserService { get; set; }
         public IJournalService journalService { get; set; }
-        private int pageSize = 1;
+        private int pageSize = 2;
         public ActionResult List()
         {
             return View();
@@ -94,6 +94,19 @@ namespace IMS.Web.Controllers
             }
             await platformUserService.ProvideAsync(toUser.Id, id, integral, "消费积分", "消费积分", "消费", tip);
             return Json(new AjaxResult { Status = 1, Msg = "转出客户积分成功" });
+        }
+        public async Task<ActionResult> Check(string mobile)
+        {
+            if(string.IsNullOrEmpty(mobile))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "客户账号不能为空" });
+            }
+            var toUser = await platformUserService.GetModelAsync("mobile", mobile);
+            if (toUser == null)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "客户账号不存在" });
+            }
+            return Json(new AjaxResult { Status = 1 });
         }
     }
 }

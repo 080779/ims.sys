@@ -60,7 +60,7 @@
                         <ul class="search_content clearfix">
                             <li>
                                 <select v-model="typeId">
-                                    <option value="">变动类型</option>
+                                    <option value="">类型</option>
                                     <option v-for="type in journalTypes" v-bind:value="type.id" v-html="type.name"></option>
                                 </select>
                             </li>
@@ -86,9 +86,9 @@
                                 <tr>
                                     <td v-html="journal.id"></td>
                                     <td v-html="journal.journalTypeName"></td>
-                                    <td v-html="(journal.integralTypeName=='平台积分')?journal.toIntegralTypeName:journal.integralTypeName"></td>
+                                    <td v-html="journal.toIntegralTypeName"></td>
                                     <td v-html="(journal.inIntegral)!=null?'+'+journal.inIntegral:'-'+journal.outIntegral"></td>
-                                    <td v-html="(journal.journalTypeName=='积分消费')?journal.fromPlatformUserMobile:journal.toPlatformUserMobile"></td>
+                                    <td v-html="(journal.platformUserId==journal.toPlatformUserId)?'':journal.toPlatformUserMobile"></td>
                                     <td v-html="journal.tip"></td>
                                     <td v-html="journal.createTime"></td>
                                 </tr>
@@ -122,14 +122,19 @@
             search: function () {
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/admin/integral/list', { typeId: this.typeId, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
-                    this.journals = result.data.data.journals;
-                    this.pageHtml = result.data.data.pageHtml;
-                    this.pages = result.data.data.pages;
-                    this.pagecount = result.data.data.pageCount;
-                    this.g_integral_c = result.data.data.givingIntegral;
-                    this.u_integral_c = result.data.data.useIntegral;
-                    this.p_integral = result.data.data.platformIntegral;
+                this.$http.post('/admin/integral/list', { typeId: this.typeId, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {                    
+                    if (result.data.status == 1) {
+                        this.journals = result.data.data.journals;
+                        this.pageHtml = result.data.data.pageHtml;
+                        this.pages = result.data.data.pages;
+                        this.pagecount = result.data.data.pageCount;
+                        this.g_integral_c = result.data.data.givingIntegralCount;
+                        this.u_integral_c = result.data.data.useIntegralCount;
+                        this.p_integral = result.data.data.platformIntegral;
+                    }
+                    else if (result.data.status == 302) {
+                        window.location.href = result.data.data;
+                    }
                 });
             },
             getPage: function (page) {
@@ -148,27 +153,37 @@
                 }
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/admin/integral/list', { typeId: this.typeId, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {
-                    this.journals = result.data.data.journals;
-                    this.pageHtml = result.data.data.pageHtml;
-                    this.pages = result.data.data.pages;
-                    this.pagecount = result.data.data.pageCount;
-                    this.g_integral_c = result.data.data.givingIntegral;
-                    this.u_integral_c = result.data.data.useIntegral;
-                    this.p_integral = result.data.data.platformIntegral;
+                this.$http.post('/admin/integral/list', { typeId: this.typeId, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {                    
+                    if (result.data.status == 1) {
+                        this.journals = result.data.data.journals;
+                        this.pageHtml = result.data.data.pageHtml;
+                        this.pages = result.data.data.pages;
+                        this.pagecount = result.data.data.pageCount;
+                        this.g_integral_c = result.data.data.givingIntegralCount;
+                        this.u_integral_c = result.data.data.useIntegralCount;
+                        this.p_integral = result.data.data.platformIntegral;
+                    }
+                    else if (result.data.status == 302) {
+                        window.location.href = result.data.data;
+                    }
                 });
             }
         },
         mounted: function () {
-            this.$http.post('/admin/integral/list', { typeId: this.typeId, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
-                this.journals = result.data.data.journals;
-                this.pageHtml = result.data.data.pageHtml;
-                this.pages = result.data.data.pages;
-                this.pagecount = result.data.data.pageCount;
-                this.journalTypes = result.data.data.journalTypes;
-                this.g_integral_c = result.data.data.givingIntegral;
-                this.u_integral_c = result.data.data.useIntegral;
-                this.p_integral = result.data.data.platformIntegral;
+            this.$http.post('/admin/integral/list', { typeId: this.typeId, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {                
+                if (result.data.status == 1) {
+                    this.journals = result.data.data.journals;
+                    this.pageHtml = result.data.data.pageHtml;
+                    this.pages = result.data.data.pages;
+                    this.pagecount = result.data.data.pageCount;
+                    this.journalTypes = result.data.data.journalTypes;
+                    this.g_integral_c = result.data.data.givingIntegralCount;
+                    this.u_integral_c = result.data.data.useIntegralCount;
+                    this.p_integral = result.data.data.platformIntegral;
+                }
+                else if (result.data.status == 302) {
+                    window.location.href = result.data.data;
+                }
             });
         }
     });
