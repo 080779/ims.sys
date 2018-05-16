@@ -15,7 +15,7 @@ namespace IMS.Web.Areas.Admin.Controllers
         public ITakeCashService takeCashService { get; set; }
         public IStateService stateService { get; set; }
         public IPlatformUserService platformUserService { get; set; }
-        private int pageSize = 1;
+        private int pageSize = 10;
         public ActionResult List()
         {
             return View();
@@ -78,7 +78,7 @@ namespace IMS.Web.Areas.Admin.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "变现申请失败" });
             }
-            return Json(new AjaxResult { Status = 0, Msg = "变现申请成功" });
+            return Json(new AjaxResult { Status = 1, Msg = "变现申请成功" });
         }
 
         public async Task<ActionResult> Calc(string mobile, string strIntegral, string type = "消费积分")

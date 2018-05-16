@@ -17,7 +17,7 @@ namespace IMS.Web.Areas.Admin.Controllers
         public IPlatformUserService platformUserService { get; set; }
         public IPermissionService permissionService { get; set; }
         public IPermissionTypeService permissionTypeService { get; set; }
-        private int pageSize = 1;
+        private int pageSize = 10;
         public ActionResult List()
         {            
             return View();

@@ -13,7 +13,7 @@ namespace IMS.Web.Areas.Admin.Controllers
     public class LogController : Controller
     {
         public IAdminLogService adminLogService { get; set; }
-        private int pageSize = 1;
+        private int pageSize = 10;
         public ActionResult List()
         {
             return View();

@@ -41,14 +41,14 @@
                 <div class="d_Confirm_Order_style">
                     <div class="clearfix" style="margin-top:20px">
                         <span class="l_f">
-                            <a href="javascript:void()" v-on:click="member_add" class="btn btn-warning"><i class="icon-plus"></i>添加客户</a>
+                            <a href="javascript:void()" v-on:click="member_add" class="btn btn-warning"><i class="icon-plus"></i>添加商家</a>
                         </span>
                     </div>
 
                     <!---->
                     <div class="search_style">
                         <ul class="search_content clearfix">
-                            <li><label class="l_f">客户账号</label><input v-model="mobile" type="text" class="text_add" placeholder="客户账号" style=" width:150px" /></li>
+                            <li><label class="l_f">受增账号</label><input v-model="mobile" type="text" class="text_add" placeholder="受增账号" style=" width:150px" /></li>
                             <li><label class="l_f">添加时间</label><input type="text" class="inline laydate-icon" id="startTime" style=" margin-left:10px;" />至<input type="text" class="inline laydate-icon" id="endTime" style=" margin-left:10px;" /></li>
                             <li style="width:90px;"><button type="button" v-on:click="search" class="btn_search"><i class="icon-search"></i>查询</button></li>
                         </ul>
@@ -75,7 +75,7 @@
                                     <td v-html="user.useIntegral"></td>
                                     <td v-html="user.isEnable?'已冻结':'正常'"></td>
                                     <td v-html="user.createTime"></td>
-                                    <td><a>查看明细</a><a>发放积分</a><a>扣除积分</a><a>修改密码</a><a v-on:click="frozen(user.id)">冻结用户</a><a v-on:click="del(user.id)">删除用户</a></td>
+                                    <td><a class="btn btn-xs btn-info">查看明细</a><a class="btn btn-xs btn-success">发放积分</a><a class="btn btn-xs btn-success">扣除积分</a><a class="btn btn-xs btn-success">修改密码</a><a class="btn btn-xs btn-warning" v-on:click="frozen(user.id)">冻结商家</a><a class="btn btn-xs btn-warning" v-on:click="del(user.id)">删除商家</a></td>
                                 </tr>
                             </tbody>
                         </table>

@@ -117,7 +117,7 @@
     var vue = new Vue({
         el: "#app",
         data: {
-            mobile: "", code: "", class: "", pages: [], uppage: 1, nextpage: 2, journals: [], pagecount: 1, spendmobile: "", spendintegral: "", spendtip: "", tradepassword: "",flag1: false
+            mobile: "", code: "", class: "", pages: [], uppage: 1, nextpage: 2, journals: [], pagecount: 1, spendmobile: "", spendintegral: "", spendtip: "", tradepassword: ""
         },
         methods: {
             search: function () {
@@ -171,7 +171,6 @@
                     this.tradepassword = "";
                 }
                 var that = this;
-                that.flag1 = false;
                 layer.open({
                     type: 1,
                     title: '转出客户积分',
@@ -207,7 +206,7 @@
                                         if (result.data.status == 1) {
                                             layer.alert(result.data.msg, { icon: 6, title: '提示框' });
                                             layer.close(index);
-                                            window.parent.location.reload();
+                                            that.search();
                                         }
                                         else if (result.data.status == 0) {
                                             layer.alert(result.data.msg, { icon: 0, title: '提示框' });

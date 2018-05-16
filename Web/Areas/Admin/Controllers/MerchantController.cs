@@ -13,7 +13,7 @@ namespace IMS.Web.Areas.Admin.Controllers
     public class MerchantController : Controller
     {
         public IPlatformUserService platformUserService { get; set; }
-        private int pageSize = 1;
+        private int pageSize = 10;
         public ActionResult List()
         {
             return View();
@@ -69,7 +69,7 @@ namespace IMS.Web.Areas.Admin.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "会员编号已经存在" });
             }
-            if (await platformUserService.AddAsync("客户", mobile, code, password, tradePassword) <= 0)
+            if (await platformUserService.AddAsync("商家", mobile, code, password, tradePassword) <= 0)
             {
                 return Json(new AjaxResult { Status = 0, Msg = "添加商家失败" });
             }

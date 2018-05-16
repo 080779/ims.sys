@@ -13,5 +13,6 @@ namespace IMS.Web.Areas.Admin.Models.User
         public string PageHtml { get; set; }
         public int PageCount { get; set; }
         public List<Page> Pages { get; set; }
+        public long PlatformIntegral { get; set; }
     }
 }

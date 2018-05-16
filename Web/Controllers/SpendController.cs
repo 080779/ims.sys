@@ -15,7 +15,7 @@ namespace IMS.Web.Controllers
         public IJournalTypeService journalTypeService { get; set; }
         public IPlatformUserService platformUserService { get; set; }
         public IJournalService journalService { get; set; }
-        private int pageSize = 2;
+        private int pageSize = 10;
         public ActionResult List()
         {
             return View();

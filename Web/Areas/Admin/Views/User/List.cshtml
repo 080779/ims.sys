@@ -75,7 +75,7 @@
                                     <td v-html="user.useIntegral"></td>
                                     <td v-html="user.isEnable?'已冻结':'正常'"></td>
                                     <td v-html="user.createTime"></td>
-                                    <td><a>查看明细</a><a>发放积分</a><a>扣除积分</a><a>修改密码</a><a v-on:click="frozen(user.id)">冻结用户</a><a v-on:click="del(user.id)">删除用户</a></td>
+                                    <td><a class="btn btn-xs btn-info">查看明细</a><a class="btn btn-xs btn-success" v-on:click="giving(user.id,user.mobile)">发放积分</a><a class="btn btn-xs btn-success" v-on:click="takeout(user.id,user.mobile)">扣除积分</a><a class="btn btn-xs btn-success">修改密码</a><a class="btn btn-xs btn-warning" v-on:click="frozen(user.id)">冻结用户</a><a class="btn btn-xs btn-warning" v-on:click="del(user.id)">删除用户</a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -101,16 +101,23 @@
                 <li><label class="label_name">确认密码：</label><span class="add_name"><input placeholder="确认密码" name="确认密码" type="password" v-model="add_password1" class="text_add" /></span><div class="prompt r_f"></div></li>
             </ul>
         </div>
-        @*<!--添加用户图层-->
-            <div class="add_menber" id="next" style="display:none">
-                <ul class="page-content">
-                    <li><label class="label_name">客户账号：</label><span class="add_name" v-html="spendmobile"></span><div class="prompt r_f"></div></li>
-                    <li><label class="label_name">扣除额度：</label><span class="add_name" v-html="spendintegral"></span><div class="prompt r_f"></div></li>
-                    <li><label class="label_name">备注：</label><span class="add_name" v-html="spendtip"></span><div class="prompt r_f"></div></li>
-                    <li><label class="label_name" style="color:red">客户支付密码：</label><span class="add_name"><input placeholder="客户支付密码" name="客户支付密码" type="password" v-model="tradepassword" id="tradepassword" class="text_add" /></span><div class="prompt r_f"></div></li>
-                    <li><label class="label_name"></label><span style="color:red" v-html="msg"></span><div class="prompt r_f"></div></li>
-                </ul>
-            </div>*@
+        <!--添加用户图层-->
+        <div class="add_menber" id="giving" style="display:none">
+            <ul class="page-content">
+                <li><label class="label_name">客户账号：</label><span class="add_name" v-html="g_mobile"></span><div class="prompt r_f"></div></li>
+                <li><label class="label_name">发放额度：</label><input value="" placeholder="发放额度" v-model="g_integral" type="text" class="text_add" /><div class="prompt r_f"></div></li>
+                <li><label class="label_name">平台剩余积分：</label><span class="add_name" v-html="platformIntegral"></span><div class="prompt r_f"></div></li>
+                <li><label class="label_name">备注：</label><textarea v-model="g_tip"></textarea><div class="prompt r_f"></div></li>
+            </ul>
+        </div>
+        <!--添加用户图层-->
+        <div class="add_menber" id="takeout" style="display:none">
+            <ul class="page-content">
+                <li><label class="label_name">客户账号：</label><span class="add_name" v-html="t_mobile"></span><div class="prompt r_f"></div></li>
+                <li><label class="label_name">扣除额度：</label><input value="" placeholder="扣除额度" v-model="t_integral" type="text" class="text_add" /><div class="prompt r_f"></div></li>
+                <li><label class="label_name">用户剩余消费积分：</label><span class="add_name" v-html="useIntegral"></span><div class="prompt r_f"></div></li>
+            </ul>
+        </div>
     </div>
 </body>
 </html>
@@ -120,19 +127,21 @@
     var vue = new Vue({
         el: "#app",
         data: {
-            mobile: "", class: "", pages: [], uppage: 1, nextpage: 2, platformUsers: [],
-            pagecount: 1, add_mobile: "", add_code: "", add_password: "", add_password1: ""
+            mobile: "", class: "", pages: [], uppage: 1, nextpage: 2, platformUsers: [], platformIntegral: "",
+            pagecount: 1, add_mobile: "", add_code: "", add_password: "", add_password1: "",
+            g_mobile: "", g_integral: "", g_tip: "", t_mobile: "", t_integral: "", useIntegral: ""
         },
         methods: {
             search: function () {
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/admin/user/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {                    
+                this.$http.post('/admin/user/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
                     if (result.data.status == 1) {
                         this.platformUsers = result.data.data.platformUsers;
                         this.pageHtml = result.data.data.pageHtml;
                         this.pages = result.data.data.pages;
                         this.pagecount = result.data.data.pageCount;
+                        this.platformIntegral = result.data.data.platformIntegral;
                     }
                     else if (result.data.status == 302) {
                         window.location.href = result.data.data;
@@ -155,12 +164,13 @@
                 }
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/admin/user/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {                    
+                this.$http.post('/admin/user/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {
                     if (result.data.status == 1) {
                         this.platformUsers = result.data.data.platformUsers;
                         this.pageHtml = result.data.data.pageHtml;
                         this.pages = result.data.data.pages;
                         this.pagecount = result.data.data.pageCount;
+                        this.platformIntegral = result.data.data.platformIntegral;
                     }
                     else if (result.data.status == 302) {
                         window.location.href = result.data.data;
@@ -168,6 +178,31 @@
                 });
             },
             member_add: function () {
+                if (this.add_mobile == "") {
+                    layer.alert('客户账号不能为空', { icon: 0, tilte: '提示框' });
+                    return;
+                }
+                var reg = /^1\d{10}$/;
+                if (!reg.test(this.add_mobile)) {
+                    layer.alert('客户账号手机号码格式不正确', { icon: 0, tilte: '提示框' });
+                    return;
+                }
+                if (this.add_code == "") {
+                    layer.alert('会员编号不能为空', { icon: 0, tilte: '提示框' });
+                    return;
+                }
+                if (this.add_password == "") {
+                    layer.alert('交易密码不能为空', { icon: 0, tilte: '提示框' });
+                    return;
+                }
+                if (this.add_password.length < 6 || this.add_password.length > 8) {
+                    layer.alert('请输入6-8位密码', { icon: 0, tilte: '提示框' });
+                    return;
+                }
+                if (this.add_password != this.add_password1) {
+                    layer.alert('两次密码不一致', { icon: 0, tilte: '提示框' });
+                    return;
+                }
                 var that = this;
                 layer.open({
                     type: 1,
@@ -203,7 +238,7 @@
                             layer.alert(result.data.msg, { icon: 6, title: '提示框' }, function () {
                                 layer.close(index);
                                 window.parent.location.reload();
-                            });                            
+                            });
                         }
                         else if (result.data.status == 0) {
                             layer.alert(result.data.msg, { icon: 0, title: '提示框' });
@@ -222,7 +257,7 @@
                         if (result.data.status == 1) {
                             layer.alert(result.data.msg, { icon: 6, title: '提示框' }, function () {
                                 layer.close(index);
-                                window.parent.location.reload();
+                                that.search();
                             });
                         }
                         else if (result.data.status == 0) {
@@ -234,15 +269,82 @@
                         }
                     });
                 });
+            },
+            giving: function (id, mobile) {
+                this.g_mobile = mobile;
+                var that = this;
+                layer.open({
+                    type: 1,
+                    title: '发放积分',
+                    maxmin: true,
+                    shadeClose: false, //点击遮罩关闭层
+                    area: ['600px', ''],
+                    content: $('#giving'),
+                    btn: ['确认', '取消'],
+                    yes: function (index, layero) {
+                        that.$http.post('/admin/user/provide', { touserid: id, strintegral: that.g_integral, typename: "消费积分", tip: that.g_tip }, { emulateJSON: true }).then(function (result) {
+                            if (result.data.status == 1) {
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
+                                layer.close(index);
+                                that.search();
+                            }
+                            else if (result.data.status == 0) {
+                                layer.alert(result.data.msg, { icon: 0, title: '提示框' });
+                                //that.msg = result.data.msg;
+                            }
+                            else if (result.data.status == 302) {
+                                window.location.href = result.data.data;
+                            }
+                        });
+                    }
+                });
+            },
+            takeout: function (id, mobile) {
+                var that = this;
+                that.$http.post('/admin/user/getintegral', { touserid: id, typename: "消费积分" }, { emulateJSON: true }).then(function (result) {
+                    if (result.data.status == 1) {
+                        that.useIntegral = result.data.data;
+                    }                    
+                    else if (result.data.status == 302) {
+                        window.location.href = result.data.data;
+                    }
+                });
+                this.t_mobile = mobile;
+                layer.open({
+                    type: 1,
+                    title: '客户积分扣除',
+                    maxmin: true,
+                    shadeClose: false, //点击遮罩关闭层
+                    area: ['600px', ''],
+                    content: $('#takeout'),
+                    btn: ['确认', '取消'],
+                    yes: function (index, layero) {
+                        that.$http.post('/admin/user/takeout', { touserid: id, strintegral: that.t_integral, typename: "消费积分" }, { emulateJSON: true }).then(function (result) {
+                            if (result.data.status == 1) {
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
+                                layer.close(index);
+                                that.search();
+                            }
+                            else if (result.data.status == 0) {
+                                layer.alert(result.data.msg, { icon: 0, title: '提示框' });
+                                //that.msg = result.data.msg;
+                            }
+                            else if (result.data.status == 302) {
+                                window.location.href = result.data.data;
+                            }
+                        });
+                    }
+                });
             }
         },
         mounted: function () {
-            this.$http.post('/admin/user/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {                
+            this.$http.post('/admin/user/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
                 if (result.data.status == 1) {
                     this.platformUsers = result.data.data.platformUsers;
                     this.pageHtml = result.data.data.pageHtml;
                     this.pages = result.data.data.pages;
                     this.pagecount = result.data.data.pageCount;
+                    this.platformIntegral = result.data.data.platformIntegral;
                 }
                 else if (result.data.status == 302) {
                     window.location.href = result.data.data;

@@ -15,7 +15,7 @@ namespace IMS.Web.Areas.Admin.Controllers
         public IJournalService journalService { get; set; }
         public IJournalTypeService journalTypeService { get; set; }
         public IPlatformUserService platformUserService { get; set; }
-        private int pageSize = 1;
+        private int pageSize = 10;
         public ActionResult List()
         {
             return View();

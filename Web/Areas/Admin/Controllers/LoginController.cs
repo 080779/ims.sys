@@ -13,6 +13,7 @@ namespace IMS.Web.Areas.Admin.Controllers
     public class LoginController : Controller
     {
         public IAdminService adminService { get; set; }
+        public IPlatformUserService platformUserService { get; set; }
         public ActionResult Login()
         {
             return View();
@@ -34,6 +35,8 @@ namespace IMS.Web.Areas.Admin.Controllers
                 return Json(new AjaxResult { Status = 1, Msg = "管理员用户名或密码错误" });
             }
             Session["Platform_AdminUserId"] = res;
+            var user = await platformUserService.GetModelAsync("mobile", "PlatformUser201805051709360001");
+            Session["Platform_User_Id"] = user.Id;
             return Json(new AjaxResult { Status = 302, Msg = "登录成功", Data = "/admin/home/index" });
         }
     }

@@ -35,15 +35,17 @@
 </head>
 
 <body>
-    <div class="page-content clearfix">
-        <div id="Member_Ratings">
-            <div class="d_Confirm_Order_style">
-                <div class="clearfix" style="margin-top:20px">
-                    <span class="l_f">
-                        <a href="javascript:void()" v-on:click="giving" class="btn btn-warning"><i class="icon-plus"></i>赠送积分</a>
-                    </span>
-                </div>
-                <div id="app">
+    <div id="app">
+        <div class="page-content clearfix">
+            <div id="Member_Ratings">
+                <div class="d_Confirm_Order_style">
+
+                    <div class="clearfix" style="margin-top:20px">
+                        <span class="l_f">
+                            <a v-on:click="giving" class="btn btn-warning"><i class="icon-plus"></i>赠送积分</a>
+                        </span>
+                    </div>
+
                     <!---->
                     <div class="search_style">
                         <ul class="search_content clearfix">
@@ -90,14 +92,15 @@
                 </div>
             </div>
         </div>
-    </div>
-    <!--添加用户图层-->
-    <div class="add_menber" id="add_menber_style" style="display:none">
-        <ul class="page-content">
-            <li><label class="label_name">受赠客户账号：</label><span class="add_name"><input value="" placeholder="受赠客户账号" id="mobile" name="受赠客户账号" type="text" class="text_add" /></span><div class="prompt r_f"></div></li>
-            <li><label class="label_name">赠送额度：</label><span class="add_name"><input placeholder="赠送额度" name="赠送额度" type="text" id="strIntegral" class="text_add" /></span><div class="prompt r_f"></div></li>
-            <li><label class="label_name">备注：</label><span class="add_name"><textarea id="tip" placeholder="备注" class="text_add"></textarea></span><div class="prompt r_f"></div></li>
-        </ul>
+
+        <!--添加用户图层-->
+        <div class="add_menber" id="giving_user" style="display:none">
+            <ul class="page-content">
+                <li><label class="label_name">受赠客户账号：</label><span class="add_name"><input value="" placeholder="受赠客户账号" v-model="g_mobile" name="受赠客户账号" type="text" class="text_add" /></span><div class="prompt r_f"></div></li>
+                <li><label class="label_name">赠送额度：</label><span class="add_name"><input placeholder="赠送额度" name="赠送额度" type="text" v-model="strIntegral" class="text_add" /></span><div class="prompt r_f"></div></li>
+                <li><label class="label_name">备注：</label><span class="add_name"><textarea v-model="tip" placeholder="备注" class="text_add"></textarea></span><div class="prompt r_f"></div></li>
+            </ul>
+        </div>
     </div>
 </body>
 </html>
@@ -107,13 +110,13 @@
     var vue = new Vue({
         el: "#app",
         data: {
-            mobile: "", code: "", class: "", pages: [], uppage: 1, nextpage: 2, journals: [],pagecount: 1
+            mobile: "", code: "", class: "", pages: [], uppage: 1, nextpage: 2, journals: [], pagecount: 1, g_mobile: "", strIntegral: "", tip: ""
         },
         methods: {
             search: function () {
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {                    
+                this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
                     if (result.data.status == 1) {
                         this.journals = result.data.data.journals;
                         this.pageHtml = result.data.data.pageHtml;
@@ -141,7 +144,7 @@
                 }
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {                    
+                this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {
                     if (result.data.status == 1) {
                         this.journals = result.data.data.journals;
                         this.pageHtml = result.data.data.pageHtml;
@@ -154,68 +157,55 @@
                 });
             },
             giving: function () {
+                var that = this;
                 layer.open({
                     type: 1,
                     title: '赠送客户积分',
                     maxmin: true,
                     shadeClose: false, //点击遮罩关闭层
                     area: ['600px', ''],
-                    content: $('#add_menber_style'),
+                    content: $('#giving_user'),
                     btn: ['提交', '取消'],
                     yes: function (index, layero) {
-                        var num = 0;
-                        var str = "";
-                        $(".add_menber input").each(function (n) {
-                            if ($(this).val() == "" && $(this) != $("#tip")) {
-                                layer.alert(str += "" + $(this).attr("name") + "不能为空！\r\n", {
-                                    title: '提示框',
-                                    icon: 0,
-                                });
-                                num++;
-                                return false;
+                        if (that.g_mobile == "") {
+                            layer.alert("受赠客户账号不能为空", { icon: 0, title: '提示框' });
+                            return;
+                        }
+                        var r = /^[1-9]\d*$/;
+                        if (r.test(that.strIntegral) == false) {
+                            layer.alert('请输入正确的数字', { icon: 0, title: '提示框' });
+                            return;
+                        }
+                        that.$http.post('/giving/provide', { mobile: that.g_mobile, strIntegral: that.strIntegral, tip: that.tip }, { emulateJSON: true }).then(function (result) {
+                            if (result.data.status == 0) {
+                                layer.alert(result.data.msg, { icon: 0, title: '提示框' });
+                            }
+                            else if (result.data.status == 1) {
+                                layer.alert(result.data.msg, { icon: 1, title: '提示框' });
+                                layer.close(index);
+                                that.search();
+                            }
+                            else if (result.data.status == 302) {
+                                //layer.alert("登录成功", { icon: 6, title: '提示框' }, function () {
+                                //    window.location.href = res.data;
+                                //});
+                                window.location.href = result.data.data;
+                            }
+                            //else if (result.data.status == 401) {
+                            //    layer.alert("没有权限", { icon: 0, title: '提示框' }, function () {
+                            //        window.location.href = result.data.data;
+                            //    });
+                            //}
+                            else {
+                                layer.alert('未知错误', { icon: 0, title: '提示框' });
                             }
                         });
-                        if (num > 0) { return false; }
-                        else {
-                            var mobile = $("#mobile").val();
-                            var strIntegral = $("#strIntegral").val();
-                            var tip = $("#tip").val();
-                            $.ajax({
-                                url: '/giving/provide', type: 'post', data: { mobile: mobile, strIntegral: strIntegral, tip: tip },
-                                success: function (res) {
-                                    if (res.status == 0) {
-                                        layer.alert(res.msg, { icon: 0, title: '提示框' });
-                                    }
-                                    else if (res.status == 1) {
-                                        layer.alert(res.msg, { icon: 1, title: '提示框' }, function () {
-                                            window.location.reload();
-                                            parent.layer.close(index);
-                                        });
-                                    }
-                                    else if (res.status == 302) {
-                                        //layer.alert("登录成功", { icon: 6, title: '提示框' }, function () {
-                                        //    window.location.href = res.data;
-                                        //});
-                                        window.location.href = res.data;
-                                    }
-                                    else if (res.status == 401) {
-                                        layer.alert("没有权限", { icon: 0, title: '提示框' }, function () {
-                                            window.location.href = res.data;
-                                        });
-                                    }
-                                    else {
-                                        layer.alert('未知错误', { icon: 0, title: '提示框' });
-                                    }
-                                },
-                                error: function () { layer.alert('网络错误', { icon: 0, title: '提示框' }); }
-                            });
-                        }
                     }
                 });
             }
         },
         mounted: function () {
-            this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {                
+            this.$http.post('/giving/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
                 if (result.data.status == 1) {
                     this.journals = result.data.data.journals;
                     this.pageHtml = result.data.data.pageHtml;

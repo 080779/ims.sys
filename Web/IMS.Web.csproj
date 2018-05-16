@@ -339,7 +339,6 @@
     <Content Include="Areas\Admin\Views\Home\Home.cshtml" />
     <Content Include="Areas\Admin\Views\Admin\List.cshtml" />
     <Content Include="Areas\Admin\Views\Login\Login.cshtml" />
-    <Content Include="Areas\Admin\Views\Admin\test.cshtml" />
     <Content Include="Areas\Admin\Views\User\List.cshtml" />
     <Content Include="Areas\Admin\Views\Merchant\List.cshtml" />
     <Content Include="Areas\Admin\Views\Integral\List.cshtml" />

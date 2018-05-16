@@ -13,7 +13,7 @@ namespace IMS.Web.Areas.Admin.Controllers
     public class UserController : Controller
     {
         public IPlatformUserService platformUserService { get; set; }
-        private int pageSize = 1;
+        private int pageSize = 10;
         public ActionResult List()
         {
             return View();
@@ -21,9 +21,12 @@ namespace IMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> List(string mobile,DateTime? startTime,DateTime? endTime,int pageIndex=1)
         {
+            long userId = Convert.ToInt64(Session["Platform_User_Id"]);
             var result = await platformUserService.GetModelListAsync(mobile, null,"客户", startTime, endTime, pageIndex, pageSize);
+            var user = await platformUserService.GetModelAsync(userId);
             ListViewModel model = new ListViewModel();
             model.PlatformUsers = result.PlatformUsers;
+            model.PlatformIntegral = user.PlatformIntegral;
 
             Pagination pager = new Pagination();
             pager.PageIndex = pageIndex;
@@ -75,7 +78,7 @@ namespace IMS.Web.Areas.Admin.Controllers
         {
             if(!await platformUserService.Del(id))
             {
-                return Json(new AjaxResult { Status = 1, Msg = "删除失败" });
+                return Json(new AjaxResult { Status = 0, Msg = "删除失败" });
             }
             return Json(new AjaxResult { Status = 1, Msg = "删除成功" });
         }
@@ -83,9 +86,87 @@ namespace IMS.Web.Areas.Admin.Controllers
         {
             if (!await platformUserService.Frozen(id))
             {
-                return Json(new AjaxResult { Status = 1, Msg = "冻结失败" });
+                return Json(new AjaxResult { Status = 0, Msg = "冻结失败" });
             }
             return Json(new AjaxResult { Status = 1, Msg = "冻结成功" });
+        }
+        public async Task<ActionResult> Provide(long toUserId,string strIntegral,string typeName,string tip)
+        {
+            long userId = Convert.ToInt64(Session["Platform_User_Id"]);
+            if(string.IsNullOrEmpty(strIntegral))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "发放积分额度不能为空" });
+            }
+            long integral;
+            if(!long.TryParse(strIntegral,out integral))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "请正确输入发放积分额度" });
+            }
+            if(integral<0)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "请发放积分额度必须大于零" });
+            }
+            var res= await platformUserService.ProvideAsync(userId, toUserId, integral, "平台积分", typeName, "平台发放", tip);
+            if(!res)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "发放失败" });
+            }
+            return Json(new AjaxResult { Status = 1, Msg = "发放成功" });
+        }
+        public async Task<ActionResult> TakeOut(long toUserId, string strIntegral, string typeName)
+        {
+            if (string.IsNullOrEmpty(strIntegral))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "发放积分额度不能为空" });
+            }
+            long integral;
+            if (!long.TryParse(strIntegral, out integral))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "请正确输入发放积分额度" });
+            }
+            if (integral <= 0)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "请发放积分额度必须大于零" });
+            }
+            var toUser = await platformUserService.GetModelAsync(toUserId);
+            if(typeName=="商家积分")
+            {
+                if(integral>toUser.GivingIntegral)
+                {
+                    return Json(new AjaxResult { Status = 0, Msg = "积分不足" });
+                }
+            }
+            if (typeName == "消费积分")
+            {
+                if (integral > toUser.UseIntegral)
+                {
+                    return Json(new AjaxResult { Status = 0, Msg = "积分不足" });
+                }
+            }
+            if (string.IsNullOrEmpty(typeName))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "请选择积分类型" });
+            }
+            var res = await platformUserService.TakeOutAsync(toUserId, integral, typeName, "平台发放");
+            if (!res)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "扣除失败" });
+            }
+            return Json(new AjaxResult { Status = 1, Msg = "扣除成功" });
+        }
+        public async Task<ActionResult> GetIntegral(long toUserId, string typeName)
+        {           
+            var res = await platformUserService.GetModelAsync(toUserId);
+            long integral;
+            if(typeName=="商家积分")
+            {
+                integral = res.GivingIntegral;
+            }
+            else
+            {
+                integral = res.UseIntegral;
+            }
+            return Json(new AjaxResult { Status = 1,Data=integral });
         }
     }
 }
