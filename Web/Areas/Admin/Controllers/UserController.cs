@@ -126,7 +126,7 @@ namespace IMS.Web.Areas.Admin.Controllers
             }
             if (integral <= 0)
             {
-                return Json(new AjaxResult { Status = 0, Msg = "请发放积分额度必须大于零" });
+                return Json(new AjaxResult { Status = 0, Msg = "发放积分额度必须大于零" });
             }
             var toUser = await platformUserService.GetModelAsync(toUserId);
             if(typeName=="商家积分")
@@ -147,7 +147,7 @@ namespace IMS.Web.Areas.Admin.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "请选择积分类型" });
             }
-            var res = await platformUserService.TakeOutAsync(toUserId, integral, typeName, "平台发放");
+            var res = await platformUserService.TakeOutAsync(toUserId, integral, typeName, "平台扣除");
             if (!res)
             {
                 return Json(new AjaxResult { Status = 0, Msg = "扣除失败" });

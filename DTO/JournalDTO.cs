@@ -24,7 +24,9 @@ namespace IMS.DTO
         public string ToIntegralTypeName { get; set; }
         public string PlatformUserMobile { get; set; }
         public string ToPlatformUserMobile { get; set; }
+        public string ToPlatformUserCode { get; set; }
         public string FromPlatformUserMobile { get; set; }
+        public string FormPlatformUserCode { get; set; }
         public string Tip { get; set; }
     }
 }

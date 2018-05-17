@@ -21,11 +21,11 @@ namespace IMS.Web.Areas.Admin.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<ActionResult> List(long? typeId, DateTime? startTime, DateTime? endTime, int pageIndex = 1)
+        public async Task<ActionResult> List(long? typeId,string mobile,string code, DateTime? startTime, DateTime? endTime, int pageIndex = 1)
         {
             var user = await platformUserService.GetModelAsync("mobile", "PlatformUser201805051709360001");
             //long? typeId = await journalTypeService.GetIdByDescAsync("赠送");
-            var result = await journalService.GetModelListAsync(user.Id, typeId, null, null, startTime, endTime, pageIndex, pageSize);
+            var result = await journalService.GetModelListAsync(user.Id, typeId, mobile, code, startTime, endTime, pageIndex, pageSize);
             ListViewModel model = new ListViewModel();
             model.Journals = result.Journals;
             model.JournalTypes = await journalTypeService.GetModelListAsync(true);
@@ -50,6 +50,30 @@ namespace IMS.Web.Areas.Admin.Controllers
             model.PageCount = pager.PageCount;
             return Json(new AjaxResult { Status = 1, Data = model });
             //return View(model);
+        }
+
+        public async Task<ActionResult> Add(string strIntegral,string tip)
+        {
+            long userId = Convert.ToInt64(Session["Platform_User_Id"]);
+            long integral;
+            if(string.IsNullOrEmpty(strIntegral))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "增加额度不能为空" });
+            }
+            if(!long.TryParse(strIntegral,out integral))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "请正确输入增加额度" });
+            }
+            if(integral<=0)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "增加额度必须大于零" });
+            }
+            bool res= await platformUserService.ProvideAsync(userId, userId, integral, "平台积分", "平台积分", "积分增加", tip);
+            if(!res)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "增加积分失败" });
+            }
+            return Json(new AjaxResult { Status = 1, Msg="增加积分成功"});
         }
     }
 }

@@ -21,9 +21,12 @@ namespace IMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> List(string mobile, DateTime? startTime, DateTime? endTime, int pageIndex = 1)
         {
+            long userId = Convert.ToInt64(Session["Platform_User_Id"]);
             var result = await platformUserService.GetModelListAsync(mobile, null, "商家", startTime, endTime, pageIndex, pageSize);
+            var user = await platformUserService.GetModelAsync(userId);
             ListViewModel model = new ListViewModel();
             model.PlatformUsers = result.PlatformUsers;
+            model.PlatformIntegral = user.PlatformIntegral;
 
             Pagination pager = new Pagination();
             pager.PageIndex = pageIndex;

@@ -32,7 +32,7 @@
     <script type="text/javascript" src="~/js/H-ui.admin.js"></script>
     <script src="~/assets/layer/layer.js" type="text/javascript"></script>
     <script src="~/assets/laydate/laydate.js" type="text/javascript"></script>
-    <title>用户列表</title>
+    <title>管理员列表</title>
 </head>
 
 <body>
@@ -42,7 +42,7 @@
                 <div class="d_Confirm_Order_style">
                     <div class="clearfix" style="margin-top:20px">
                         <span class="l_f">
-                            <a v-on:click="add" class="btn btn-warning"><i class="icon-plus"></i>添加用户</a>
+                            <a v-on:click="add" class="btn btn-warning"><i class="icon-plus"></i>添加管理员</a>
                         </span>
                     </div>
                     <!---->
@@ -184,7 +184,7 @@
                     title: '添加客户',
                     maxmin: true,
                     shadeClose: false, //点击遮罩关闭层
-                    area: ['600px', ''],
+                    area: ['400px', ''],
                     content: $('#add'),
                     btn: ['确认', '取消'],
                     yes: function (index, layero) {
@@ -229,7 +229,7 @@
                     title: '添加客户',
                     maxmin: true,
                     shadeClose: false, //点击遮罩关闭层
-                    area: ['600px', ''],
+                    area: ['800px', ''],
                     content: $('#edit_perm'),
                     btn: ['确认', '取消'],
                     yes: function (index, layero) {
@@ -263,7 +263,7 @@
                     title: '添加客户',
                     maxmin: true,
                     shadeClose: false, //点击遮罩关闭层
-                    area: ['600px', ''],
+                    area: ['400px', ''],
                     content: $('#edit_pwd'),
                     btn: ['确认', '取消'],
                     yes: function (index, layero) {
