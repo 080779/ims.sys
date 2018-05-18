@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="~/assets/css/font-awesome.min.css" />
     <link href="~/css/my_pagination.css" rel="stylesheet" />
     <script src="~/assets/js/jquery.min.js"></script>
-    <!--[if IE]>
+    <!--[if IE]>IMS.Service.Entity
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <![endif]-->
     <!--[if !IE]> -->
@@ -20,8 +20,8 @@
     <script type="text/javascript">
         if ("ontouchend" in document) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
     </script>
-    <script type="text/javascript" src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
-    <script type="text/javascript" src="https://cdn.bootcss.com/vue-resource/1.5.0/vue-resource.min.js"></script>
+    <script type="text/javascript" src="~/js/vue.min2.5.16.js"></script>
+    <script type="text/javascript" src="~/js/vue-resource.min1.5.0.js"></script>
     <script src="~/assets/js/bootstrap.min.js"></script>
     <script src="~/assets/js/typeahead-bs2.min.js"></script>
     <!-- page specific plugin scripts -->
@@ -36,62 +36,64 @@
 
 <body>
     <div id="app">
-        <div class="page-content clearfix">
-            <div id="Member_Ratings">
-                <div class="d_Confirm_Order_style">
-                    <div class="clearfix" style="margin-top:20px">
-                        <span class="l_f">
-                            <a href="javascript:void()" v-on:click="member_add" class="btn btn-warning"><i class="icon-plus"></i>添加客户</a>
-                        </span>
-                    </div>
-
-                    <!---->
-                    <div class="search_style">
-                        <ul class="search_content clearfix">
-                            <li><label class="l_f">客户账号</label><input v-model="mobile" type="text" class="text_add" placeholder="客户账号" style=" width:150px" /></li>
-                            <li><label class="l_f">添加时间</label><input type="text" class="inline laydate-icon" id="startTime" style=" margin-left:10px;" />至<input type="text" class="inline laydate-icon" id="endTime" style=" margin-left:10px;" /></li>
-                            <li style="width:90px;"><button type="button" v-on:click="search" class="btn_search"><i class="icon-search"></i>查询</button></li>
-                        </ul>
-                    </div>
-                    <!---->
-                    <div class="table_menu_list">
-                        <table class="table table-striped table-bordered table-hover" id="sample-table">
-                            <thead>
-                                <tr>
-                                    <th width="50">编号</th>
-                                    <th width="100">客户账号</th>
-                                    <th width="100">会员编号</th>
-                                    <th width="70">消费积分</th>
-                                    <th width="70">状态</th>
-                                    <th width="70">时间</th>
-                                    <th width="250">操作</th>
-                                </tr>
-                            </thead>
-                            <tbody v-for="user in platformUsers">
-                                <tr>
-                                    <td v-html="user.id"></td>
-                                    <td v-html="user.mobile"></td>
-                                    <td v-html="user.code"></td>
-                                    <td v-html="user.useIntegral"></td>
-                                    <td v-html="user.isEnable?'已冻结':'正常'"></td>
-                                    <td v-html="user.createTime"></td>
-                                    <td><a class="btn btn-xs btn-info" v-on:click="getjournal">查看明细</a><a class="btn btn-xs btn-success" v-on:click="giving(user.id,user.mobile)">发放积分</a><a class="btn btn-xs btn-success" v-on:click="takeout(user.id,user.mobile)">扣除积分</a><a class="btn btn-xs btn-success" v-on:click="editpwd">修改密码</a><a class="btn btn-xs btn-warning" v-on:click="frozen(user.id)">冻结用户</a><a class="btn btn-xs btn-warning" v-on:click="del(user.id)">删除用户</a></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="nextpage">
-                        <ul id='page' class="pagination">
-                            <li><a href="javascript:;" v-on:click="getPage(1)">首页</a></li>
-                            <li><a href="javascript:;" v-on:click="getPage(uppage)">上一页</a></li>
-                            <li v-for="page in pages" v-on:click="getPage(page.pageIndex)" v-bind:class="page.current"><a href="javascript:;" v-html="page.pageIndex"></a></li>
-                            <li><a href="javascript:;" v-on:click="getPage(nextpage)">下一页</a></li>
-                            <li><a href="javascript:;" v-on:click="getPage(pagecount)">尾页</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+        <div class="clearfix" style="margin-top:20px">
+            <span class="l_f">
+                <a href="javascript:void()" v-on:click="member_add" class="btn btn-warning"><i class="icon-plus"></i>添加客户</a>
+            </span>
         </div>
+
+        <!---->
+        <div class="search_style">
+            <ul class="search_content clearfix">
+                <li><label class="l_f">客户账号</label><input v-model="mobile" type="text" class="text_add" placeholder="客户账号" style=" width:150px" /></li>
+                <li><label class="l_f">添加时间</label><input type="text" class="inline laydate-icon" id="startTime" style=" margin-left:10px;" />至<input type="text" class="inline laydate-icon" id="endTime" style=" margin-left:10px;" /></li>
+                <li style="width:90px;"><button type="button" v-on:click="search" class="btn_search"><i class="icon-search"></i>查询</button></li>
+            </ul>
+        </div>
+        <!---->
+        <div class="table_menu_list">
+            <table class="table table-striped table-bordered table-hover" id="sample-table">
+                <thead>
+                    <tr>
+                        <th width="50">编号</th>
+                        <th width="70">客户账号</th>
+                        <th width="70">会员编号</th>
+                        <th width="70">消费积分</th>
+                        <th width="70">状态</th>
+                        <th width="100">时间</th>
+                        <th width="300">操作</th>
+                    </tr>
+                </thead>
+                <tbody v-for="user in platformUsers">
+                    <tr>
+                        <td v-html="user.id"></td>
+                        <td v-html="user.mobile"></td>
+                        <td v-html="user.code"></td>
+                        <td v-html="user.useIntegral"></td>
+                        <td class="td-status"><span class="label label-success radius" v-html="user.isEnabled?'正常':'已冻结'"></span></td>
+                        <td v-html="user.createTime"></td>
+                        <td>
+                            <a class="btn btn-xs btn-info" v-on:click="getjournal">查看明细</a>
+                            <a class="btn btn-xs btn-success" v-on:click="giving(user.id,user.mobile)">发放积分</a>
+                            <a class="btn btn-xs btn-success" v-on:click="takeout(user.id,user.mobile)">扣除积分</a>
+                            <a class="btn btn-xs btn-success" v-on:click="editpwd(user.id,user.mobile)">修改密码</a>
+                            <a class="btn btn-xs btn-warning" v-on:click="frozen(user.id,user.isEnabled)" v-html="user.isEnabled?'冻结客户':'解冻客户'"></a>
+                            <a class="btn btn-xs btn-warning" v-on:click="del(user.id)">删除用户</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="nextpage">
+            <ul id='page' class="pagination">
+                <li><a href="javascript:;" v-on:click="getPage(1)">首页</a></li>
+                <li><a href="javascript:;" v-on:click="getPage(uppage)">上一页</a></li>
+                <li v-for="page in pages" v-on:click="getPage(page.pageIndex)" v-bind:class="page.current"><a href="javascript:;" v-html="page.pageIndex"></a></li>
+                <li><a href="javascript:;" v-on:click="getPage(nextpage)">下一页</a></li>
+                <li><a href="javascript:;" v-on:click="getPage(pagecount)">尾页</a></li>
+            </ul>
+        </div>
+
         <!--添加用户图层-->
         <div class="add_menber" id="add_menber_style" style="display:none">
             <ul class="page-content">
@@ -124,7 +126,7 @@
             <ul class="page-content">
                 <li><label class="label_name">客户账号：</label><span class="add_name" v-html="e_mobile"></span><div class="prompt r_f"></div></li>
                 <li><label class="label_name">新密码：</label><input placeholder="新密码" v-model="e_pwd" type="password" class="text_add" /><div class="prompt r_f"></div></li>
-                <li><label class="label_name">确认密码：</label><input placeholder="确认密码" v-model="e_pwd1" type="password" class="text_add" /><div class="prompt r_f"></div></li>               
+                <li><label class="label_name">确认密码：</label><input placeholder="确认密码" v-model="e_pwd1" type="password" class="text_add" /><div class="prompt r_f"></div></li>
             </ul>
         </div>
         <div class="table_menu_list" id="journal" style="display:none">
@@ -158,7 +160,8 @@
         data: {
             mobile: "", class: "", pages: [], uppage: 1, nextpage: 2, platformUsers: [], platformIntegral: "",
             pagecount: 1, add_mobile: "", add_code: "", add_password: "", add_password1: "",
-            g_mobile: "", g_integral: "", g_tip: "", t_mobile: "", t_integral: "", useIntegral: ""
+            g_mobile: "", g_integral: "", g_tip: "", t_mobile: "", t_integral: "", useIntegral: "",
+            e_mobile: "", e_pwd: "", e_pwd1: ""
         },
         methods: {
             search: function () {
@@ -206,7 +209,7 @@
                     }
                 });
             },
-            member_add: function () {                
+            member_add: function () {
                 var that = this;
                 layer.open({
                     type: 1,
@@ -261,11 +264,10 @@
             },
             del: function (id) {
                 var that = this;
-                layer.confirm("确定要删除吗？", function (index) {
+                layer.confirm("客户删除后无法恢复，确认删除吗？", { icon: 0, title: '删除客户' }, function (index) {
                     that.$http.post('/admin/user/del', { id: id }, { emulateJSON: true }).then(function (result) {
                         if (result.data.status == 1) {
                             layer.alert(result.data.msg, { icon: 6, title: '提示框' });
-                            layer.close(index);
                             that.search();
                         }
                         else if (result.data.status == 0) {
@@ -278,13 +280,18 @@
                     });
                 });
             },
-            frozen: function (id) {
+            frozen: function (id, isenabled) {
                 var that = this;
-                layer.confirm("确定要冻结吗？", function (index) {
-                    that.$http.post('/admin/user/frozen', { id: id }, { emulateJSON: true }).then(function (result) {
+                var msg = '客户冻结后将无法获得或扣除积分，确认冻结吗？';
+                var msg1 = '是否冻结客户';
+                if (!isenabled) {
+                    msg = '确认解冻客户吗？';
+                    msg1 = '是否解冻客户';
+                }
+                layer.confirm(msg, { icon: 0, title: msg1 }, function () {
+                    that.$http.post('/admin/merchant/frozen', { id: id }, { emulateJSON: true }).then(function (result) {
                         if (result.data.status == 1) {
-                            layer.alert(result.data.msg, { icon: 6, title: '提示框' });
-                            layer.close(index);
+                            layer.alert(result.data.msg, { icon: 0, title: '提示框' });
                             that.search();
                         }
                         else if (result.data.status == 0) {
@@ -305,7 +312,7 @@
                     title: '发放积分',
                     maxmin: true,
                     shadeClose: false, //点击遮罩关闭层
-                    area: ['400px', ''],
+                    area: ['400px', '350px'],
                     content: $('#giving'),
                     btn: ['确认', '取消'],
                     yes: function (index, layero) {
@@ -338,7 +345,7 @@
                 that.$http.post('/admin/user/getintegral', { touserid: id, typename: "消费积分" }, { emulateJSON: true }).then(function (result) {
                     if (result.data.status == 1) {
                         that.useIntegral = result.data.data;
-                    }                    
+                    }
                     else if (result.data.status == 302) {
                         window.location.href = result.data.data;
                     }
@@ -403,8 +410,46 @@
                     //}
                 });
             },
-            editpwd: function () {
-
+            editpwd: function (id, mobile) {
+                this.e_mobile = mobile;
+                var that = this;
+                layer.open({
+                    type: 1,
+                    title: '客户积分扣除',
+                    maxmin: true,
+                    shadeClose: false, //点击遮罩关闭层
+                    area: ['400px', ''],
+                    content: $('#editpwd'),
+                    btn: ['确认', '取消'],
+                    yes: function (index, layero) {
+                        if (that.e_pwd == "") {
+                            layer.alert('新密码不能为空', { icon: 0, tilte: '提示框' });
+                            return;
+                        }
+                        if (that.e_pwd.length < 6 || that.e_pwd.length > 8) {
+                            layer.alert('新密码要6-8位', { icon: 0, tilte: '提示框' });
+                            return;
+                        }
+                        if (that.e_pwd != that.e_pwd1) {
+                            layer.alert('两次输入的密码不一致', { icon: 0, tilte: '提示框' });
+                            return;
+                        }
+                        that.$http.post('/admin/user/editpwd', { id: id, password: that.e_pwd }, { emulateJSON: true }).then(function (result) {
+                            if (result.data.status == 1) {
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
+                                layer.close(index);
+                                that.search();
+                            }
+                            else if (result.data.status == 0) {
+                                layer.alert(result.data.msg, { icon: 0, title: '提示框' });
+                                that.msg = result.data.msg;
+                            }
+                            else if (result.data.status == 302) {
+                                window.location.href = result.data.data;
+                            }
+                        });
+                    }
+                });
             }
         },
         mounted: function () {

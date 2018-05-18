@@ -30,9 +30,13 @@ namespace IMS.Web.Areas.Admin.Controllers
                 return Json(new AjaxResult { Status = 1, Msg = "管理员密码不能为空" });
             }
             long res=await adminService.CheckLogin(mobile, password);
-            if (res<=0)
+            if (res== -1 || res==-3)
             {
                 return Json(new AjaxResult { Status = 1, Msg = "管理员用户名或密码错误" });
+            }
+            if(res==-2)
+            {
+                return Json(new AjaxResult { Status = 1, Msg = "管理员账号已经被冻结" });
             }
             Session["Platform_AdminUserId"] = res;
             var user = await platformUserService.GetModelAsync("mobile", "PlatformUser201805051709360001");

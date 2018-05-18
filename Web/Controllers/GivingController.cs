@@ -61,7 +61,7 @@ namespace IMS.Web.Controllers
             long integral;
             if(!long.TryParse(strIntegral,out integral))
             {
-                return Json(new AjaxResult { Status = 0, Msg = "赠送积分额度必须是数字" });
+                return Json(new AjaxResult { Status = 0, Msg = "请输入正确的赠送额度" });
             }
             if(integral<=0)
             {

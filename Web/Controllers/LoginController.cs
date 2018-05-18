@@ -59,7 +59,8 @@ namespace IMS.Web.Controllers
         [Route("logout")]
         public ActionResult Logout()
         {
-            return Content("tviu");
+            Session["Merchant_User_Id"] = null;
+            return Redirect("/login");
         }
     }
 }

@@ -20,8 +20,8 @@
     <script type="text/javascript">
         if ("ontouchend" in document) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
     </script>
-    <script type="text/javascript" src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
-    <script type="text/javascript" src="https://cdn.bootcss.com/vue-resource/1.5.0/vue-resource.min.js"></script>
+    <script type="text/javascript" src="~/js/vue.min2.5.16.js"></script>
+    <script type="text/javascript" src="~/js/vue-resource.min1.5.0.js"></script>
     <script src="~/assets/js/bootstrap.min.js"></script>
     <script src="~/assets/js/typeahead-bs2.min.js"></script>
     <!-- page specific plugin scripts -->
@@ -39,7 +39,7 @@
         <div id="Member_Ratings">
             <div class="d_Confirm_Order_style">
                 <div id="app">
-                    <div>
+                    <div class="integral_box">
                         <ul>
                             <li>
                                 当前商家积分
@@ -60,6 +60,8 @@
                                     <option v-for="type in journalTypes" v-bind:value="type.id" v-html="type.name"></option>
                                 </select>
                             </li>
+                            <li><label class="l_f">接收账号</label><input v-model="mobile" type="text" class="text_add" placeholder="接收账号" style=" width:150px" /></li>
+                            <li><label class="l_f">会员编号</label><input v-model="code" type="text" class="text_add" placeholder="会员编号" style=" width:150px" /></li>
                             <li><label class="l_f">添加时间</label><input type="text" class="inline laydate-icon" id="startTime" style=" margin-left:10px;" />至<input type="text" class="inline laydate-icon" id="endTime" style=" margin-left:10px;" /></li>
                             <li style="width:90px;"><button type="button" v-on:click="search" class="btn_search"><i class="icon-search"></i>查询</button></li>
                         </ul>
@@ -69,13 +71,13 @@
                         <table class="table table-striped table-bordered table-hover" id="sample-table">
                             <thead>
                                 <tr>
-                                    <th width="80">编号</th>
-                                    <th width="120">类型</th>
-                                    <th width="180">积分类型</th>
+                                    <th width="70">编号</th>
+                                    <th width="70">类型</th>
+                                    <th width="70">积分类型</th>
                                     <th width="70">积分变动</th>
                                     <th width="70">账号</th>
-                                    <th width="250">备注</th>
-                                    <th width="250">时间</th>
+                                    <th width="120">备注</th>
+                                    <th width="80">时间</th>
                                 </tr>
                             </thead>
                             <tbody v-for="journal in journals">
@@ -103,7 +105,7 @@
                 </div>
             </div>
         </div>
-    </div>    
+    </div>
 </body>
 </html>
 <script type="text/javascript">
@@ -112,13 +114,13 @@
     var vue = new Vue({
         el: "#app",
         data: {
-            class: "", pages: [], uppage: 1, nextpage: 2, journals: [], pagecount: 1, journalTypes: [], typeId: "", g_integral: "", u_integral: ""
+            class: "", pages: [], uppage: 1, nextpage: 2, journals: [], pagecount: 1, journalTypes: [], typeId: "", g_integral: "", u_integral: "", mobile: "", code: ""
         },
         methods: {
             search: function () {
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/journal/list', { typeId: this.typeId, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
+                this.$http.post('/journal/list', { typeId: this.typeId, mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
                     this.journals = result.data.data.journals;
                     this.pageHtml = result.data.data.pageHtml;
                     this.pages = result.data.data.pages;
@@ -153,7 +155,7 @@
                 }
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/journal/list', { typeId: this.typeId, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {
+                this.$http.post('/journal/list', { typeId: this.typeId, mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {
                     this.journals = result.data.data.journals;
                     this.pageHtml = result.data.data.pageHtml;
                     this.pages = result.data.data.pages;
@@ -174,7 +176,7 @@
             }
         },
         mounted: function () {
-            this.$http.post('/journal/list', { typeId: this.typeId, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
+            this.$http.post('/journal/list', { typeId: this.typeId, mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
                 this.journals = result.data.data.journals;
                 this.pageHtml = result.data.data.pageHtml;
                 this.pages = result.data.data.pages;

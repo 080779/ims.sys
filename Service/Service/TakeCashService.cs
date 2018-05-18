@@ -48,7 +48,7 @@ namespace IMS.Service.Service
                 }
                 if (endTime != null)
                 {
-                    entities = entities.Where(t => t.CreateTime<= endTime);
+                    entities = entities.Where(a => a.CreateTime.Year <= endTime.Value.Year && a.CreateTime.Month <= endTime.Value.Month && a.CreateTime.Day <= endTime.Value.Day);
                 }
                 long givingIntegralId = dbc.GetAll<IntegralTypeEntity>().SingleOrDefault(i=>i.Name== "商家积分").Id;
                 long useIntegralId = dbc.GetAll<IntegralTypeEntity>().SingleOrDefault(i => i.Name == "消费积分").Id;

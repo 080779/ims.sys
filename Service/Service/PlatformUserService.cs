@@ -74,7 +74,7 @@ namespace IMS.Service.Service
             }
         }
 
-        public async Task<bool> Del(long id)
+        public async Task<bool> DelAsync(long id)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
@@ -84,6 +84,36 @@ namespace IMS.Service.Service
                     return false;
                 }
                 user.IsDeleted = true;
+                await dbc.SaveChangesAsync();
+                return true;
+            }
+        }
+
+        public async Task<bool> UpdatePwdAsync(long id, string password)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var user = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Id == id);
+                if (user == null)
+                {
+                    return false;
+                }             
+                user.Password = CommonHelper.GetMD5(password + user.Salt);
+                await dbc.SaveChangesAsync();
+                return true;
+            }
+        }
+
+        public async Task<bool> UpdateTradePwdAsync(long id, string tradePassword)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var user = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Id == id);
+                if (user == null)
+                {
+                    return false;
+                }
+                user.TradePassword = CommonHelper.GetMD5(tradePassword + user.Salt);
                 await dbc.SaveChangesAsync();
                 return true;
             }
@@ -147,7 +177,7 @@ namespace IMS.Service.Service
                 }
                 if (endTime != null)
                 {
-                    users = users.Where(u => u.CreateTime <= endTime);
+                    users = users.Where(a => a.CreateTime.Year <= endTime.Value.Year && a.CreateTime.Month <= endTime.Value.Month && a.CreateTime.Day <= endTime.Value.Day);
                 }
                 result.TotalCount = users.LongCount();
                 var usersRes = await users.OrderByDescending(u => u.CreateTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
@@ -165,7 +195,7 @@ namespace IMS.Service.Service
                 {
                     return false;
                 }
-                user.IsEnabled = false;
+                user.IsEnabled = !user.IsEnabled;
                 await dbc.SaveChangesAsync();
                 return true;
             }
@@ -521,6 +551,7 @@ namespace IMS.Service.Service
             using (MyDbContext dbc = new MyDbContext())
             {
                 var type = await dbc.GetAll<IntegralTypeEntity>().SingleOrDefaultAsync(i => i.Name == typeName);
+                long id = dbc.GetAll<PlatformUserEntity>().SingleOrDefault(p => p.Mobile == "PlatformUser201805051709360001").Id;
                 if(type==null)
                 {
                     return false;
@@ -543,7 +574,7 @@ namespace IMS.Service.Service
                     journal.Integral = user.GivingIntegral;
                     journal.IntegralTypeId = type.Id;
                     journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
-                    journal.PlatformUserId = user.Id;
+                    journal.PlatformUserId = id;
                     journal.FormPlatformUserId = user.Id;
                     journal.ToPlatformUserId = user.Id;
                     journal.ToIntegralTypeId = type.Id;
@@ -562,7 +593,7 @@ namespace IMS.Service.Service
                     journal.Integral = user.UseIntegral;
                     journal.IntegralTypeId = type.Id;
                     journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
-                    journal.PlatformUserId = user.Id;
+                    journal.PlatformUserId = id;
                     journal.FormPlatformUserId = user.Id;
                     journal.ToPlatformUserId = user.Id;
                     journal.ToIntegralTypeId = type.Id;
@@ -581,7 +612,7 @@ namespace IMS.Service.Service
                     journal.Integral = user.UseIntegral;
                     journal.IntegralTypeId = type.Id;
                     journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
-                    journal.PlatformUserId = user.Id;
+                    journal.PlatformUserId = id;
                     journal.FormPlatformUserId = user.Id;
                     journal.ToPlatformUserId = user.Id;
                     journal.ToIntegralTypeId = type.Id;

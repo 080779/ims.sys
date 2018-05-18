@@ -19,7 +19,9 @@ namespace IMS.IService
         /// <param name="tradePassword">交易密码</param>
         /// <returns></returns>
         Task<long> AddAsync(string typeName,string mobile,string code,string password,string tradePassword);
-        Task<bool> Del(long id);
+        Task<bool> DelAsync(long id);
+        Task<bool> UpdatePwdAsync(long id,string password);
+        Task<bool> UpdateTradePwdAsync(long id, string tradePassword);
         Task<PlatformUserDTO> GetModelAsync(long id);
         Task<PlatformUserDTO> GetModelAsync(string type, string str);
         Task<PlatformUserSearchResult> GetModelListAsync(string mobile, string code, string type, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize);

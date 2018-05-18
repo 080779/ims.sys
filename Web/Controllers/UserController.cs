@@ -55,7 +55,7 @@ namespace IMS.Web.Controllers
         {
             if(string.IsNullOrEmpty(type))
             {
-                return Json(new AjaxResult { Status = 0, Msg = "请选择客户账号或会员编号" });
+                return Json(new AjaxResult { Status = 0, Msg = "请选择类型" });
             }
             if (string.IsNullOrEmpty(code))
             {
@@ -70,11 +70,15 @@ namespace IMS.Web.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "客户账号或会员编号不存在" });
             }
-            //if(user.PlatformUserTypeName!="客户")
-            //{
-            //    return Json(new AjaxResult { Status = 0, Msg = "客户账号或会员编号不是客户" });
-            //}
-            if(!await platformUserService.CheckTradePasswordAsync(user.Id,password))
+            if(!user.IsEnabled)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "客户账号已经被冻结" });
+            }
+            if (user.PlatformUserTypeName == "平台")
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "没有权限" });
+            }
+            if (!await platformUserService.CheckTradePasswordAsync(user.Id,password))
             {
                 return Json(new AjaxResult { Status = 0, Msg = "支付密码错误" });
             }

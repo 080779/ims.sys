@@ -80,7 +80,7 @@ namespace IMS.Web.Areas.Admin.Controllers
         }
         public async Task<ActionResult> Del(long id)
         {
-            if (!await platformUserService.Del(id))
+            if (!await platformUserService.DelAsync(id))
             {
                 return Json(new AjaxResult { Status = 1, Msg = "删除失败" });
             }
@@ -90,9 +90,120 @@ namespace IMS.Web.Areas.Admin.Controllers
         {
             if (!await platformUserService.Frozen(id))
             {
-                return Json(new AjaxResult { Status = 1, Msg = "冻结失败" });
+                return Json(new AjaxResult { Status = 1, Msg = "冻结、解冻商家账户操作失败" });
             }
-            return Json(new AjaxResult { Status = 1, Msg = "冻结成功" });
+            return Json(new AjaxResult { Status = 1, Msg = "冻结、解冻商家账户操作成功" });
+        }
+        public async Task<ActionResult> Provide(long toUserId, string strIntegral, string typeName, string tip)
+        {
+            long userId = Convert.ToInt64(Session["Platform_User_Id"]);
+            if (string.IsNullOrEmpty(strIntegral))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "发放积分额度不能为空" });
+            }
+            long integral;
+            if (!long.TryParse(strIntegral, out integral))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "请正确输入发放积分额度" });
+            }
+            if (integral < 0)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "请发放积分额度必须大于零" });
+            }
+            var res = await platformUserService.ProvideAsync(userId, toUserId, integral, "平台积分", typeName, "平台发放", tip);
+            if (!res)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "发放失败" });
+            }
+            return Json(new AjaxResult { Status = 1, Msg = "发放成功" });
+        }
+        public async Task<ActionResult> TakeOut(long toUserId, string strIntegral, string typeName)
+        {
+            if (string.IsNullOrEmpty(strIntegral))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "发放积分额度不能为空" });
+            }
+            long integral;
+            if (!long.TryParse(strIntegral, out integral))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "请正确输入发放积分额度" });
+            }
+            if (integral <= 0)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "发放积分额度必须大于零" });
+            }
+            var toUser = await platformUserService.GetModelAsync(toUserId);
+            if (typeName == "商家积分")
+            {
+                if (integral > toUser.GivingIntegral)
+                {
+                    return Json(new AjaxResult { Status = 0, Msg = "积分不足" });
+                }
+            }
+            if (typeName == "消费积分")
+            {
+                if (integral > toUser.UseIntegral)
+                {
+                    return Json(new AjaxResult { Status = 0, Msg = "积分不足" });
+                }
+            }
+            if (string.IsNullOrEmpty(typeName))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "请选择积分类型" });
+            }
+            var res = await platformUserService.TakeOutAsync(toUserId, integral, typeName, "平台扣除");
+            if (!res)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "扣除失败" });
+            }
+            return Json(new AjaxResult { Status = 1, Msg = "扣除成功" });
+        }
+        public async Task<ActionResult> GetIntegral(long toUserId, string typeName)
+        {
+            var res = await platformUserService.GetModelAsync(toUserId);
+            long integral;
+            if (typeName == "商家积分")
+            {
+                integral = res.GivingIntegral;
+            }
+            else
+            {
+                integral = res.UseIntegral;
+            }
+            return Json(new AjaxResult { Status = 1, Data = integral });
+        }
+        public async Task<ActionResult> EditPwd(long id, string password,string typeName)
+        {
+            if (string.IsNullOrEmpty(password))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "新密码不能为空" });
+            }
+            if (password.Length < 6 || password.Length > 8)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "新密码要6-8位" });
+            }
+            if(string.IsNullOrEmpty(typeName))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "请选择密码类型" });
+            }
+            bool res;
+            if (typeName=="登录密码")
+            {
+                res = await platformUserService.UpdatePwdAsync(id, password);
+            }
+            else if (typeName == "支付密码")
+            {
+                res = await platformUserService.UpdateTradePwdAsync(id, password);
+            }
+            else
+            {
+                res = false;
+            }
+            if (!res)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "修改失败" });
+            }
+            return Json(new AjaxResult { Status = 1, Msg = "修改成功" });
         }
     }
 }

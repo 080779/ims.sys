@@ -131,9 +131,9 @@ namespace IMS.Web.Areas.Admin.Controllers
             bool res= await adminService.FrozenAsync(id);
             if(!res)
             {
-                return Json(new AjaxResult { Status = 1, Msg = "冻结、解冻管理员账户操作失败" });
+                return Json(new AjaxResult { Status = 1, Msg = "冻结、解冻管理员账号操作失败" });
             }
-            return Json(new AjaxResult { Status = 1, Msg = "冻结、解冻管理员账户操作成功" });
+            return Json(new AjaxResult { Status = 1, Msg = "冻结、解冻管理员账号操作成功" });
         }
         public async Task<ActionResult> Del(long id)
         {

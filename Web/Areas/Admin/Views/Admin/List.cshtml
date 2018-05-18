@@ -21,8 +21,8 @@
     <script type="text/javascript">
         if ("ontouchend" in document) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
     </script>
-    <script type="text/javascript" src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
-    <script type="text/javascript" src="https://cdn.bootcss.com/vue-resource/1.5.0/vue-resource.min.js"></script>
+    <script type="text/javascript" src="~/js/vue.min2.5.16.js"></script>
+    <script type="text/javascript" src="~/js/vue-resource.min1.5.0.js"></script>
     <script src="~/assets/js/bootstrap.min.js"></script>
     <script src="~/assets/js/typeahead-bs2.min.js"></script>
     <!-- page specific plugin scripts -->
@@ -59,10 +59,10 @@
                             <thead>
                                 <tr>
                                     <th width="80">编号</th>
-                                    <th width="120">管理员账户</th>
-                                    <th width="180">添加时间</th>
-                                    <th width="70">状态</th>
-                                    <th width="250">操作</th>
+                                    <th width="80">管理员账户</th>
+                                    <th width="100">添加时间</th>
+                                    <th width="80">状态</th>
+                                    <th width="200">操作</th>
                                 </tr>
                             </thead>
                             <tbody v-for="admin in admins">
@@ -101,15 +101,15 @@
                 <li><label class="label_name">确认密码：</label><span class="add_name"><input name="确认密码" placeholder="确认密码" type="password" v-model="add_password1" class="text_add" /></span><div class="prompt r_f"></div></li>
             </ul>
         </div>
-        <!--添加用户图层-->
-        <div class="add_menber" id="edit_perm" style="display:none">
+        <!--修改权限图层-->
+        <div id="edit_perm" style="display:none;margin-left:30px">
             <ul class="page-content">
                 <li><label class="label_name">管理员账户：</label><span class="add_name" v-html="edit_mobile"></span><div class="prompt r_f"></div></li>
             </ul>
             <ul class="page-content" v-for="type in permissionTypes">
                 <li v-html="type.name"></li>
                 <li v-for="perm in type.permissions">
-                    <input type="checkbox" name="perm" v-bind:value="perm.id" v-bind:checked="perm.isChecked"/><label v-html="perm.name"></label>
+                    <input type="checkbox" name="perm" v-bind:value="perm.id" v-bind:checked="perm.isChecked" v-bind:id="'perm'+perm.id"/><label v-bind:for="'perm'+perm.id" v-html="perm.name"></label>
                 </li>
             </ul>
         </div>
@@ -181,7 +181,7 @@
                 var that = this;
                 layer.open({
                     type: 1,
-                    title: '添加客户',
+                    title: '添加管理员',
                     maxmin: true,
                     shadeClose: false, //点击遮罩关闭层
                     area: ['400px', ''],
@@ -202,10 +202,9 @@
                         }
                         that.$http.post('/admin/admin/add', { mobile: that.add_mobile, password: that.add_password }, { emulateJSON: true }).then(function (result) {
                             if (result.data.status == 1) {
-                                layer.alert(result.data.msg, { icon: 6, title: '提示框' }, function () {
-                                    layer.close(index);
-                                    window.parent.location.reload();
-                                });
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
+                                layer.close(index);
+                                that.search();
                             }
                             else if (result.data.status == 0) {
                                 layer.alert(result.data.msg, { icon: 0, title: '提示框' });
@@ -226,10 +225,11 @@
                 this.edit_mobile = mobile;
                 layer.open({
                     type: 1,
-                    title: '添加客户',
+                    title: '修改权限',
                     maxmin: true,
                     shadeClose: false, //点击遮罩关闭层
-                    area: ['800px', ''],
+                    area: ['500px', ''],
+                    offset: ['100px',''],
                     content: $('#edit_perm'),
                     btn: ['确认', '取消'],
                     yes: function (index, layero) {
@@ -239,10 +239,9 @@
                         });
                         that.$http.post('/admin/admin/editpermission', { id: id, permissionIds: that.permissionIds }, { emulateJSON: true }).then(function (result) {
                             if (result.data.status == 1) {
-                                layer.alert(result.data.msg, { icon: 6, title: '提示框' }, function () {
-                                    layer.close(index);
-                                    window.parent.location.reload();
-                                });                                
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
+                                layer.close(index);
+                                that.search();
                             }
                             else if (result.data.status == 0) {
                                 layer.alert(result.data.msg, { icon: 0, title: '提示框' });
@@ -260,7 +259,7 @@
                 this.edit_mobile = mobile;
                 layer.open({
                     type: 1,
-                    title: '添加客户',
+                    title: '修改密码',
                     maxmin: true,
                     shadeClose: false, //点击遮罩关闭层
                     area: ['400px', ''],
@@ -304,10 +303,8 @@
                 layer.confirm(msg, { icon: 0, title: msg1 }, function () {
                     that.$http.post('/admin/admin/frozen', { id: id }, { emulateJSON: true }).then(function (result) {
                         if (result.data.status == 1) {
-                            layer.alert(result.data.msg, { icon: 0, title: '提示框' }, function () {
-                                layer.closeAll('dialog');
-                                that.search();
-                            });
+                            layer.alert(result.data.msg, { icon: 0, title: '提示框' });
+                            that.search();
                         }
                         else if (result.data.status == 0) {
                             layer.alert(result.data.msg, { icon: 0, title: '提示框' });

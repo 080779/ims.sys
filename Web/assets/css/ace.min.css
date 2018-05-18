@@ -10836,7 +10836,7 @@ background-color:#1c77ac; background-image:url(../../images/light.png); backgrou
 .login-layout .input-icon>[class*="icon-"] { line-height:32px;}
 .login-layout input{ margin-left:0px;}
 .login-layout .logintop{height:47px; position:absolute; top:0; background: url(../../images/loginbg1.png) repeat-x; z-index:100; width:100%;}
-.login-layout .logintop span{color:#fff; line-height:47px; background:url(../../images/loginsj.png) no-repeat 21px 18px; text-indent:44px; color:#afc5d2; float:left;}
+.login-layout .logintop span{color:#fff; line-height:47px; background:url(../../images/loginbg1.png) no-repeat 21px 18px; text-indent:44px; color:#afc5d2; float:left;}
 .login-layout .logintop ul{float:right; padding-right:30px;}
 .login-layout .logintop ul li{float:left; margin-left:20px; line-height:47px;}
 .login-layout .logintop ul li a{color:#afc5d2;}

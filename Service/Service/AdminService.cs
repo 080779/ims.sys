@@ -144,11 +144,11 @@ namespace IMS.Service.Service
                 }
                 if(startTime!=null)
                 {
-                    admins = admins.Where(a => a.CreateTime >= startTime);
+                    admins = admins.Where(a => a.CreateTime.Year>=startTime.Value.Year && a.CreateTime.Month>=startTime.Value.Month && a.CreateTime.Day>=startTime.Value.Day);
                 }
                 if (endTime != null)
                 {
-                    admins = admins.Where(a => a.CreateTime <= endTime);
+                    admins = admins.Where(a => a.CreateTime.Year <= endTime.Value.Year && a.CreateTime.Month <= endTime.Value.Month && a.CreateTime.Day <= endTime.Value.Day);
                 }
                 result.TotalCount = await admins.LongCountAsync();
                 var adminsResult= await admins.OrderByDescending(a => a.CreateTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
@@ -179,9 +179,13 @@ namespace IMS.Service.Service
                 {
                     return -1;
                 }
-                if(admin.Password!=CommonHelper.GetMD5(password+admin.Salt))
+                if(!admin.IsEnabled)
                 {
                     return -2;
+                }
+                if(admin.Password!=CommonHelper.GetMD5(password+admin.Salt))
+                {
+                    return -3;
                 }
                 return admin.Id;
             }

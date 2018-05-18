@@ -28,6 +28,14 @@ namespace IMS.Web.Areas.Admin.Controllers
             ListViewModel model = new ListViewModel();
             model.TakeCashes = result.TakeCashes;
             model.States = await stateService.GetModelListAsync();
+            if(result.GivingIntegralCount==null)
+            {
+                result.GivingIntegralCount = 0;
+            }
+            if (result.UseIntegralCount == null)
+            {
+                result.UseIntegralCount = 0;
+            }
             model.GivingIntegralCount = result.GivingIntegralCount;
             model.UseIntegralCount = result.UseIntegralCount;
 
@@ -73,7 +81,7 @@ namespace IMS.Web.Areas.Admin.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "变现积分数量必须大于零" });
             }
-            bool res= await platformUserService.TakeCashApplyAsync(user.Id, integral, type, null);
+            bool res= await platformUserService.TakeCashApplyAsync(user.Id, integral, type, "积分变现");
             if(!res)
             {
                 return Json(new AjaxResult { Status = 0, Msg = "变现申请失败" });
@@ -145,6 +153,15 @@ namespace IMS.Web.Areas.Admin.Controllers
                 haveIntegral = user.GivingIntegral;
             }
             return Json(new AjaxResult { Status = 1, Data = haveIntegral });
+        }
+        public async Task<ActionResult> Confirm(long id)
+        {
+            var res= await platformUserService.TakeCashConfirmAsync(id);
+            if(!res)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "确认转账状态修改失败" });
+            }
+            return Json(new AjaxResult { Status = 1, Msg = "确认转账状态修改成功" });
         }
     }
 }
