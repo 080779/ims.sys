@@ -108,5 +108,23 @@ namespace IMS.Web.Controllers
             }
             return Json(new AjaxResult { Status = 1 });
         }
+        public async Task<ActionResult> GetIntegral(string mobile)
+        {
+            if (string.IsNullOrEmpty(mobile))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "客户账号不能为空" });
+            }
+            long res;
+            if(!long.TryParse(mobile,out res))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "请输入正确的客户账号" });
+            }
+            if(mobile.Length!=11)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "请输入正确的客户账号" });
+            }
+            var result= await platformUserService.GetModelAsync("mobile", mobile);
+            return Json(new AjaxResult { Status = 1, Data = result.UseIntegral });
+        }
     }
 }

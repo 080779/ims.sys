@@ -45,6 +45,7 @@ namespace IMS.Service.Service
             using (MyDbContext dbc = new MyDbContext())
             {
                 JournalSearchResult result = new JournalSearchResult();
+                long journalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j=>j.Description=="消费").Id;
                 var journals = dbc.GetAll<JournalEntity>();
                 if(id!=null)
                 {
@@ -52,6 +53,10 @@ namespace IMS.Service.Service
                 }
                 if (typeId != null)
                 {
+                    if(typeId==journalTypeId)
+                    {
+                        journals = journals.Where(j => j.JournalTypeId == typeId && j.InIntegral!=null);
+                    }
                     journals = journals.Where(j => j.JournalTypeId == typeId);
                 }
                 if (!string.IsNullOrEmpty(mobile))
