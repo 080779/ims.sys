@@ -496,7 +496,7 @@ namespace IMS.Service.Service
                         return false;
                     }
                 }
-                else if(user.PlatformUserType.Name=="客户" && type.Name=="消费积分")
+                else if(description=="消费" && type.Name=="消费积分")
                 {
                     if(toUser.PlatformUserType.Name=="商家")
                     {

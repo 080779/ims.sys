@@ -1,4 +1,5 @@
 ﻿using IMS.Common;
+using IMS.DTO;
 using IMS.IService;
 using IMS.Web.Areas.Admin.Models.User;
 using System;
@@ -13,6 +14,7 @@ namespace IMS.Web.Areas.Admin.Controllers
     public class UserController : Controller
     {
         public IPlatformUserService platformUserService { get; set; }
+        public IJournalService journalService { get; set; }
         private int pageSize = 10;
         public ActionResult List()
         {
@@ -184,6 +186,11 @@ namespace IMS.Web.Areas.Admin.Controllers
                 return Json(new AjaxResult { Status = 0, Msg = "修改失败" });
             }
             return Json(new AjaxResult { Status = 1, Msg="修改成功"});
+        }
+        public async Task<ActionResult> GetJournal(long id)
+        {
+            JournalDTO[] result = await journalService.GetUserModelListAsync(id);
+            return Json(new AjaxResult { Status = 1, Data=result });
         }
     }
 }

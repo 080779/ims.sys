@@ -73,7 +73,7 @@
                         <td class="td-status"><span class="label label-success radius" v-html="user.isEnabled?'正常':'已冻结'"></span></td>
                         <td v-html="user.createTime"></td>
                         <td>
-                            <a class="btn btn-xs btn-info" v-on:click="getjournal">查看明细</a>
+                            <a class="btn btn-xs btn-info" v-on:click="getjournal(user.id)">查看明细</a>
                             <a class="btn btn-xs btn-success" v-on:click="giving(user.id,user.mobile)">发放积分</a>
                             <a class="btn btn-xs btn-success" v-on:click="takeout(user.id,user.mobile)">扣除积分</a>
                             <a class="btn btn-xs btn-success" v-on:click="editpwd(user.id,user.mobile)">修改密码</a>
@@ -139,12 +139,12 @@
                         <th width="170">时间</th>
                     </tr>
                 </thead>
-                <tbody v-for="user in platformUsers">
+                <tbody v-for="journal in userjournals">
                     <tr>
-                        <td v-html="user.id"></td>
-                        <td v-html="user.mobile"></td>
-                        <td v-html="user.useIntegral"></td>
-                        <td v-html="user.createTime"></td>
+                        <td v-html="journal.journalTypeName"></td>
+                        <td v-html="(journal.inIntegral)!=null?journal.inIntegral:journal.outIntegral"></td>
+                        <td v-html="journal.tip"></td>
+                        <td v-html="journal.createTime"></td>
                     </tr>
                 </tbody>
             </table>
@@ -161,7 +161,7 @@
             mobile: "", class: "", pages: [], uppage: 1, nextpage: 2, platformUsers: [], platformIntegral: "",
             pagecount: 1, add_mobile: "", add_code: "", add_password: "", add_password1: "",
             g_mobile: "", g_integral: "", g_tip: "", t_mobile: "", t_integral: "", useIntegral: "",
-            e_mobile: "", e_pwd: "", e_pwd1: ""
+            e_mobile: "", e_pwd: "", e_pwd1: "", userjournals: []
         },
         methods: {
             search: function () {
@@ -382,7 +382,19 @@
                     }
                 });
             },
-            getjournal: function () {
+            getjournal: function (id) {
+                this.$http.post('/admin/user/getjournal', { id: id }, { emulateJSON: true }).then(function (result) {
+                    if (result.data.status == 1) {
+                        this.userjournals = result.data.data;
+                    }
+                    else if (result.data.status == 0) {
+                        layer.alert(result.data.msg, { icon: 0, title: '提示框' });
+                        this.msg = result.data.msg;
+                    }
+                    else if (result.data.status == 302) {
+                        window.location.href = result.data.data;
+                    }
+                });
                 layer.open({
                     type: 1,
                     title: '客户积分扣除',
@@ -390,24 +402,6 @@
                     shadeClose: false, //点击遮罩关闭层
                     area: ['800px', ''],
                     content: $('#journal')
-                    //,
-                    //btn: ['确认', '取消'],
-                    //yes: function (index, layero) {
-                    //that.$http.post('/admin/user/takeout', { touserid: id, strintegral: that.t_integral, typename: typeName }, { emulateJSON: true }).then(function (result) {
-                    //    if (result.data.status == 1) {
-                    //        layer.alert(result.data.msg, { icon: 6, title: '提示框' });
-                    //        layer.close(index);
-                    //        that.search();
-                    //    }
-                    //    else if (result.data.status == 0) {
-                    //        layer.alert(result.data.msg, { icon: 0, title: '提示框' });
-                    //        that.msg = result.data.msg;
-                    //    }
-                    //    else if (result.data.status == 302) {
-                    //        window.location.href = result.data.data;
-                    //    }
-                    //});
-                    //}
                 });
             },
             editpwd: function (id, mobile) {

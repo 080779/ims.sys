@@ -124,5 +124,29 @@ namespace IMS.Service.Service
                 return result;
             }
         }
+
+        public async Task<JournalDTO[]> GetUserModelListAsync(long id)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var journals = dbc.GetAll<JournalEntity>();
+                long useId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == "消费").Id;
+                journals = journals.Where(j => (j.PlatformUserId == id && j.PlatformUserId == j.ToPlatformUserId) || (j.PlatformUserId == id && j.JournalTypeId == useId) || (j.ToPlatformUserId == id && j.ToPlatformUserId == j.FormPlatformUserId));
+                var res = await journals.ToListAsync();
+                return res.OrderByDescending(j=>j.CreateTime).Take(10).Select(j => ToDTO(j)).ToArray();
+            }
+        }
+
+        public async Task<JournalDTO[]> GetMerchantModelListAsync(long id)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var journals = dbc.GetAll<JournalEntity>();
+                long useId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == "消费").Id;
+                journals = journals.Where(j => j.PlatformUserId == id || (j.PlatformUserId == id && j.PlatformUserId == j.ToPlatformUserId) || (j.ToPlatformUserId == id && j.ToPlatformUserId == j.FormPlatformUserId));
+                var res = await journals.ToListAsync();
+                return res.OrderByDescending(j => j.CreateTime).Take(10).Select(j => ToDTO(j)).ToArray();
+            }
+        }
     }
 }
