@@ -284,6 +284,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\Filter\AdminLogAttribute.cs" />
     <Compile Include="App_Start\Filter\PermissionAttribute.cs" />
     <Compile Include="App_Start\Filter\SYSAuthorizationFilter.cs" />
     <Compile Include="App_Start\Filter\SYSExceptionFilter.cs" />
@@ -347,6 +348,7 @@
     <Content Include="Areas\Admin\Views\TakeCash\List.cshtml" />
     <Content Include="Areas\Admin\Views\Journal\List.cshtml" />
     <Content Include="Areas\Admin\Views\Log\List.cshtml" />
+    <Content Include="Areas\Admin\Views\Home\Permission.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Home.cshtml" />

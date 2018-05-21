@@ -40,7 +40,7 @@ namespace IMS.Service.Service
                 }
                 if (!string.IsNullOrEmpty(mobile))
                 {
-                    entities = entities.Where(t => t.PlatformUser.Mobile == mobile);
+                    entities = entities.Where(t => t.PlatformUser.Mobile.Contains(mobile));
                 }
                 if(startTime!=null)
                 {

@@ -21,5 +21,9 @@ namespace IMS.Web.Areas.Admin.Controllers
         {
             return View();
         }
+        public ActionResult Permission(string msg)
+        {
+            return View((object)msg);
+        }
     }
 }

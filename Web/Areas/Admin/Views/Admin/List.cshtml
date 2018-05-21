@@ -213,6 +213,9 @@
                             else if (result.data.status == 302) {
                                 window.location.href = result.data.data;
                             }
+                            else if (result.data.status == 401) {
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
+                            }
                         });
                     }
                 });
@@ -250,6 +253,9 @@
                             else if (result.data.status == 302) {
                                 window.location.href = result.data.data;
                             }
+                            else if (result.data.status == 401) {
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
+                            }
                         });
                     }
                 });
@@ -276,10 +282,9 @@
                         }
                         that.$http.post('/admin/admin/editpassword', { id: id, password: that.edit_password }, { emulateJSON: true }).then(function (result) {
                             if (result.data.status == 1) {
-                                layer.alert(result.data.msg, { icon: 6, title: '提示框' }, function () {
-                                    layer.close(index);
-                                    window.parent.location.reload();
-                                });                                
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
+                                layer.close(index);
+                                that.search();
                             }
                             else if (result.data.status == 0) {
                                 layer.alert(result.data.msg, { icon: 0, title: '提示框' });
@@ -287,6 +292,9 @@
                             }
                             else if (result.data.status == 302) {
                                 window.location.href = result.data.data;
+                            }
+                            else if (result.data.status == 401) {
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
                             }
                         });
                     }
@@ -313,6 +321,9 @@
                         else if (result.data.status == 302) {
                             window.location.href = result.data.data;
                         }
+                        else if (result.data.status == 401) {
+                            layer.alert(result.data.msg, { icon: 6, title: '提示框' });
+                        }
                     });
                 });
             },
@@ -321,10 +332,8 @@
                 layer.confirm("用户删除后无法恢复，确认删除吗？", { icon: 0, title: '是否删除用户' }, function (index) {
                     that.$http.post('/admin/admin/del', { id: id }, { emulateJSON: true }).then(function (result) {
                         if (result.data.status == 1) {
-                            layer.alert(result.data.msg, { icon: 6, title: '提示框' }, function () {
-                                layer.closeAll('dialog');
-                                that.search();
-                            });
+                            layer.alert(result.data.msg, { icon: 6, title: '提示框' });
+                            that.search();
                         }
                         else if (result.data.status == 0) {
                             layer.alert(result.data.msg, { icon: 0, title: '提示框' });
@@ -332,6 +341,9 @@
                         }
                         else if (result.data.status == 302) {
                             window.location.href = result.data.data;
+                        }
+                        else if (result.data.status == 401) {
+                            layer.alert(result.data.msg, { icon: 6, title: '提示框' });
                         }
                     });
                 });

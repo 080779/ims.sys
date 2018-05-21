@@ -24,10 +24,12 @@ namespace IMS.Web.Controllers
         public async Task<ActionResult> List(string mobile,string code,DateTime? startTime,DateTime? endTime,int pageIndex=1)
         {
             long id = Convert.ToInt64(Session["Merchant_User_Id"]);
+            var user= await platformUserService.GetModelAsync(id);
             long? typeId = await journalTypeService.GetIdByDescAsync("赠送");
             var result = await journalService.GetModelListAsync(id, typeId, mobile, code, startTime, endTime, pageIndex, pageSize);
             ListViewModel model = new ListViewModel();
             model.Journals = result.Journals;
+            model.HaveGivingIntegral = user.GivingIntegral;
 
             Pagination pager = new Pagination();
             pager.PageIndex = pageIndex;

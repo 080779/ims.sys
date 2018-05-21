@@ -1,5 +1,6 @@
 ﻿using IMS.Common;
 using IMS.IService;
+using IMS.Web.App_Start.Filter;
 using IMS.Web.Areas.Admin.Models.Integral;
 using System;
 using System.Collections.Generic;
@@ -51,6 +52,8 @@ namespace IMS.Web.Areas.Admin.Controllers
             return Json(new AjaxResult { Status = 1, Data = model });
             //return View(model);
         }
+        [Permission("积分管理_增加积分")]
+        [AdminLog("积分管理", "增加积分")]
 
         public async Task<ActionResult> Add(string strIntegral,string tip)
         {

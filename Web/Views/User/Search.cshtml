@@ -43,8 +43,9 @@
         </div>
         <div class="add_menber" id="add_menber_style" style="margin-top:40px">
             <ul class="page-content">
-                <li><label class="label_name"><select v-model="type"><option value="">请选择类型</option><option value="mobile">客户账号</option><option value="code">会员编号</option></select></label><span class="add_name"><input value="" placeholder="客户账号/会员编号" v-model="code" type="text" class="text_add" /></span><div class="prompt r_f"></div><a v-on:click="btnCode" class="btn btn-xs btn-info">提交</a></li>
+                <li><label class="label_name"><select v-model="type"><option value="">请选择类型</option><option value="mobile">客户账号</option><option value="code">会员编号</option></select></label><span class="add_name"><input value="" placeholder="客户账号/会员编号" v-model="code" type="text" class="text_add" /></span><div class="prompt r_f"></div></li>
                 <li><label class="label_name">支付密码：</label><span class="add_name"><input placeholder="支付密码" name="支付密码" type="password" v-model="password" class="text_add" /></span><div class="prompt r_f"></div></li>
+                <li><label class="label_name"><a v-on:click="btnCode" class="btn btn-xs btn-info">客户积分查询</a></label></li>
             </ul>
         </div>
     </div>

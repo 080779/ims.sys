@@ -23,25 +23,32 @@ namespace IMS.Web.Areas.Admin.Controllers
         {
             if(string.IsNullOrEmpty(mobile))
             {
-                return Json(new AjaxResult { Status = 1, Msg = "管理员用户名不能为空" });
+                return Json(new AjaxResult { Status = 0, Msg = "管理员用户名不能为空" });
             }
             if (string.IsNullOrEmpty(password))
             {
-                return Json(new AjaxResult { Status = 1, Msg = "管理员密码不能为空" });
+                return Json(new AjaxResult { Status = 0, Msg = "管理员密码不能为空" });
             }
             long res=await adminService.CheckLogin(mobile, password);
             if (res== -1 || res==-3)
             {
-                return Json(new AjaxResult { Status = 1, Msg = "管理员用户名或密码错误" });
+                return Json(new AjaxResult { Status = 0, Msg = "管理员用户名或密码错误" });
             }
             if(res==-2)
             {
-                return Json(new AjaxResult { Status = 1, Msg = "管理员账号已经被冻结" });
+                return Json(new AjaxResult { Status = 0, Msg = "管理员账号已经被冻结" });
             }
             Session["Platform_AdminUserId"] = res;
             var user = await platformUserService.GetModelAsync("mobile", "PlatformUser201805051709360001");
             Session["Platform_User_Id"] = user.Id;
             return Json(new AjaxResult { Status = 302, Msg = "登录成功", Data = "/admin/home/index" });
+        }
+
+        public ActionResult Logout()
+        {
+            Session["Platform_User_Id"] = null;
+            Session["Platform_AdminUserId"] = null;
+            return Redirect("/admin/login/login");
         }
     }
 }

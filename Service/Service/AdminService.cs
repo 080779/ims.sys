@@ -28,6 +28,11 @@ namespace IMS.Service.Service
         {
             using (MyDbContext dbc = new MyDbContext())
             {
+                var user = dbc.GetAll<AdminEntity>().SingleOrDefault(a => a.Mobile == mobile);
+                if(user!=null)
+                {
+                    return -2;
+                }
                 AdminEntity entity = new AdminEntity();
                 entity.Mobile = mobile;
                 entity.Description = description;
@@ -140,7 +145,7 @@ namespace IMS.Service.Service
                 var admins = dbc.GetAll<AdminEntity>();
                 if(!string.IsNullOrEmpty(mobile))
                 {
-                    admins = admins.Where(a => a.Mobile == mobile);
+                    admins = admins.Where(a => a.Mobile.Contains(mobile));
                 }
                 if(startTime!=null)
                 {

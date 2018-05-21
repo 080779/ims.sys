@@ -41,6 +41,22 @@ namespace IMS.Service.Service
                 return adminLog.Id;
             }
         }
+        public long Add(long adminId, string permissionType, string description, string ipAddress, string tip)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                long permissionTypeId = dbc.GetAll<PermissionTypeEntity>().SingleOrDefault(p=>p.Name==permissionType).Id;
+                AdminLogEntity adminLog = new AdminLogEntity();
+                adminLog.AdminId = adminId;
+                adminLog.PermissionTypeId = permissionTypeId;
+                adminLog.Description = description;
+                adminLog.IpAddress = ipAddress;
+                adminLog.Tip = tip;
+                dbc.AdminLogs.Add(adminLog);
+                dbc.SaveChanges();
+                return adminLog.Id;
+            }
+        }
 
         public async Task<AdminLogSearchResult> GetModelListAsync(string mobile, long? permissionTypeId, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize)
         {
@@ -50,7 +66,7 @@ namespace IMS.Service.Service
                 var adminLogs = dbc.GetAll<AdminLogEntity>();
                 if (!string.IsNullOrEmpty(mobile))
                 {
-                    adminLogs = adminLogs.Where(a => a.Admin.Mobile == mobile);
+                    adminLogs = adminLogs.Where(a => a.Admin.Mobile.Contains(mobile));
                 }
                 if (permissionTypeId != null)
                 {

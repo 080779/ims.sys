@@ -104,7 +104,7 @@
         <!--添加用户图层-->
         <div class="add_menber" id="add_menber_style" style="display:none">
             <ul class="page-content">
-                <li><label class="label_name">客户账号：</label><span class="add_name"><input value="" placeholder="客户账号" v-model="add_mobile" name="客户账号" type="text" class="text_add" /></span><div class="prompt r_f"></div></li>
+                <li><label class="label_name">商家账号：</label><span class="add_name"><input value="" placeholder="客户账号" v-model="add_mobile" name="客户账号" type="text" class="text_add" /></span><div class="prompt r_f"></div></li>
                 <li><label class="label_name">会员编号：</label><span class="add_name"><input value="" placeholder="会员编号" v-model="add_code" name="会员编号" type="text" class="text_add" /></span><div class="prompt r_f"></div></li>
                 <li><label class="label_name">登录密码：</label><span class="add_name"><input placeholder="登录密码" name="登录密码" type="password" v-model="add_password" class="text_add" /></span><div class="prompt r_f"></div></li>
                 <li><label class="label_name">支付密码：</label><span class="add_name"><input placeholder="支付密码" name="支付密码" type="password" v-model="add_tradepassword" class="text_add" /></span><div class="prompt r_f"></div></li>
@@ -123,8 +123,8 @@
         <div class="add_menber" id="takeout" style="display:none">
             <ul class="page-content">
                 <li><label class="label_name">客户账号：</label><span class="add_name" v-html="t_mobile"></span><div class="prompt r_f"></div></li>
-                <li><label class="label_name">积分类型：</label><input type="radio" name="typeName" checked="checked" id="type1" value="消费积分" /><label for="type1">消费积分</label><input type="radio" name="typeName" id="type2" value="商家积分" /><label for="type2">商家积分</label><div class="prompt r_f"></div></li>
-                <li><label class="label_name">扣除额度：</label><input value="" placeholder="扣除额度" v-model="t_integral" checked="checked" type="text" class="text_add" /><div class="prompt r_f"></div></li>
+                <li><label class="label_name">积分类型：</label><input type="radio" name="typeName" checked="checked" v-on:click="gettype1" id="type1" value="消费积分" /><label for="type1">消费积分</label><input type="radio" name="typeName"  v-on:click="gettype2" id="type2" value="商家积分" /><label for="type2">商家积分</label><div class="prompt r_f"></div></li>
+                <li><label class="label_name">扣除额度：</label><input value="" placeholder="扣除额度" v-model="t_integral" type="text" class="text_add" /><div class="prompt r_f"></div></li>
                 <li><label class="label_name">剩余积分：</label><span class="add_name" v-html="haveIntegral"></span><div class="prompt r_f"></div></li>
             </ul>
         </div>
@@ -144,8 +144,8 @@
                         <th width="70">类型</th>
                         <th width="70">积分类型</th>
                         <th width="70">积分变动</th>
-                        <th width="70">备注</th>
-                        <th width="170">时间</th>
+                        <th width="250">备注</th>
+                        <th width="100">时间</th>
                     </tr>
                 </thead>
                 <tbody v-for="journal in userjournals">
@@ -171,7 +171,7 @@
             mobile: "", class: "", pages: [], uppage: 1, nextpage: 2, platformUsers: [], platformIntegral: "",
             pagecount: 1, add_mobile: "", add_code: "", add_password: "", add_tradepassword: "",
             g_mobile: "", g_integral: "", g_tip: "", t_mobile: "", t_integral: "", haveIntegral: "",
-            e_mobile: "", e_pwd: "", e_pwd1: "", userjournals: []
+            e_mobile: "", e_pwd: "", e_pwd1: "", userjournals: [], typeName:"消费积分"
         },
         methods: {
             search: function () {
@@ -223,7 +223,7 @@
                 var that = this;
                 layer.open({
                     type: 1,
-                    title: '添加客户',
+                    title: '添加商家',
                     maxmin: true,
                     shadeClose: false, //点击遮罩关闭层
                     area: ['400px', ''],
@@ -276,6 +276,9 @@
                             else if (result.data.status == 302) {
                                 window.location.href = result.data.data;
                             }
+                            else if (result.data.status == 401) {
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
+                            }
                         });
                     }
                 });
@@ -294,6 +297,9 @@
                         }
                         else if (result.data.status == 302) {
                             window.location.href = result.data.data;
+                        }
+                        else if (result.data.status == 401) {
+                            layer.alert(result.data.msg, { icon: 6, title: '提示框' });
                         }
                     });
                 });
@@ -318,6 +324,9 @@
                         }
                         else if (result.data.status == 302) {
                             window.location.href = result.data.data;
+                        }
+                        else if (result.data.status == 401) {
+                            layer.alert(result.data.msg, { icon: 6, title: '提示框' });
                         }
                     });
                 });
@@ -354,14 +363,18 @@
                             else if (result.data.status == 302) {
                                 window.location.href = result.data.data;
                             }
+                            else if (result.data.status == 401) {
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
+                            }
                         });
                     }
                 });
             },
             takeout: function (id, mobile) {
                 var that = this;
-                var typeName;
-                $("#type1").click();
+                this.t_integral = "";
+                var typeName = "消费积分";
+                $("#type1").attr("checked");
                 that.$http.post('/admin/merchant/getintegral', { touserid: id, typename: "消费积分" }, { emulateJSON: true }).then(function (result) {
                     if (result.data.status == 1) {
                         that.haveIntegral = result.data.data;
@@ -369,33 +382,7 @@
                     else if (result.data.status == 302) {
                         window.location.href = result.data.data;
                     }
-                });
-                $("#type1").click(function () {
-                    if ($(this).is(":checked")) {
-                        typeName = "消费积分";
-                        that.$http.post('/admin/merchant/getintegral', { touserid: id, typename: "消费积分" }, { emulateJSON: true }).then(function (result) {
-                            if (result.data.status == 1) {
-                                that.haveIntegral = result.data.data;
-                            }
-                            else if (result.data.status == 302) {
-                                window.location.href = result.data.data;
-                            }
-                        });
-                    }
-                });
-                $("#type2").click(function () {
-                    if ($(this).is(":checked")) {
-                        typeName = "商家积分";
-                        that.$http.post('/admin/merchant/getintegral', { touserid: id, typename: "商家积分" }, { emulateJSON: true }).then(function (result) {
-                            if (result.data.status == 1) {
-                                that.haveIntegral = result.data.data;
-                            }
-                            else if (result.data.status == 302) {
-                                window.location.href = result.data.data;
-                            }
-                        });
-                    }
-                });
+                });                
                 this.t_mobile = mobile;
                 layer.open({
                     type: 1,
@@ -405,13 +392,13 @@
                     area: ['400px', ''],
                     content: $('#takeout'),
                     btn: ['确认', '取消'],
-                    yes: function (index, layero) {
+                    yes: function (index, layero) {                        
                         var reg = /^[1-9]\d*$/;
                         if (!reg.test(that.t_integral)) {
                             layer.alert('请正确输入扣除额度', { icon: 0, tilte: '提示框' });
                             return;
                         }
-                        that.$http.post('/admin/merchant/takeout', { touserid: id, strintegral: that.t_integral, typename: typeName }, { emulateJSON: true }).then(function (result) {
+                        that.$http.post('/admin/merchant/takeout', { touserid: id, strintegral: that.t_integral, typename: that.typeName }, { emulateJSON: true }).then(function (result) {
                             if (result.data.status == 1) {
                                 layer.alert(result.data.msg, { icon: 6, title: '提示框' });
                                 layer.close(index);
@@ -423,6 +410,9 @@
                             }
                             else if (result.data.status == 302) {
                                 window.location.href = result.data.data;
+                            }
+                            else if (result.data.status == 401) {
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
                             }
                         });
                     }
@@ -443,10 +433,11 @@
                 });
                 layer.open({
                     type: 1,
-                    title: '客户积分扣除',
+                    title: '查看明细',
                     maxmin: true,
                     shadeClose: false, //点击遮罩关闭层
-                    area: ['800px', ''],
+                    area: ['1200px', ''],
+                    offset: ['100px', ''],
                     content: $('#journal')
                 });
             },
@@ -455,7 +446,7 @@
                 var that = this;
                 layer.open({
                     type: 1,
-                    title: '客户积分扣除',
+                    title: '修改密码',
                     maxmin: true,
                     shadeClose: false, //点击遮罩关闭层
                     area: ['400px', ''],
@@ -491,7 +482,32 @@
                             else if (result.data.status == 302) {
                                 window.location.href = result.data.data;
                             }
+                            else if (result.data.status == 401) {
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
+                            }
                         });
+                    }
+                });
+            },
+            gettype1: function () {
+                this.typeName = "消费积分";
+                this.$http.post('/admin/merchant/getintegral', { touserid: id, typename: "消费积分" }, { emulateJSON: true }).then(function (result) {
+                    if (result.data.status == 1) {
+                        that.haveIntegral = result.data.data;
+                    }
+                    else if (result.data.status == 302) {
+                        window.location.href = result.data.data;
+                    }
+                });
+            },
+            gettype2: function () {
+                this.typeName = "商家积分";
+                this.$http.post('/admin/merchant/getintegral', { touserid: id, typename: "商家积分" }, { emulateJSON: true }).then(function (result) {
+                    if (result.data.status == 1) {
+                        that.haveIntegral = result.data.data;
+                    }
+                    else if (result.data.status == 302) {
+                        window.location.href = result.data.data;
                     }
                 });
             }

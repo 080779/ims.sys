@@ -109,9 +109,9 @@
                     <!--添加用户图层-->
                     <div class="add_menber" id="takecash" style="display:none">
                         <ul class="page-content">
-                            <li><label class="label_name">客户账号：</label><span class="add_name"><input value="" placeholder="客户账号" v-model="m_mobile" type="text" class="text_add" /></span><div class="prompt r_f"></div></li>
-                            <li><label class="label_name">积分类型：</label><span class="add_name"><input name="type" type="radio" value="消费积分" id="type1" checked="checked" /><label for="type1">消费积分</label><input name="type" type="radio" value="商家积分" id="type2" /><label for="type2">商家积分</label></span><div class="prompt r_f"></div></li>
-                            <li><label class="label_name">变现积分：</label><span class="add_name"><input placeholder="客户账号" type="text" v-model="m_integral" v-on:focus="getintegral" class="text_add" /></span><div class="prompt r_f"></div></li>
+                            <li><label class="label_name">账号：</label><span class="add_name"><input value="" placeholder="账号" v-model="m_mobile" type="text" class="text_add" /></span><div class="prompt r_f"></div></li>
+                            <li><label class="label_name">积分类型：</label><span class="add_name"><input name="type" type="radio" value="消费积分" v-on:click="checktype1" id="type1" checked="checked" /><label for="type1">消费积分</label><input name="type" type="radio" value="商家积分" v-on:click="checktype2" id="type2" /><label for="type2">商家积分</label></span><div class="prompt r_f"></div></li>
+                            <li><label class="label_name">变现积分：</label><span class="add_name"><input placeholder="变现积分" type="text" v-model="m_integral" v-on:focus="getintegral" class="text_add" /></span><div class="prompt r_f"></div></li>
                             <li><label class="label_name">可用积分：</label><span class="add_name"><label v-html="haveIntegral"></label></span><div class="prompt r_f"></div></li>
                             <li><label class="label_name">变现数额：</label><span class="add_name"><label v-html="m_amount"></label><a v-on:click="getamount" class="btn btn-xs btn-info">计算</a></span><div class="prompt r_f"></div></li>
                         </ul>
@@ -213,16 +213,21 @@
             },
             m_takecash: function () {
                 var that = this;
-                var type = $("input[name='type']:checked").val();                
+                that.m_mobile = "";
+                $("#type1").attr("checked");
+                that.m_integral = "";
+                that.haveIntegral = "";
+                that.m_amount = "";                                
                 layer.open({      
                     type: 1,
-                    title: '赠送客户积分',
+                    title: '积分变现',
                     maxmin: true,
                     shadeClose: false, //点击遮罩关闭层
                     area: ['400px', ''],
                     content: $('#takecash'),
                     btn: ['提交', '取消'],
                     yes: function (index, layero) {
+                        var type = $("input[name='type']:checked").val();
                         that.$http.post('/admin/takecash/takecash', { mobile: that.m_mobile, strIntegral: that.m_integral, type: type }, { emulateJSON: true }).then(function (result) {
                             if (result.data.status == 0) {
                                 layer.alert(result.data.msg, { icon: 0, title: '提示框' });
@@ -235,11 +240,9 @@
                             else if (result.data.status == 302) {
                                 window.location.href = result.data.data;
                             }
-                            //else if (result.data.status == 401) {
-                            //    layer.alert("没有权限", { icon: 0, title: '提示框' }, function () {
-                            //        window.location.href = result.data.data;
-                            //    });
-                            //}
+                            else if (result.data.status == 401) {
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
+                            }
                             else {
                                 layer.alert('未知错误', { icon: 0, title: '提示框' });
                             }
@@ -259,15 +262,21 @@
                     else if (result.data.status == 302) {
                         window.location.href = result.data.data;
                     }
-                    //else if (result.data.status == 401) {
-                    //    layer.alert("没有权限", { icon: 0, title: '提示框' }, function () {
-                    //        window.location.href = result.data.data;
-                    //    });
-                    //}
+                    else if (result.data.status == 401) {
+                        layer.alert(result.data.msg, { icon: 6, title: '提示框' });
+                    }
                     else {
                         layer.alert('未知错误', { icon: 0, title: '提示框' });
                     }
                 });
+            },
+            checktype1: function () {
+                this.m_integral = "";
+                this.m_amount = "";
+            },
+            checktype2: function () {
+                this.m_integral = "";
+                this.m_amount = "";
             }
         },
         mounted: function () {

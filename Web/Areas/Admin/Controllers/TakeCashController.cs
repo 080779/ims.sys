@@ -1,5 +1,6 @@
 ﻿using IMS.Common;
 using IMS.IService;
+using IMS.Web.App_Start.Filter;
 using IMS.Web.Areas.Admin.Models.TakeCash;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Web.Mvc;
 
 namespace IMS.Web.Areas.Admin.Controllers
 {
+    [AllowAnonymous]
     public class TakeCashController : Controller
     {
         public ITakeCashService takeCashService { get; set; }
@@ -57,6 +59,8 @@ namespace IMS.Web.Areas.Admin.Controllers
             return Json(new AjaxResult { Status = 1, Data = model });
             //return View(model);
         }
+        [Permission("积分管理_积分变现")]
+        [AdminLog("积分管理", "积分变现")]
         public async Task<ActionResult> TakeCash(string mobile,string strIntegral,string type="消费积分")
         {
             if(string.IsNullOrEmpty(mobile))
@@ -77,9 +81,23 @@ namespace IMS.Web.Areas.Admin.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "变现积分数量必须是数字" });
             }
-            if(integral<0)
+            if(integral<=0)
             {
                 return Json(new AjaxResult { Status = 0, Msg = "变现积分数量必须大于零" });
+            }
+            if(type=="消费积分")
+            {
+                if(integral>user.UseIntegral)
+                {
+                    return Json(new AjaxResult { Status = 0, Msg = "消费积分不足" });
+                }
+            }
+            if(type=="商家积分")
+            {
+                if (integral > user.GivingIntegral)
+                {
+                    return Json(new AjaxResult { Status = 0, Msg = "商家积分不足" });
+                }
             }
             bool res= await platformUserService.TakeCashApplyAsync(user.Id, integral, type, "积分变现");
             if(!res)
@@ -154,6 +172,8 @@ namespace IMS.Web.Areas.Admin.Controllers
             }
             return Json(new AjaxResult { Status = 1, Data = haveIntegral });
         }
+        [Permission("积分管理_确认转账")]
+        [AdminLog("积分管理", "确认转账")]
         public async Task<ActionResult> Confirm(long id)
         {
             var res= await platformUserService.TakeCashConfirmAsync(id);

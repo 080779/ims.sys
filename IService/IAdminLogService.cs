@@ -10,6 +10,7 @@ namespace IMS.IService
     public interface IAdminLogService:IServiceSupport
     {
         Task<long> AddAsync(long adminId,long permissionTypeId,string description,string ipAddress,string tip);
+        long Add(long adminId,string permissionType,string description,string ipAddress,string tip);
         Task<AdminLogSearchResult> GetModelListAsync(string mobile, long? permissionTypeId, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize);
     }
     public class AdminLogSearchResult

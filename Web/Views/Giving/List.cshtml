@@ -98,6 +98,7 @@
             <ul class="page-content">
                 <li><label class="label_name">受赠客户账号：</label><span class="add_name"><input value="" placeholder="受赠客户账号" v-model="g_mobile" name="受赠客户账号" type="text" class="text_add" /></span><div class="prompt r_f"></div></li>
                 <li><label class="label_name">赠送额度：</label><span class="add_name"><input placeholder="赠送额度" name="赠送额度" type="text" v-model="strIntegral" class="text_add" /></span><div class="prompt r_f"></div></li>
+                <li><label class="label_name">可用商家积分：</label><span class="add_name" v-html="haveintegral"></span><div class="prompt r_f"></div></li>
                 <li><label class="label_name">备注：</label><span class="add_name"><textarea v-model="tip" placeholder="备注" class="text_add"></textarea></span><div class="prompt r_f"></div></li>
             </ul>
         </div>
@@ -110,7 +111,7 @@
     var vue = new Vue({
         el: "#app",
         data: {
-            mobile: "", code: "", class: "", pages: [], uppage: 1, nextpage: 2, journals: [], pagecount: 1, g_mobile: "", strIntegral: "", tip: ""
+            mobile: "", code: "", class: "", pages: [], uppage: 1, nextpage: 2, journals: [], pagecount: 1, g_mobile: "", strIntegral: "", tip: "",haveintegral:""
         },
         methods: {
             search: function () {
@@ -216,6 +217,7 @@
                     this.pageHtml = result.data.data.pageHtml;
                     this.pages = result.data.data.pages;
                     this.pagecount = result.data.data.pageCount;
+                    this.haveintegral = result.data.data.haveGivingIntegral;
                 }
                 else if (result.data.status == 302) {
                     window.location.href = result.data.data;

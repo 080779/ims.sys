@@ -161,11 +161,11 @@ namespace IMS.Service.Service
                 var users=dbc.GetAll<PlatformUserEntity>();
                 if(!string.IsNullOrEmpty(mobile))
                 {
-                    users = users.Where(u=>u.Mobile==mobile);
+                    users = users.Where(u=>u.Mobile.Contains(mobile));
                 }
                 if (!string.IsNullOrEmpty(code))
                 {
-                    users = users.Where(u => u.Code == code);
+                    users = users.Where(u => u.Code.Contains(code));
                 }
                 if (!string.IsNullOrEmpty(type))
                 {

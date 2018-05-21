@@ -43,7 +43,7 @@ namespace IMS.Service.Service
         public async Task<JournalSearchResult> GetModelListAsync(long? id, long? typeId, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize)
         {
             using (MyDbContext dbc = new MyDbContext())
-            {
+            {                
                 JournalSearchResult result = new JournalSearchResult();
                 long journalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j=>j.Description=="消费").Id;
                 var journals = dbc.GetAll<JournalEntity>();
@@ -61,11 +61,11 @@ namespace IMS.Service.Service
                 }
                 if (!string.IsNullOrEmpty(mobile))
                 {
-                    journals = journals.Where(j => j.ToPlatformUser.Mobile == mobile);
+                    journals = journals.Where(j => j.ToPlatformUser.Mobile.Contains(mobile));
                 }
                 if (!string.IsNullOrEmpty(code))
                 {
-                    journals = journals.Where(j => j.ToPlatformUser.Code == code);
+                    journals = journals.Where(j => j.ToPlatformUser.Code.Contains(code));
                 }
                 if(startTime!=null)
                 {
@@ -117,7 +117,7 @@ namespace IMS.Service.Service
                 }
                 if (endTime != null)
                 {
-                    journals = journals.Where(j => j.CreateTime <= endTime);
+                    journals = journals.Where(a => a.CreateTime.Year <= endTime.Value.Year && a.CreateTime.Month <= endTime.Value.Month && a.CreateTime.Day <= endTime.Value.Day);
                 }
                 result.TotalCount = await journals.LongCountAsync();
 

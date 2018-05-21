@@ -1,6 +1,7 @@
 ﻿using IMS.Common;
 using IMS.DTO;
 using IMS.IService;
+using IMS.Web.App_Start.Filter;
 using IMS.Web.Areas.Admin.Models.Merchant;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Web.Mvc;
 
 namespace IMS.Web.Areas.Admin.Controllers
 {
+    [AllowAnonymous]
     public class MerchantController : Controller
     {
         public IPlatformUserService platformUserService { get; set; }
@@ -48,6 +50,8 @@ namespace IMS.Web.Areas.Admin.Controllers
             return Json(new AjaxResult { Status = 1, Data = model });
         }
         [HttpPost]
+        [Permission("商家管理_添加商家")]
+        [AdminLog("商家管理", "添加商家")]
         public async Task<ActionResult> Add(string mobile, string code, string password,string tradePassword)
         {
             if (string.IsNullOrEmpty(mobile))
@@ -80,22 +84,28 @@ namespace IMS.Web.Areas.Admin.Controllers
             }
             return Json(new AjaxResult { Status = 1, Msg = "添加商家成功" });
         }
+        [Permission("商家管理_删除商家")]
+        [AdminLog("商家管理", "删除商家")]
         public async Task<ActionResult> Del(long id)
         {
             if (!await platformUserService.DelAsync(id))
             {
-                return Json(new AjaxResult { Status = 1, Msg = "删除失败" });
+                return Json(new AjaxResult { Status = 0, Msg = "删除失败" });
             }
             return Json(new AjaxResult { Status = 1, Msg = "删除成功" });
         }
+        [Permission("商家管理_冻结商家")]
+        [AdminLog("商家管理", "冻结商家")]
         public async Task<ActionResult> Frozen(long id)
         {
             if (!await platformUserService.Frozen(id))
             {
-                return Json(new AjaxResult { Status = 1, Msg = "冻结、解冻商家账户操作失败" });
+                return Json(new AjaxResult { Status = 0, Msg = "冻结、解冻商家账户操作失败" });
             }
             return Json(new AjaxResult { Status = 1, Msg = "冻结、解冻商家账户操作成功" });
         }
+        [Permission("商家管理_发放积分")]
+        [AdminLog("商家管理", "发放积分")]
         public async Task<ActionResult> Provide(long toUserId, string strIntegral, string typeName, string tip)
         {
             long userId = Convert.ToInt64(Session["Platform_User_Id"]);
@@ -119,7 +129,9 @@ namespace IMS.Web.Areas.Admin.Controllers
             }
             return Json(new AjaxResult { Status = 1, Msg = "发放成功" });
         }
-        public async Task<ActionResult> TakeOut(long toUserId, string strIntegral, string typeName)
+        [Permission("商家管理_扣除积分")]
+        [AdminLog("商家管理", "扣除积分")]
+        public async Task<ActionResult> TakeOut(long toUserId, string strIntegral, string typeName="消费积分")
         {
             if (string.IsNullOrEmpty(strIntegral))
             {
@@ -174,6 +186,8 @@ namespace IMS.Web.Areas.Admin.Controllers
             }
             return Json(new AjaxResult { Status = 1, Data = integral });
         }
+        [Permission("商家管理_修改密码")]
+        [AdminLog("商家管理", "修改密码")]
         public async Task<ActionResult> EditPwd(long id, string password,string typeName)
         {
             if (string.IsNullOrEmpty(password))

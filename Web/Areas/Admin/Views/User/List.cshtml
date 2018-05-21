@@ -135,8 +135,8 @@
                     <tr>
                         <th width="70">类型</th>
                         <th width="70">积分变动</th>
-                        <th width="70">备注</th>
-                        <th width="170">时间</th>
+                        <th width="250">备注</th>
+                        <th width="100">时间</th>
                     </tr>
                 </thead>
                 <tbody v-for="journal in userjournals">
@@ -258,6 +258,9 @@
                             else if (result.data.status == 302) {
                                 window.location.href = result.data.data;
                             }
+                            else if (result.data.status == 401) {
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
+                            }
                         });
                     }
                 });
@@ -276,6 +279,9 @@
                         }
                         else if (result.data.status == 302) {
                             window.location.href = result.data.data;
+                        }
+                        else if (result.data.status == 401) {
+                            layer.alert(result.data.msg, { icon: 6, title: '提示框' });
                         }
                     });
                 });
@@ -300,6 +306,9 @@
                         }
                         else if (result.data.status == 302) {
                             window.location.href = result.data.data;
+                        }
+                        else if (result.data.status == 401) {
+                            layer.alert(result.data.msg, { icon: 6, title: '提示框' });
                         }
                     });
                 });
@@ -335,6 +344,9 @@
                             }
                             else if (result.data.status == 302) {
                                 window.location.href = result.data.data;
+                            }
+                            else if (result.data.status == 401) {
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
                             }
                         });
                     }
@@ -378,6 +390,9 @@
                             else if (result.data.status == 302) {
                                 window.location.href = result.data.data;
                             }
+                            else if (result.data.status == 401) {
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
+                            }
                         });
                     }
                 });
@@ -397,10 +412,11 @@
                 });
                 layer.open({
                     type: 1,
-                    title: '客户积分扣除',
+                    title: '查看明细',
                     maxmin: true,
                     shadeClose: false, //点击遮罩关闭层
-                    area: ['800px', ''],
+                    area: ['1200px', ''],
+                    offset: ['100px', ''],
                     content: $('#journal')
                 });
             },
@@ -409,7 +425,7 @@
                 var that = this;
                 layer.open({
                     type: 1,
-                    title: '客户积分扣除',
+                    title: '修改密码',
                     maxmin: true,
                     shadeClose: false, //点击遮罩关闭层
                     area: ['400px', ''],
@@ -440,6 +456,9 @@
                             }
                             else if (result.data.status == 302) {
                                 window.location.href = result.data.data;
+                            }
+                            else if (result.data.status == 401) {
+                                layer.alert(result.data.msg, { icon: 6, title: '提示框' });
                             }
                         });
                     }
