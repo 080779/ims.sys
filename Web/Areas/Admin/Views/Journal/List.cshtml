@@ -78,8 +78,8 @@
                                     <td v-html="journal.id"></td>
                                     <td v-html="(journal.journalTypeName=='积分消费')?'消费':'赠送'"></td>
                                     <td v-html="(journal.inIntegral)!=null?journal.inIntegral:journal.outIntegral"></td>
-                                    <td v-html="journal.platformUserMobile"></td>
-                                    <td v-html="journal.toPlatformUserMobile"></td>
+                                    <td v-html="(journal.journalTypeName=='积分消费')?journal.toPlatformUserMobile:journal.platformUserMobile"></td>
+                                    <td v-html="(journal.journalTypeName=='积分消费')?journal.platformUserMobile:journal.toPlatformUserMobile"></td>
                                     <td v-html="journal.tip"></td>
                                     <td v-html="journal.createTime"></td>
                                 </tr>
