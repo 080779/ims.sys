@@ -26,7 +26,7 @@ namespace IMS.Web.Controllers
             long id = Convert.ToInt64(Session["Merchant_User_Id"]);
             var user= await platformUserService.GetModelAsync(id);
             long? typeId = await journalTypeService.GetIdByDescAsync("赠送");
-            var result = await journalService.GetModelListAsync(id, typeId, mobile, code, startTime, endTime, pageIndex, pageSize);
+            var result = await journalService.GetModelListAsync(id,null, typeId, mobile, code, startTime, endTime, pageIndex, pageSize);
             ListViewModel model = new ListViewModel();
             model.Journals = result.Journals;
             model.HaveGivingIntegral = user.GivingIntegral;

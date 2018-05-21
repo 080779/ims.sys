@@ -16,7 +16,6 @@ namespace IMS.Web.Controllers
         {
             long id = Convert.ToInt64(Session["Merchant_User_Id"]);
             var user= await platformUserService.GetModelAsync(id);
-            var journals= await journalService.GetModelListAsync(1, null, null, null, null, null, 1, 10);
             return View((object)user.Mobile);
         }
         public ActionResult Home()

@@ -9,7 +9,7 @@ namespace IMS.IService
 {
     public interface IJournalService:IServiceSupport
     {
-        Task<JournalSearchResult> GetModelListAsync(long? id, long? typeId, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize);
+        Task<JournalSearchResult> GetModelListAsync(long? id, long? toId, long? typeId, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize);
         Task<JournalSearchResult> GetModelListAsync(string typeName, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize);
         Task<JournalDTO[]> GetUserModelListAsync(long id);
         Task<JournalDTO[]> GetMerchantModelListAsync(long id);

@@ -40,7 +40,7 @@ namespace IMS.Service.Service
             dto.FormPlatformUserCode = entity.FormPlatformUser.Code;
             return dto;
         }
-        public async Task<JournalSearchResult> GetModelListAsync(long? id, long? typeId, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize)
+        public async Task<JournalSearchResult> GetModelListAsync(long? id,long? toId, long? typeId, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize)
         {
             using (MyDbContext dbc = new MyDbContext())
             {                
@@ -50,6 +50,10 @@ namespace IMS.Service.Service
                 if(id!=null)
                 {
                     journals = journals.Where(j=>j.PlatformUserId==id);
+                }
+                if (toId != null)
+                {
+                    journals = journals.Where(j => j.ToPlatformUserId == toId);
                 }
                 if (typeId != null)
                 {

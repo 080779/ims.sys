@@ -26,7 +26,7 @@ namespace IMS.Web.Areas.Admin.Controllers
         {
             var user = await platformUserService.GetModelAsync("mobile", "PlatformUser201805051709360001");
             //long? typeId = await journalTypeService.GetIdByDescAsync("赠送");
-            var result = await journalService.GetModelListAsync(user.Id, typeId, mobile, code, startTime, endTime, pageIndex, pageSize);
+            var result = await journalService.GetModelListAsync(user.Id,null, typeId, mobile, code, startTime, endTime, pageIndex, pageSize);
             ListViewModel model = new ListViewModel();
             model.Journals = result.Journals;
             model.JournalTypes = await journalTypeService.GetModelListAsync(true);
