@@ -79,6 +79,10 @@ namespace IMS.Web.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "请填写其他客户账号" });
             }
+            if(toUser.IsEnabled==false)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "赠送客户账号已经被冻结" });
+            }
             var user = await platformUserService.GetModelAsync(id);
             if (user.GivingIntegral<integral)
             {

@@ -10,7 +10,6 @@ using System.Web.Mvc;
 
 namespace IMS.Web.Areas.Admin.Controllers
 {
-    [AllowAnonymous]
     public class JournalController : Controller
     {
         public IJournalService journalService { get; set; }

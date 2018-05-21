@@ -80,6 +80,10 @@ namespace IMS.Web.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "请填写其他客户账号" });
             }
+            if(toUser.IsEnabled==false)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "客户账号已经被冻结" });
+            }
             if (toUser.UseIntegral < integral)
             {
                 return Json(new AjaxResult { Status = 0, Msg = "客户积分不足" });

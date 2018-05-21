@@ -12,7 +12,6 @@ using System.Web.Mvc;
 
 namespace IMS.Web.Areas.Admin.Controllers
 {
-    [AllowAnonymous]
     public class MerchantController : Controller
     {
         public IPlatformUserService platformUserService { get; set; }
@@ -122,6 +121,11 @@ namespace IMS.Web.Areas.Admin.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "请发放积分额度必须大于零" });
             }
+            var toUser = await platformUserService.GetModelAsync(toUserId);
+            if (toUser.IsEnabled == false)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "商家账户已经被冻结" });
+            }
             var res = await platformUserService.ProvideAsync(userId, toUserId, integral, "平台积分", typeName, "平台发放", tip);
             if (!res)
             {
@@ -147,6 +151,10 @@ namespace IMS.Web.Areas.Admin.Controllers
                 return Json(new AjaxResult { Status = 0, Msg = "发放积分额度必须大于零" });
             }
             var toUser = await platformUserService.GetModelAsync(toUserId);
+            if (toUser.IsEnabled == false)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "商家账户已经被冻结" });
+            }
             if (typeName == "商家积分")
             {
                 if (integral > toUser.GivingIntegral)
@@ -201,6 +209,11 @@ namespace IMS.Web.Areas.Admin.Controllers
             if(string.IsNullOrEmpty(typeName))
             {
                 return Json(new AjaxResult { Status = 0, Msg = "请选择密码类型" });
+            }
+            var toUser = await platformUserService.GetModelAsync(id);
+            if (toUser.IsEnabled == false)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "商家账户已经被冻结" });
             }
             bool res;
             if (typeName=="登录密码")

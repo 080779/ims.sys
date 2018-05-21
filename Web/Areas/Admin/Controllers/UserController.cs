@@ -12,7 +12,6 @@ using System.Web.Mvc;
 
 namespace IMS.Web.Areas.Admin.Controllers
 {
-    [AllowAnonymous]
     public class UserController : Controller
     {
         public IPlatformUserService platformUserService { get; set; }
@@ -118,6 +117,11 @@ namespace IMS.Web.Areas.Admin.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "请发放积分额度必须大于零" });
             }
+            var toUser = await platformUserService.GetModelAsync(toUserId);
+            if(toUser.IsEnabled==false)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "客户账户已经被冻结" });
+            }
             var res = await platformUserService.ProvideAsync(userId, toUserId, integral, "平台积分", typeName, "平台发放", tip);
             if (!res)
             {
@@ -143,6 +147,10 @@ namespace IMS.Web.Areas.Admin.Controllers
                 return Json(new AjaxResult { Status = 0, Msg = "发放积分额度必须大于零" });
             }
             var toUser = await platformUserService.GetModelAsync(toUserId);
+            if (toUser.IsEnabled == false)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "客户账户已经被冻结" });
+            }
             if (typeName == "商家积分")
             {
                 if (integral > toUser.GivingIntegral)
@@ -193,6 +201,11 @@ namespace IMS.Web.Areas.Admin.Controllers
             if(password.Length<6 || password.Length>8)
             {
                 return Json(new AjaxResult { Status = 0, Msg = "新密码要6-8位" });
+            }
+            var toUser = await platformUserService.GetModelAsync(id);
+            if (toUser.IsEnabled == false)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "客户账户已经被冻结" });
             }
             var res = await platformUserService.UpdatePwdAsync(id, password);
             if(!res)

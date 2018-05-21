@@ -11,7 +11,6 @@ using System.Web.Mvc;
 
 namespace IMS.Web.Areas.Admin.Controllers
 {
-    [AllowAnonymous]
     public class TakeCashController : Controller
     {
         public ITakeCashService takeCashService { get; set; }
@@ -85,7 +84,11 @@ namespace IMS.Web.Areas.Admin.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "变现积分数量必须大于零" });
             }
-            if(type=="消费积分")
+            if (user.IsEnabled == false)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "账户已经被冻结" });
+            }
+            if (type=="消费积分")
             {
                 if(integral>user.UseIntegral)
                 {
