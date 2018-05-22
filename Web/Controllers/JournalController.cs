@@ -24,8 +24,7 @@ namespace IMS.Web.Controllers
         public async Task<ActionResult> List( long? typeId,string mobile,string code, DateTime? startTime, DateTime? endTime, int pageIndex = 1)
         {
             long id = Convert.ToInt64(Session["Merchant_User_Id"]);
-            //long? typeId = await journalTypeService.GetIdByDescAsync("赠送");
-            var result = await journalService.GetModelListAsync(id,null, typeId, mobile, code, startTime, endTime, pageIndex, pageSize);
+            var result = await journalService.GetMerchantModelListAsync(id, typeId, mobile, code, startTime, endTime, pageIndex, pageSize);
             ListViewModel model = new ListViewModel();
             model.Journals = result.Journals;
             model.JournalTypes = await journalTypeService.GetModelListAsync("商家");
@@ -49,7 +48,6 @@ namespace IMS.Web.Controllers
             model.Pages = pager.Pages;
             model.PageCount = pager.PageCount;
             return Json(new AjaxResult { Status = 1, Data = model });
-            //return View(model);
         }
     }
 }

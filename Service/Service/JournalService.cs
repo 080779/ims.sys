@@ -34,44 +34,37 @@ namespace IMS.Service.Service
             dto.ToPlatformUserId = entity.ToPlatformUserId;
             dto.ToPlatformUserMobile = entity.ToPlatformUser.Mobile;
             dto.IntegralTypeName = entity.IntegralType.Name;
-            dto.ToIntegralTypeName = entity.ToIntegralType.Name;           
+            dto.ToIntegralTypeName = entity.ToIntegralType.Name;
             dto.Journal01 = entity.Journal01;
             dto.ToPlatformUserCode = entity.ToPlatformUser.Code;
             dto.FormPlatformUserCode = entity.FormPlatformUser.Code;
             return dto;
         }
-        public async Task<JournalSearchResult> GetModelListAsync(long? id,long? toId, long? typeId, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize)
+        public async Task<JournalSearchResult> GetModelListAsync(long? id, long? typeId, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize)
         {
             using (MyDbContext dbc = new MyDbContext())
-            {                
+            {
                 JournalSearchResult result = new JournalSearchResult();
-                long journalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j=>j.Description=="消费").Id;
+                long journalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == "消费").Id;
                 var journals = dbc.GetAll<JournalEntity>();
-                if(id!=null)
+                if (id != null)
                 {
-                    journals = journals.Where(j=>j.PlatformUserId==id);
-                }
-                if (toId != null)
-                {
-                    journals = journals.Where(j => j.ToPlatformUserId == toId);
-                }
-                if (typeId != null)
-                {
-                    if(typeId==journalTypeId)
+                    if (typeId == journalTypeId)
                     {
-                        journals = journals.Where(j => j.JournalTypeId == typeId && j.InIntegral!=null);
+                        journals = journals.Where(j => j.PlatformUserId != j.ToPlatformUserId && j.ToPlatformUserId == id);
                     }
-                    journals = journals.Where(j => j.JournalTypeId == typeId);
+
                 }
+                journals = journals.Where(j => j.JournalTypeId == journalTypeId && j.InIntegral == null);
                 if (!string.IsNullOrEmpty(mobile))
                 {
-                    journals = journals.Where(j => j.ToPlatformUser.Mobile.Contains(mobile));
+                    journals = journals.Where(j => j.PlatformUser.Mobile.Contains(mobile));
                 }
                 if (!string.IsNullOrEmpty(code))
                 {
-                    journals = journals.Where(j => j.ToPlatformUser.Code.Contains(code));
+                    journals = journals.Where(j => j.PlatformUser.Code.Contains(code));
                 }
-                if(startTime!=null)
+                if (startTime != null)
                 {
                     journals = journals.Where(j => j.CreateTime >= startTime);
                 }
@@ -80,16 +73,129 @@ namespace IMS.Service.Service
                     journals = journals.Where(a => a.CreateTime.Year <= endTime.Value.Year && a.CreateTime.Month <= endTime.Value.Month && a.CreateTime.Day <= endTime.Value.Day);
                 }
                 long givingIntegralId = dbc.GetAll<IntegralTypeEntity>().SingleOrDefault(i => i.Name == "商家积分").Id;
-                long useIntegralId = dbc.GetAll<IntegralTypeEntity>().SingleOrDefault(i => i.Name == "消费积分").Id;                
+                long useIntegralId = dbc.GetAll<IntegralTypeEntity>().SingleOrDefault(i => i.Name == "消费积分").Id;
                 result.TotalCount = await journals.LongCountAsync();
                 var user = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Mobile == "PlatformUser201805051709360001");
-                if(user!=null)
+                if (user != null)
                 {
                     long platformUserId = user.Id;
                     result.GivingIntegrals = await journals.Where(j => j.ToIntegralTypeId == givingIntegralId && j.PlatformUserId == platformUserId).SumAsync(j => j.OutIntegral);
                     result.UseIntegrals = await journals.Where(j => j.ToIntegralTypeId == useIntegralId && j.PlatformUserId == platformUserId).SumAsync(j => j.OutIntegral);
                 }
-                var journalResult= await journals.OrderByDescending(j => j.CreateTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+                var journalResult = await journals.OrderByDescending(j => j.CreateTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+                result.Journals = journalResult.Select(j => ToDTO(j)).ToArray();
+                return result;
+            }
+        }
+        public async Task<JournalSearchResult> GetIntegralModelListAsync(long? typeId, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                JournalSearchResult result = new JournalSearchResult();
+                long id = dbc.GetAll<PlatformUserEntity>().SingleOrDefault(j => j.Mobile == "PlatformUser201805051709360001").Id;
+                long jtid = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == "积分增加").Id;
+                long outId= dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == "平台扣除").Id;
+                var journals = dbc.GetAll<JournalEntity>().Where(j => j.PlatformUserId == id);
+                if (typeId != null)
+                {
+                    journals = journals.Where(j => j.JournalTypeId == typeId);
+                }
+                if (!string.IsNullOrEmpty(mobile))
+                {
+                    journals = journals.Where(j => j.ToPlatformUser.Mobile.Contains(mobile) && j.JournalTypeId != jtid);
+                }
+                if (!string.IsNullOrEmpty(code))
+                {
+                    journals = journals.Where(j => j.ToPlatformUser.Code.Contains(code) && j.JournalTypeId != jtid);
+                }
+                if (startTime != null)
+                {
+                    journals = journals.Where(j => j.CreateTime >= startTime);
+                }
+                if (endTime != null)
+                {
+                    journals = journals.Where(a => a.CreateTime.Year <= endTime.Value.Year && a.CreateTime.Month <= endTime.Value.Month && a.CreateTime.Day <= endTime.Value.Day);
+                }
+                long givingIntegralId = dbc.GetAll<IntegralTypeEntity>().SingleOrDefault(i => i.Name == "商家积分").Id;
+                long useIntegralId = dbc.GetAll<IntegralTypeEntity>().SingleOrDefault(i => i.Name == "消费积分").Id;
+                result.TotalCount = await journals.LongCountAsync();
+                var user = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Mobile == "PlatformUser201805051709360001");
+                if (user != null)
+                {
+                    long platformUserId = user.Id;
+                    result.PlatformIntegral = user.PlatformIntegral;
+                    result.GivingIntegrals = await journals.Where(j => j.ToIntegralTypeId == givingIntegralId && j.PlatformUserId == platformUserId && j.JournalTypeId!=outId).SumAsync(j => j.OutIntegral);
+                    result.UseIntegrals = await journals.Where(j => j.ToIntegralTypeId == useIntegralId && j.PlatformUserId == platformUserId && j.JournalTypeId != outId).SumAsync(j => j.OutIntegral);
+                }
+                var journalResult = await journals.OrderByDescending(j => j.CreateTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+                result.Journals = journalResult.Select(j => ToDTO(j)).ToArray();
+                return result;
+            }
+        }
+        public async Task<JournalSearchResult> GetGivingModelListAsync(long? id, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                JournalSearchResult result = new JournalSearchResult();
+                long journalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == "赠送").Id;
+                var journals = dbc.GetAll<JournalEntity>();
+                if (id != null)
+                {
+                    journals = journals.Where(j => j.PlatformUserId == id);
+                }
+                journals = journals.Where(j => j.JournalTypeId == journalTypeId && j.InIntegral == null);
+                if (!string.IsNullOrEmpty(mobile))
+                {
+                    journals = journals.Where(j => j.ToPlatformUser.Mobile.Contains(mobile));
+                }
+                if (!string.IsNullOrEmpty(code))
+                {
+                    journals = journals.Where(j => j.ToPlatformUser.Code.Contains(code));
+                }
+                if (startTime != null)
+                {
+                    journals = journals.Where(j => j.CreateTime >= startTime);
+                }
+                if (endTime != null)
+                {
+                    journals = journals.Where(a => a.CreateTime.Year <= endTime.Value.Year && a.CreateTime.Month <= endTime.Value.Month && a.CreateTime.Day <= endTime.Value.Day);
+                }
+                result.TotalCount = await journals.LongCountAsync();
+                var journalResult = await journals.OrderByDescending(j => j.CreateTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+                result.Journals = journalResult.Select(j => ToDTO(j)).ToArray();
+                return result;
+            }
+        }
+        public async Task<JournalSearchResult> GetSpendModelListAsync(long? id, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                JournalSearchResult result = new JournalSearchResult();
+                long journalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == "消费").Id;
+                var journals = dbc.GetAll<JournalEntity>();
+                if (id != null)
+                {
+                    journals = journals.Where(j => j.PlatformUserId == j.ToPlatformUserId && j.PlatformUserId == id);
+                }
+                journals = journals.Where(j => j.JournalTypeId == journalTypeId && j.OutIntegral == null);
+                if (!string.IsNullOrEmpty(mobile))
+                {
+                    journals = journals.Where(j => j.FormPlatformUser.Mobile.Contains(mobile));
+                }
+                if (!string.IsNullOrEmpty(code))
+                {
+                    journals = journals.Where(j => j.FormPlatformUser.Code.Contains(code));
+                }
+                if (startTime != null)
+                {
+                    journals = journals.Where(j => j.CreateTime >= startTime);
+                }
+                if (endTime != null)
+                {
+                    journals = journals.Where(a => a.CreateTime.Year <= endTime.Value.Year && a.CreateTime.Month <= endTime.Value.Month && a.CreateTime.Day <= endTime.Value.Day);
+                }
+                result.TotalCount = await journals.LongCountAsync();
+                var journalResult = await journals.OrderByDescending(j => j.CreateTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
                 result.Journals = journalResult.Select(j => ToDTO(j)).ToArray();
                 return result;
             }
@@ -101,19 +207,19 @@ namespace IMS.Service.Service
             {
                 JournalSearchResult result = new JournalSearchResult();
                 var journals = dbc.GetAll<JournalEntity>();
-                long useId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j=>j.Description=="消费").Id;
+                long useId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == "消费").Id;
                 long givingId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == "赠送").Id;
                 if (typeName == "交易")
                 {
-                    journals = journals.Where(j=>j.PlatformUserId!=j.ToPlatformUserId).Where(j => j.JournalTypeId == useId || j.JournalTypeId==givingId);
+                    journals = journals.Where(j => j.PlatformUserId != j.ToPlatformUserId).Where(j => j.JournalTypeId == useId || j.JournalTypeId == givingId);
                 }
                 if (!string.IsNullOrEmpty(mobile))
                 {
-                    journals = journals.Where(j => j.ToPlatformUser.Mobile == mobile);
+                    journals = journals.Where(j => j.ToPlatformUser.Mobile.Contains(mobile) || j.PlatformUser.Mobile.Contains(mobile));
                 }
                 if (!string.IsNullOrEmpty(code))
                 {
-                    journals = journals.Where(j => j.ToPlatformUser.Code == code);
+                    journals = journals.Where(j => j.ToPlatformUser.Code.Contains(code) || j.PlatformUser.Code.Contains(code));
                 }
                 if (startTime != null)
                 {
@@ -125,8 +231,8 @@ namespace IMS.Service.Service
                 }
                 result.TotalCount = await journals.LongCountAsync();
 
-                result.GivingIntegralCount = await journals.Where(j=>j.JournalTypeId==givingId).SumAsync(j => j.OutIntegral);
-                result.UseIntegralCount = await journals.Where(j=>j.JournalTypeId==useId).SumAsync(j => j.OutIntegral);
+                result.GivingIntegralCount = await journals.Where(j => j.JournalTypeId == givingId).SumAsync(j => j.OutIntegral);
+                result.UseIntegralCount = await journals.Where(j => j.JournalTypeId == useId).SumAsync(j => j.OutIntegral);
 
                 var journalResult = await journals.OrderByDescending(j => j.CreateTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
                 result.Journals = journalResult.Select(j => ToDTO(j)).ToArray();
@@ -142,19 +248,42 @@ namespace IMS.Service.Service
                 long useId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == "消费").Id;
                 journals = journals.Where(j => (j.PlatformUserId == id && j.PlatformUserId == j.ToPlatformUserId) || (j.PlatformUserId == id && j.JournalTypeId == useId) || (j.ToPlatformUserId == id && j.ToPlatformUserId == j.FormPlatformUserId));
                 var res = await journals.ToListAsync();
-                return res.OrderByDescending(j=>j.CreateTime).Take(10).Select(j => ToDTO(j)).ToArray();
+                return res.OrderByDescending(j => j.CreateTime).Take(10).Select(j => ToDTO(j)).ToArray();
             }
         }
 
-        public async Task<JournalDTO[]> GetMerchantModelListAsync(long id)
+        public async Task<JournalSearchResult> GetMerchantModelListAsync(long? id, long? typeId, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
-                var journals = dbc.GetAll<JournalEntity>();
+                JournalSearchResult result = new JournalSearchResult();
                 long useId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == "消费").Id;
+                var journals = dbc.GetAll<JournalEntity>();
                 journals = journals.Where(j => j.PlatformUserId == id || (j.PlatformUserId == id && j.PlatformUserId == j.ToPlatformUserId) || (j.ToPlatformUserId == id && j.ToPlatformUserId == j.FormPlatformUserId));
-                var res = await journals.ToListAsync();
-                return res.OrderByDescending(j => j.CreateTime).Take(10).Select(j => ToDTO(j)).ToArray();
+                if (typeId != null)
+                {
+                    journals = journals.Where(j => j.JournalTypeId == typeId);
+                }
+                if (!string.IsNullOrEmpty(mobile))
+                {
+                    journals = journals.Where(j => j.ToPlatformUser.Mobile.Contains(mobile) || (j.FormPlatformUser.Mobile.Contains(mobile) && j.JournalTypeId == useId));
+                }
+                if (!string.IsNullOrEmpty(code))
+                {
+                    journals = journals.Where(j => j.ToPlatformUser.Code.Contains(code) || (j.FormPlatformUser.Code.Contains(code) && j.JournalTypeId == useId));
+                }
+                if (startTime != null)
+                {
+                    journals = journals.Where(j => j.CreateTime >= startTime);
+                }
+                if (endTime != null)
+                {
+                    journals = journals.Where(a => a.CreateTime.Year <= endTime.Value.Year && a.CreateTime.Month <= endTime.Value.Month && a.CreateTime.Day <= endTime.Value.Day);
+                }
+                result.TotalCount = await journals.LongCountAsync();
+                var journalResult = await journals.OrderByDescending(j => j.CreateTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+                result.Journals = journalResult.Select(j => ToDTO(j)).ToArray();
+                return result;
             }
         }
     }

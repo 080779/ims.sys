@@ -52,9 +52,10 @@ namespace IMS.Service.Service
                 }
                 long givingIntegralId = dbc.GetAll<IntegralTypeEntity>().SingleOrDefault(i=>i.Name== "商家积分").Id;
                 long useIntegralId = dbc.GetAll<IntegralTypeEntity>().SingleOrDefault(i => i.Name == "消费积分").Id;
+                long sId = dbc.GetAll<StateEntity>().SingleOrDefault(s=>s.Name== "已转账").Id;
                 result.TotalCount = await entities.LongCountAsync();
-                result.GivingIntegralCount = await entities.Where(t => t.IntegralTypeId == givingIntegralId).SumAsync(t => t.Integral);
-                result.UseIntegralCount = await entities.Where(t => t.IntegralTypeId == useIntegralId).SumAsync(t => t.Integral);
+                result.GivingIntegralCount = await entities.Where(t => t.IntegralTypeId == givingIntegralId && t.StateId== sId).SumAsync(t => t.Integral);
+                result.UseIntegralCount = await entities.Where(t => t.IntegralTypeId == useIntegralId && t.StateId == sId).SumAsync(t => t.Integral);
                 var res = await entities.OrderByDescending(t => t.CreateTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
                 result.TakeCashes = res.Select(t => ToDTO(t)).ToArray();
                 return result;

@@ -180,11 +180,24 @@ namespace IMS.Web.Areas.Admin.Controllers
         public async Task<ActionResult> Confirm(long id)
         {
             var res= await platformUserService.TakeCashConfirmAsync(id);
-            if(!res)
+            if(res<=0)
             {
-                return Json(new AjaxResult { Status = 0, Msg = "确认转账状态修改失败" });
+                if(res==-3)
+                {
+                    return Json(new AjaxResult { Status = 0, Msg = "积分已经不足以提现" });
+                }
+                return Json(new AjaxResult { Status = 0, Msg = "确认转账失败" });
             }
             return Json(new AjaxResult { Status = 1, Msg = "确认转账状态修改成功" });
+        }
+        public async Task<ActionResult> Cancel(long id)
+        {
+            var res = await platformUserService.TakeCashCancelAsync(id);
+            if (!res)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "取消转账失败" });
+            }
+            return Json(new AjaxResult { Status = 1, Msg = "取消转账成功" });
         }
     }
 }

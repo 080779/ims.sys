@@ -32,7 +32,8 @@ namespace IMS.IService
         Task<bool> ProvideAsync(long userId, long toUserId, long Integral, string typeName, string toTypeName, string description,string tip);
         Task<bool> TakeOutAsync(long userId,long integral, string typeName, string description);
         Task<bool> TakeCashApplyAsync(long userId,long integral,string typeName,string description);
-        Task<bool> TakeCashConfirmAsync(long id);
+        Task<int> TakeCashConfirmAsync(long id);
+        Task<bool> TakeCashCancelAsync(long id);
     }
     public class PlatformUserSearchResult
     {

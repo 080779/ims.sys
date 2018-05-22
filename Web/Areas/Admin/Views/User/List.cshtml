@@ -46,6 +46,7 @@
         <div class="search_style">
             <ul class="search_content clearfix">
                 <li><label class="l_f">客户账号</label><input v-model="mobile" type="text" class="text_add" placeholder="客户账号" style=" width:150px" /></li>
+                <li><label class="l_f">会员编号</label><input v-model="code" type="text" class="text_add" placeholder="会员编号" style=" width:150px" /></li>
                 <li><label class="l_f">添加时间</label><input type="text" class="inline laydate-icon" id="startTime" style=" margin-left:10px;" />至<input type="text" class="inline laydate-icon" id="endTime" style=" margin-left:10px;" /></li>
                 <li style="width:90px;"><button type="button" v-on:click="search" class="btn_search"><i class="icon-search"></i>查询</button></li>
             </ul>
@@ -142,7 +143,7 @@
                 <tbody v-for="journal in userjournals">
                     <tr>
                         <td v-html="journal.journalTypeName"></td>
-                        <td v-html="(journal.inIntegral)!=null?journal.inIntegral:journal.outIntegral"></td>
+                        <td v-html="(journal.inIntegral)!=null?'+'+journal.inIntegral:'-'+journal.outIntegral"></td>
                         <td v-html="journal.tip"></td>
                         <td v-html="journal.createTime"></td>
                     </tr>
@@ -161,13 +162,13 @@
             mobile: "", class: "", pages: [], uppage: 1, nextpage: 2, platformUsers: [], platformIntegral: "",
             pagecount: 1, add_mobile: "", add_code: "", add_password: "", add_password1: "",
             g_mobile: "", g_integral: "", g_tip: "", t_mobile: "", t_integral: "", useIntegral: "",
-            e_mobile: "", e_pwd: "", e_pwd1: "", userjournals: []
+            e_mobile: "", e_pwd: "", e_pwd1: "", userjournals: [], code: ""
         },
         methods: {
             search: function () {
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/admin/user/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
+                this.$http.post('/admin/user/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
                     if (result.data.status == 1) {
                         this.platformUsers = result.data.data.platformUsers;
                         this.pageHtml = result.data.data.pageHtml;
@@ -196,7 +197,7 @@
                 }
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/admin/user/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {
+                this.$http.post('/admin/user/list', { mobile: this.mobile, code: this.code, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {
                     if (result.data.status == 1) {
                         this.platformUsers = result.data.data.platformUsers;
                         this.pageHtml = result.data.data.pageHtml;
@@ -315,6 +316,8 @@
             },
             giving: function (id, mobile) {
                 this.g_mobile = mobile;
+                this.g_integral = "";
+                this.g_tip = "";
                 var that = this;
                 layer.open({
                     type: 1,
@@ -353,6 +356,7 @@
                 });
             },
             takeout: function (id, mobile) {
+                this.t_integral = "";
                 var that = this;
                 that.$http.post('/admin/user/getintegral', { touserid: id, typename: "消费积分" }, { emulateJSON: true }).then(function (result) {
                     if (result.data.status == 1) {
@@ -422,6 +426,8 @@
             },
             editpwd: function (id, mobile) {
                 this.e_mobile = mobile;
+                this.e_pwd = "";
+                this.e_pwd1 = "";
                 var that = this;
                 layer.open({
                     type: 1,

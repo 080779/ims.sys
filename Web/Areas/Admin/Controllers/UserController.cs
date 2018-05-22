@@ -22,10 +22,10 @@ namespace IMS.Web.Areas.Admin.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<ActionResult> List(string mobile, DateTime? startTime, DateTime? endTime, int pageIndex = 1)
+        public async Task<ActionResult> List(string mobile,string code, DateTime? startTime, DateTime? endTime, int pageIndex = 1)
         {
             long userId = Convert.ToInt64(Session["Platform_User_Id"]);
-            var result = await platformUserService.GetModelListAsync(mobile, null, "客户", startTime, endTime, pageIndex, pageSize);
+            var result = await platformUserService.GetModelListAsync(mobile, code, "客户", startTime, endTime, pageIndex, pageSize);
             var user = await platformUserService.GetModelAsync(userId);
             ListViewModel model = new ListViewModel();
             model.PlatformUsers = result.PlatformUsers;
@@ -202,11 +202,11 @@ namespace IMS.Web.Areas.Admin.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "新密码要6-8位" });
             }
-            var toUser = await platformUserService.GetModelAsync(id);
-            if (toUser.IsEnabled == false)
-            {
-                return Json(new AjaxResult { Status = 0, Msg = "客户账户已经被冻结" });
-            }
+            //var toUser = await platformUserService.GetModelAsync(id);
+            //if (toUser.IsEnabled == false)
+            //{
+            //    return Json(new AjaxResult { Status = 0, Msg = "客户账户已经被冻结" });
+            //}
             var res = await platformUserService.UpdatePwdAsync(id, password);
             if(!res)
             {

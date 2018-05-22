@@ -25,7 +25,7 @@ namespace IMS.Web.Controllers
         {
             long id = Convert.ToInt64(Session["Merchant_User_Id"]);
             long? typeId = await journalTypeService.GetIdByDescAsync("消费");
-            var result = await journalService.GetModelListAsync(id,null, typeId, mobile, code, startTime, endTime, pageIndex, pageSize);
+            var result = await journalService.GetSpendModelListAsync(id, mobile, code, startTime, endTime, pageIndex, pageSize);
             ListViewModel model = new ListViewModel();
             model.Journals = result.Journals;
 
@@ -99,16 +99,33 @@ namespace IMS.Web.Controllers
             await platformUserService.ProvideAsync(toUser.Id, id, integral, "消费积分", "消费积分", "消费", tip);
             return Json(new AjaxResult { Status = 1, Msg = "转出客户积分成功" });
         }
-        public async Task<ActionResult> Check(string mobile)
+        public async Task<ActionResult> Check(string mobile,string strIntegral)
         {
             if(string.IsNullOrEmpty(mobile))
             {
                 return Json(new AjaxResult { Status = 0, Msg = "客户账号不能为空" });
             }
+            if (string.IsNullOrEmpty(strIntegral))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "转出额度不能为空" });
+            }
+            long integral;
+            if (!long.TryParse(strIntegral, out integral))
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "转出额度必须是数字" });
+            }
+            if (integral <= 0)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "转出额度必须大于零" });
+            }
             var toUser = await platformUserService.GetModelAsync("mobile", mobile);
             if (toUser == null)
             {
                 return Json(new AjaxResult { Status = 0, Msg = "客户账号不存在" });
+            }
+            if (toUser.IsEnabled == false)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "客户账号已经被冻结" });
             }
             return Json(new AjaxResult { Status = 1 });
         }
@@ -128,6 +145,10 @@ namespace IMS.Web.Controllers
                 return Json(new AjaxResult { Status = 0, Msg = "请输入正确的客户账号" });
             }
             var result= await platformUserService.GetModelAsync("mobile", mobile);
+            if(result==null)
+            {
+                return Json(new AjaxResult { Status = 0, Msg = "客户账号不存在" });
+            }
             return Json(new AjaxResult { Status = 1, Data = result.UseIntegral });
         }
     }

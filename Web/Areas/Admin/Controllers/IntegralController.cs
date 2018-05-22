@@ -24,15 +24,13 @@ namespace IMS.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> List(long? typeId,string mobile,string code, DateTime? startTime, DateTime? endTime, int pageIndex = 1)
         {
-            var user = await platformUserService.GetModelAsync("mobile", "PlatformUser201805051709360001");
-            //long? typeId = await journalTypeService.GetIdByDescAsync("赠送");
-            var result = await journalService.GetModelListAsync(user.Id,null, typeId, mobile, code, startTime, endTime, pageIndex, pageSize);
+            JournalSearchResult result = await journalService.GetIntegralModelListAsync(typeId, mobile, code, startTime, endTime, pageIndex, pageSize);
             ListViewModel model = new ListViewModel();
             model.Journals = result.Journals;
             model.JournalTypes = await journalTypeService.GetModelListAsync(true);
-            model.GivingIntegralCount = result.GivingIntegrals;
-            model.UseIntegralCount = result.UseIntegrals;
-            model.PlatformIntegral = user.PlatformIntegral;
+            model.GivingIntegralCount = result.GivingIntegrals==null?0: result.GivingIntegrals;
+            model.UseIntegralCount = result.UseIntegrals==null?0: result.UseIntegrals;
+            model.PlatformIntegral = result.PlatformIntegral;
 
             Pagination pager = new Pagination();
             pager.PageIndex = pageIndex;
@@ -50,7 +48,6 @@ namespace IMS.Web.Areas.Admin.Controllers
             model.Pages = pager.Pages;
             model.PageCount = pager.PageCount;
             return Json(new AjaxResult { Status = 1, Data = model });
-            //return View(model);
         }
         [Permission("积分管理_增加积分")]
         [AdminLog("积分管理", "增加积分")]

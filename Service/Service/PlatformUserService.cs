@@ -695,23 +695,27 @@ namespace IMS.Service.Service
             }
         }
 
-        public async Task<bool> TakeCashConfirmAsync(long id)
+        public async Task<int> TakeCashConfirmAsync(long id)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
                 var takeCash = await dbc.GetAll<TakeCashEntity>().SingleOrDefaultAsync(i => i.Id == id);
                 if(takeCash==null)
                 {
-                    return false;
+                    return -1;
                 }
                 takeCash.StateId = dbc.GetAll<StateEntity>().SingleOrDefault(s => s.Description == "已转账").Id;
                 var user = dbc.GetAll<PlatformUserEntity>().SingleOrDefault(p => p.Id == takeCash.PlatformUserId);
                 if(user==null)
                 {
-                    return false;
+                    return -2;
                 }
                 if(takeCash.IntegralType.Name=="商家积分" && user.PlatformUserType.Name=="商家")
                 {
+                    if (user.GivingIntegral < takeCash.Integral.Value)
+                    {
+                        return -3;
+                    }
                     user.GivingIntegral = user.GivingIntegral - takeCash.Integral.Value;
 
                     JournalEntity journal = new JournalEntity();
@@ -730,6 +734,10 @@ namespace IMS.Service.Service
                 }
                 else if(takeCash.IntegralType.Name == "消费积分" && user.PlatformUserType.Name == "商家")
                 {
+                    if (user.UseIntegral < takeCash.Integral.Value)
+                    {
+                        return -3;
+                    }
                     user.UseIntegral = user.UseIntegral - takeCash.Integral.Value;
 
                     JournalEntity journal = new JournalEntity();
@@ -747,6 +755,10 @@ namespace IMS.Service.Service
                 }
                 else if(takeCash.IntegralType.Name == "消费积分" && user.PlatformUserType.Name == "客户")
                 {
+                    if (user.UseIntegral < takeCash.Integral.Value)
+                    {
+                        return -3;
+                    }
                     user.UseIntegral = user.UseIntegral - takeCash.Integral.Value;
 
                     JournalEntity journal = new JournalEntity();
@@ -764,8 +776,24 @@ namespace IMS.Service.Service
                 }
                 else
                 {
+                    return -4;
+                }
+                await dbc.SaveChangesAsync();
+                return 1;
+            }
+        }
+
+        public async Task<bool> TakeCashCancelAsync(long id)
+        {
+            using (MyDbContext dbc = new MyDbContext())
+            {
+                var takeCash = await dbc.GetAll<TakeCashEntity>().SingleOrDefaultAsync(i => i.Id == id);
+                long stateId = dbc.GetAll<StateEntity>().SingleOrDefault(s=>s.Name=="已取消").Id;
+                if (takeCash == null)
+                {
                     return false;
                 }
+                takeCash.StateId = stateId;
                 await dbc.SaveChangesAsync();
                 return true;
             }

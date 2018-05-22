@@ -22,10 +22,10 @@ namespace IMS.Web.Areas.Admin.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<ActionResult> List(string mobile, DateTime? startTime, DateTime? endTime, int pageIndex = 1)
+        public async Task<ActionResult> List(string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex = 1)
         {
             long userId = Convert.ToInt64(Session["Platform_User_Id"]);
-            var result = await platformUserService.GetModelListAsync(mobile, null, "商家", startTime, endTime, pageIndex, pageSize);
+            var result = await platformUserService.GetModelListAsync(mobile, code, "商家", startTime, endTime, pageIndex, pageSize);
             var user = await platformUserService.GetModelAsync(userId);
             ListViewModel model = new ListViewModel();
             model.PlatformUsers = result.PlatformUsers;
@@ -210,11 +210,11 @@ namespace IMS.Web.Areas.Admin.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "请选择密码类型" });
             }
-            var toUser = await platformUserService.GetModelAsync(id);
-            if (toUser.IsEnabled == false)
-            {
-                return Json(new AjaxResult { Status = 0, Msg = "商家账户已经被冻结" });
-            }
+            //var toUser = await platformUserService.GetModelAsync(id);
+            //if (toUser.IsEnabled == false)
+            //{
+            //    return Json(new AjaxResult { Status = 0, Msg = "商家账户已经被冻结" });
+            //}
             bool res;
             if (typeName=="登录密码")
             {
@@ -236,8 +236,8 @@ namespace IMS.Web.Areas.Admin.Controllers
         }
         public async Task<ActionResult> GetJournal(long id)
         {
-            JournalDTO[] result = await journalService.GetMerchantModelListAsync(id);
-            return Json(new AjaxResult { Status = 1, Data = result });
+            var result = await journalService.GetMerchantModelListAsync(id,null,null,null,null,null,1,10);
+            return Json(new AjaxResult { Status = 1, Data = result.Journals });
         }
     }
 }
