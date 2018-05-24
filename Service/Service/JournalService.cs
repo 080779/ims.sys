@@ -240,15 +240,18 @@ namespace IMS.Service.Service
             }
         }
 
-        public async Task<JournalDTO[]> GetUserModelListAsync(long id)
+        public async Task<JournalSearchResult> GetUserModelListAsync(long id, int pageIndex, int pageSize)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
+                JournalSearchResult result = new JournalSearchResult();
                 var journals = dbc.GetAll<JournalEntity>();
                 long useId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == "消费").Id;
                 journals = journals.Where(j => (j.PlatformUserId == id && j.PlatformUserId == j.ToPlatformUserId) || (j.PlatformUserId == id && j.JournalTypeId == useId) || (j.ToPlatformUserId == id && j.ToPlatformUserId == j.FormPlatformUserId));
-                var res = await journals.ToListAsync();
-                return res.OrderByDescending(j => j.CreateTime).Take(10).Select(j => ToDTO(j)).ToArray();
+                result.TotalCount = await journals.LongCountAsync();
+                var res = await journals.OrderByDescending(j => j.CreateTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+                result.Journals= res.Select(j => ToDTO(j)).ToArray();
+                return result;
             }
         }
 

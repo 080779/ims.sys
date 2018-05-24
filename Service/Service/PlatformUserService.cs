@@ -546,7 +546,7 @@ namespace IMS.Service.Service
             }
         }
 
-        public async Task<bool> TakeOutAsync(long userId, long integral, string typeName, string description)
+        public async Task<bool> TakeOutAsync(long userId, long integral, string typeName, string description,string tip)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
@@ -578,6 +578,7 @@ namespace IMS.Service.Service
                     journal.FormPlatformUserId = user.Id;
                     journal.ToPlatformUserId = user.Id;
                     journal.ToIntegralTypeId = type.Id;
+                    journal.Tip = tip;
                     dbc.Journals.Add(journal);
                 }
                 else if(user.PlatformUserType.Name == "商家" && type.Name == "消费积分")
@@ -597,6 +598,7 @@ namespace IMS.Service.Service
                     journal.FormPlatformUserId = user.Id;
                     journal.ToPlatformUserId = user.Id;
                     journal.ToIntegralTypeId = type.Id;
+                    journal.Tip = tip;
                     dbc.Journals.Add(journal);
                 }
                 else if(user.PlatformUserType.Name == "客户" && type.Name == "消费积分")
@@ -616,6 +618,7 @@ namespace IMS.Service.Service
                     journal.FormPlatformUserId = user.Id;
                     journal.ToPlatformUserId = user.Id;
                     journal.ToIntegralTypeId = type.Id;
+                    journal.Tip = tip;
                     dbc.Journals.Add(journal);
                 }
                 else

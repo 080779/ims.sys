@@ -1,5 +1,6 @@
 ﻿using IMS.Common;
 using IMS.IService;
+using IMS.Web.Models.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -82,7 +83,11 @@ namespace IMS.Web.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "支付密码错误" });
             }
-            return Json(new AjaxResult { Status = 1, Msg = "查询成功",Data=user.UseIntegral });
+            SearchViewModel model = new SearchViewModel();
+            model.Mobile = user.Mobile;
+            model.Code = user.Code;
+            model.Integral = user.UseIntegral;
+            return Json(new AjaxResult { Status = 1, Msg = "查询成功", Data = model });
         }
     }
 }

@@ -77,7 +77,7 @@ namespace IMS.Web.Areas.Admin.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "会员编号已经存在" });
             }
-            if (await platformUserService.AddAsync("商家", mobile, code, password, tradePassword) <= 0)
+            if ((await platformUserService.AddAsync("商家", mobile, code, password, tradePassword)) <= 0)
             {
                 return Json(new AjaxResult { Status = 0, Msg = "添加商家失败" });
             }
@@ -135,7 +135,7 @@ namespace IMS.Web.Areas.Admin.Controllers
         }
         [Permission("商家管理_扣除积分")]
         [AdminLog("商家管理", "扣除积分")]
-        public async Task<ActionResult> TakeOut(long toUserId, string strIntegral, string typeName="消费积分")
+        public async Task<ActionResult> TakeOut(long toUserId, string strIntegral, string tip, string typeName="消费积分")
         {
             if (string.IsNullOrEmpty(strIntegral))
             {
@@ -173,7 +173,7 @@ namespace IMS.Web.Areas.Admin.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "请选择积分类型" });
             }
-            var res = await platformUserService.TakeOutAsync(toUserId, integral, typeName, "平台扣除");
+            var res = await platformUserService.TakeOutAsync(toUserId, integral, typeName, "平台扣除",tip);
             if (!res)
             {
                 return Json(new AjaxResult { Status = 0, Msg = "扣除失败" });
@@ -234,10 +234,21 @@ namespace IMS.Web.Areas.Admin.Controllers
             }
             return Json(new AjaxResult { Status = 1, Msg = "修改成功" });
         }
-        public async Task<ActionResult> GetJournal(long id)
+        public async Task<ActionResult> GetJournal(long id,int pageIndex=1)
         {
-            var result = await journalService.GetMerchantModelListAsync(id,null,null,null,null,null,1,10);
-            return Json(new AjaxResult { Status = 1, Data = result.Journals });
+            JournalSearchResult result = await journalService.GetMerchantModelListAsync(id, null, null, null, null, null, pageIndex, pageSize);
+            GetJournalViewModel model = new GetJournalViewModel();
+            model.Journals = result.Journals;
+
+            Pagination pager = new Pagination();
+            pager.PageIndex = pageIndex;
+            pager.PageSize = pageSize;
+            pager.TotalCount = result.TotalCount;
+            pager.GetPagerHtml();
+
+            model.Pages = pager.Pages;
+            model.PageCount = pager.PageCount;
+            return Json(new AjaxResult { Status = 1, Data = model });
         }
     }
 }
