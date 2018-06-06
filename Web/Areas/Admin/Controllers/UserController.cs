@@ -207,7 +207,7 @@ namespace IMS.Web.Areas.Admin.Controllers
             //{
             //    return Json(new AjaxResult { Status = 0, Msg = "客户账户已经被冻结" });
             //}
-            var res = await platformUserService.UpdatePwdAsync(id, password);
+            var res = await platformUserService.UpdateTradePwdAsync(id, password);
             if (!res)
             {
                 return Json(new AjaxResult { Status = 0, Msg = "修改失败" });
