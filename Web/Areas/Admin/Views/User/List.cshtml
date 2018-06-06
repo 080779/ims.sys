@@ -309,7 +309,7 @@
                     msg1 = '是否解冻客户';
                 }
                 layer.confirm(msg, { icon: 0, title: msg1 }, function () {
-                    that.$http.post('/admin/merchant/frozen', { id: id }, { emulateJSON: true }).then(function (result) {
+                    that.$http.post('/admin/user/frozen', { id: id }, { emulateJSON: true }).then(function (result) {
                         if (result.data.status == 1) {
                             layer.alert(result.data.msg, { icon: 0, title: '提示框' });
                             that.search();

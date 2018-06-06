@@ -95,9 +95,9 @@ namespace IMS.Web.Areas.Admin.Controllers
         {
             if (!await platformUserService.Frozen(id))
             {
-                return Json(new AjaxResult { Status = 0, Msg = "冻结失败" });
+                return Json(new AjaxResult { Status = 0, Msg = "冻结、解冻客户账户操作失败" });
             }
-            return Json(new AjaxResult { Status = 1, Msg = "冻结成功" });
+            return Json(new AjaxResult { Status = 1, Msg = "冻结、解冻客户账户操作成功" });
         }
         [Permission("用户管理_发放积分")]
         [AdminLog("用户管理", "发放积分")]

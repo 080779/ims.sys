@@ -538,7 +538,7 @@
                     }
                 });
             }
-        },
+        },        
         mounted: function () {
             this.$http.post('/admin/merchant/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
                 if (result.data.status == 1) {
