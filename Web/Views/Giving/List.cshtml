@@ -96,7 +96,7 @@
         <!--添加用户图层-->
         <div class="add_menber" id="giving_user" style="display:none">
             <ul class="page-content">
-                <li><label class="label_name">受赠客户账号：</label><span class="add_name"><input value="" placeholder="受赠客户账号" v-model="g_mobile" name="受赠客户账号" type="text" class="text_add" /></span><div class="prompt r_f"></div></li>
+                <li><label class="label_name">受赠客户账号：</label><span class="add_name"><input value="" placeholder="受赠客户账号" v-model="g_mobile" maxlength="11" name="受赠客户账号" type="text" class="text_add" /></span><div class="prompt r_f"></div></li>
                 <li><label class="label_name">赠送额度：</label><span class="add_name"><input placeholder="赠送额度" type="text" v-model="strIntegral" class="text_add" /></span><div class="prompt r_f"></div></li>
                 <li><label class="label_name">可用商家积分：</label><span class="add_name" v-html="haveintegral"></span><div class="prompt r_f"></div></li>
                 <li><label class="label_name">备注：</label><span class="add_name"><textarea v-model="tip" placeholder="备注" class="text_add"></textarea></span><div class="prompt r_f"></div></li>

@@ -94,7 +94,7 @@
         <!--添加用户图层-->
         <div class="add_menber" id="add_menber_style" style="display:none">
             <ul class="page-content">
-                <li><label class="label_name">客户账号：</label><span class="add_name"><input value="" placeholder="客户账号" id="mobile" v-model="spendmobile" name="客户账号" type="text" class="text_add" /></span><div class="prompt r_f"></div></li>
+                <li><label class="label_name">客户账号：</label><span class="add_name"><input value="" placeholder="客户账号" id="mobile" v-model="spendmobile" name="客户账号" maxlength="11" type="text" class="text_add" /></span><div class="prompt r_f"></div></li>
                 <li><label class="label_name">扣除额度：</label><span class="add_name"><input placeholder="扣除额度" name="扣除额度" type="text" v-model="spendintegral" v-on:focus="getIntegral" class="text_add" /></span><div class="prompt r_f"></div></li>
                 <li><label class="label_name">剩余额度：</label><span class="add_name" v-html="haveintegral"></span><div class="prompt r_f"></div></li>
                 <li><label class="label_name">备注：</label><span class="add_name"><textarea id="spendtip" placeholder="备注" v-model="spendtip" class="text_add"></textarea></span><div class="prompt r_f"></div></li>
