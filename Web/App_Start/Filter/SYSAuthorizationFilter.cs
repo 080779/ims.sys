@@ -43,7 +43,7 @@ namespace IMS.Web.App_Start.Filter
                 {
                     return; //如果没有权限检查的attribute就返回，不进行后面的判断
                 }
-                else if(attribute!=null)
+                else if (attribute != null)
                 {
                     if (!adminUserService.HasPermission(adminUserId.Value, attribute.Permission))
                     {
@@ -59,7 +59,7 @@ namespace IMS.Web.App_Start.Filter
                         return;
                     }
                 }
-                else if(attributes.Length > 0)
+                else if (attributes.Length > 0)
                 {
                     foreach (var attr in attributes)
                     {

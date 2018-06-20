@@ -172,7 +172,7 @@
             mobile: "", class: "", pages: [], uppage: 1, nextpage: 2, platformUsers: [], platformIntegral: "",
             pagecount: 1, add_mobile: "", add_code: "", add_password: "", add_tradepassword: "",
             g_mobile: "", g_integral: "", g_tip: "", t_mobile: "", t_integral: "", haveIntegral: "",
-            e_mobile: "", e_pwd: "", e_pwd1: "", userjournals: [], typeName: "消费积分", code: ""
+            e_mobile: "", e_pwd: "", e_pwd1: "", userjournals: [], typeName: "消费积分", code: "", id: ""
         },
         methods: {
             search: function (page) {
@@ -348,7 +348,6 @@
                             }
                             else if (result.data.status == 0) {
                                 layer.alert(result.data.msg, { icon: 0, title: '提示框' });
-                                //that.msg = result.data.msg;
                             }
                             else if (result.data.status == 302) {
                                 window.location.href = result.data.data;
@@ -361,18 +360,11 @@
                 });
             },
             takeout: function (id, mobile) {
+                this.id = id;
                 var that = this;
                 this.t_integral = "";
                 var typeName = "消费积分";
-                $("#type1").attr("checked");
-                that.$http.post('/admin/merchant/getintegral', { touserid: id, typename: "消费积分" }, { emulateJSON: true }).then(function (result) {
-                    if (result.data.status == 1) {
-                        that.haveIntegral = result.data.data;
-                    }
-                    else if (result.data.status == 302) {
-                        window.location.href = result.data.data;
-                    }
-                });
+                $("#type1").click();
                 this.t_mobile = mobile;
                 layer.open({
                     type: 1,
@@ -483,9 +475,9 @@
             },
             gettype1: function () {
                 this.typeName = "消费积分";
-                this.$http.post('/admin/merchant/getintegral', { touserid: id, typename: "消费积分" }, { emulateJSON: true }).then(function (result) {
+                this.$http.post('/admin/merchant/getintegral', { touserid: this.id, typename: "消费积分" }, { emulateJSON: true }).then(function (result) {
                     if (result.data.status == 1) {
-                        that.haveIntegral = result.data.data;
+                        this.haveIntegral = result.data.data;
                     }
                     else if (result.data.status == 302) {
                         window.location.href = result.data.data;
@@ -494,9 +486,9 @@
             },
             gettype2: function () {
                 this.typeName = "商家积分";
-                this.$http.post('/admin/merchant/getintegral', { touserid: id, typename: "商家积分" }, { emulateJSON: true }).then(function (result) {
+                this.$http.post('/admin/merchant/getintegral', { touserid: this.id, typename: "商家积分" }, { emulateJSON: true }).then(function (result) {
                     if (result.data.status == 1) {
-                        that.haveIntegral = result.data.data;
+                        this.haveIntegral = result.data.data;
                     }
                     else if (result.data.status == 302) {
                         window.location.href = result.data.data;
