@@ -29,14 +29,16 @@ namespace IMS.Service.Service
             dto.PlatformUserTypeId = entity.PlatformUserTypeId;
             dto.PlatformUserTypeName = entity.PlatformUserType.Name;
             dto.UseIntegral = entity.UseIntegral;
+            dto.AdderMobile = entity.AdderMobile;
             return dto;
         }
 
-        public async Task<long> AddAsync(string typeName, string mobile, string code, string password, string tradePassword)
+        public async Task<long> AddAsync(long id,string typeName, string mobile, string code, string password, string tradePassword)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
-                var type = await dbc.PlatformUserTypes.SingleOrDefaultAsync(p => p.Name == typeName);
+                string adderMobile = (await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Id == id)).Mobile;
+                var type = await dbc.GetAll<PlatformUserTypeEntity>().SingleOrDefaultAsync(p => p.Name == typeName);
                 if(type==null)
                 {
                     return -1;
@@ -45,6 +47,7 @@ namespace IMS.Service.Service
                 if(typeName=="平台")
                 {
                     user.PlatformUserTypeId = type.Id;
+                    user.AdderMobile = adderMobile;
                     user.Mobile = mobile;
                     user.Code = code;
                     user.Password = password;
@@ -53,6 +56,7 @@ namespace IMS.Service.Service
                 else if(typeName=="商家")
                 {
                     user.PlatformUserTypeId = type.Id;
+                    user.AdderMobile = adderMobile;
                     user.Mobile = mobile;
                     user.Code = code;
                     user.Salt = CommonHelper.GetCaptcha(4);
@@ -62,6 +66,7 @@ namespace IMS.Service.Service
                 else
                 {
                     user.PlatformUserTypeId = type.Id;
+                    user.AdderMobile = adderMobile;
                     user.Mobile = mobile;
                     user.Code = code;
                     user.Salt = CommonHelper.GetCaptcha(4);
@@ -278,6 +283,7 @@ namespace IMS.Service.Service
             {
                 var type = await dbc.GetAll<IntegralTypeEntity>().SingleOrDefaultAsync(i => i.Name == typeName);
                 var toType = await dbc.GetAll<IntegralTypeEntity>().SingleOrDefaultAsync(i => i.Name == toTypeName);
+                var platform= await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Mobile == "PlatformUser201805051709360001");
                 if (type == null)
                 {
                     return false;
@@ -296,11 +302,11 @@ namespace IMS.Service.Service
                 {
                     return false;
                 }
-                if(user.Code == "CodePlatformUser201805051709360001" && type.Name =="平台积分")
+                if(user.PlatformUserType.Name== "平台" && type.Name =="平台积分")
                 {
                     if(toType.Name== "平台积分")
                     {
-                        toUser.PlatformIntegral = toUser.PlatformIntegral + integral;
+                        platform.PlatformIntegral = platform.PlatformIntegral + integral;
                         JournalEntity journal = new JournalEntity();
                         journal.Description = description;
                         journal.InIntegral = integral;
@@ -316,11 +322,11 @@ namespace IMS.Service.Service
                     }
                     else if(toType.Name == "商家积分" && toUser.PlatformUserType.Name == "商家")
                     {
-                        if(user.PlatformIntegral < integral)
+                        if(platform.PlatformIntegral < integral)
                         {
                             return false;
                         }
-                        user.PlatformIntegral = user.PlatformIntegral - integral;
+                        platform.PlatformIntegral = platform.PlatformIntegral - integral;
                         JournalEntity journal = new JournalEntity();
                         journal.Description = description;
                         journal.OutIntegral = integral;
@@ -350,11 +356,11 @@ namespace IMS.Service.Service
                     }
                     else if (toType.Name == "消费积分" && toUser.PlatformUserType.Name == "商家")
                     {
-                        if (user.PlatformIntegral < integral)
+                        if (platform.PlatformIntegral < integral)
                         {
                             return false;
                         }
-                        user.PlatformIntegral = user.PlatformIntegral - integral;
+                        platform.PlatformIntegral = platform.PlatformIntegral - integral;
                         JournalEntity journal = new JournalEntity();
                         journal.Description = description;
                         journal.OutIntegral = integral;
@@ -384,11 +390,11 @@ namespace IMS.Service.Service
                     }
                     else if (toType.Name == "消费积分" && toUser.PlatformUserType.Name == "客户")
                     {
-                        if (user.PlatformIntegral < integral)
+                        if (platform.PlatformIntegral < integral)
                         {
                             return false;
                         }
-                        user.PlatformIntegral = user.PlatformIntegral - integral;
+                        platform.PlatformIntegral = platform.PlatformIntegral - integral;
                         JournalEntity journal = new JournalEntity();
                         journal.Description = description;
                         journal.OutIntegral = integral;
@@ -546,17 +552,21 @@ namespace IMS.Service.Service
             }
         }
 
-        public async Task<bool> TakeOutAsync(long userId, long integral, string typeName, string description)
+        public async Task<bool> TakeOutAsync(long userId,long takeOutUserid, long integral, string typeName, string description,string tip)
         {
             using (MyDbContext dbc = new MyDbContext())
             {
                 var type = await dbc.GetAll<IntegralTypeEntity>().SingleOrDefaultAsync(i => i.Name == typeName);
-                long id = dbc.GetAll<PlatformUserEntity>().SingleOrDefault(p => p.Mobile == "PlatformUser201805051709360001").Id;
+                var adminUser = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Id == userId);
+                if(adminUser==null)
+                {
+                    return false;
+                }
                 if(type==null)
                 {
                     return false;
                 }
-                var user = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Id == userId);
+                var user = await dbc.GetAll<PlatformUserEntity>().SingleOrDefaultAsync(p => p.Id == takeOutUserid);
                 if (user == null)
                 {
                     return false;
@@ -568,16 +578,18 @@ namespace IMS.Service.Service
                         return false;
                     }
                     user.GivingIntegral = user.GivingIntegral - integral;
+                    adminUser.GivingIntegral = adminUser.GivingIntegral + integral;
                     JournalEntity journal = new JournalEntity();
                     journal.Description = description;
                     journal.OutIntegral = integral;
                     journal.Integral = user.GivingIntegral;
-                    journal.IntegralTypeId = type.Id;
+                    journal.IntegralTypeId = dbc.GetAll<IntegralTypeEntity>().SingleOrDefault(i=>i.Name=="平台积分").Id;
                     journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
-                    journal.PlatformUserId = id;
+                    journal.PlatformUserId = userId;
                     journal.FormPlatformUserId = user.Id;
                     journal.ToPlatformUserId = user.Id;
                     journal.ToIntegralTypeId = type.Id;
+                    journal.Tip = tip;
                     dbc.Journals.Add(journal);
                 }
                 else if(user.PlatformUserType.Name == "商家" && type.Name == "消费积分")
@@ -587,16 +599,18 @@ namespace IMS.Service.Service
                         return false;
                     }
                     user.UseIntegral = user.UseIntegral - integral;
+                    adminUser.UseIntegral = adminUser.UseIntegral + integral;
                     JournalEntity journal = new JournalEntity();
                     journal.Description = description;
                     journal.OutIntegral = integral;
                     journal.Integral = user.UseIntegral;
-                    journal.IntegralTypeId = type.Id;
+                    journal.IntegralTypeId = dbc.GetAll<IntegralTypeEntity>().SingleOrDefault(i => i.Name == "平台积分").Id;
                     journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
-                    journal.PlatformUserId = id;
+                    journal.PlatformUserId = userId;
                     journal.FormPlatformUserId = user.Id;
                     journal.ToPlatformUserId = user.Id;
                     journal.ToIntegralTypeId = type.Id;
+                    journal.Tip = tip;
                     dbc.Journals.Add(journal);
                 }
                 else if(user.PlatformUserType.Name == "客户" && type.Name == "消费积分")
@@ -606,16 +620,18 @@ namespace IMS.Service.Service
                         return false;
                     }
                     user.UseIntegral = user.UseIntegral - integral;
+                    adminUser.UseIntegral = adminUser.UseIntegral + integral;
                     JournalEntity journal = new JournalEntity();
                     journal.Description = description;
                     journal.OutIntegral = integral;
                     journal.Integral = user.UseIntegral;
-                    journal.IntegralTypeId = type.Id;
+                    journal.IntegralTypeId = dbc.GetAll<IntegralTypeEntity>().SingleOrDefault(i => i.Name == "平台积分").Id;
                     journal.JournalTypeId = dbc.GetAll<JournalTypeEntity>().SingleOrDefault(j => j.Description == description).Id;
-                    journal.PlatformUserId = id;
+                    journal.PlatformUserId = userId;
                     journal.FormPlatformUserId = user.Id;
                     journal.ToPlatformUserId = user.Id;
                     journal.ToIntegralTypeId = type.Id;
+                    journal.Tip = tip;
                     dbc.Journals.Add(journal);
                 }
                 else

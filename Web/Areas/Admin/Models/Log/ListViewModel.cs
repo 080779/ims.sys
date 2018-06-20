@@ -12,6 +12,6 @@ namespace IMS.Web.Areas.Admin.Models.Log
         public AdminLogDTO[] AdminLogs { get; set; }
         public string PageHtml { get; set; }
         public List<Page> Pages { get; set; }
-        public long PageCount { get; set; }
+        public int PageCount { get; set; }
     }
 }

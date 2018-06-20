@@ -43,11 +43,11 @@
                         <ul>
                             <li>
                                 用户积分消费总额
-                                <p v-html="g_integral_c"></p>
+                                <p v-html="u_integral_c"></p>
                             </li>
                             <li>
                                 商家赠送用户总额
-                                <p v-html="u_integral_c"></p>
+                                <p v-html="g_integral_c"></p>
                             </li>
                         </ul>
                     </div>
@@ -78,8 +78,8 @@
                                     <td v-html="journal.id"></td>
                                     <td v-html="(journal.journalTypeName=='积分消费')?'消费':'赠送'"></td>
                                     <td v-html="(journal.inIntegral)!=null?journal.inIntegral:journal.outIntegral"></td>
-                                    <td v-html="(journal.journalTypeName=='积分消费')?journal.toPlatformUserMobile:journal.platformUserMobile"></td>
-                                    <td v-html="(journal.journalTypeName=='积分消费')?journal.platformUserMobile:journal.toPlatformUserMobile"></td>
+                                    <td v-html="(journal.journalTypeName=='积分消费')?journal.toPlatformUserMobile:journal.fromPlatformUserMobile"></td>
+                                    <td v-html="(journal.journalTypeName=='积分消费')?journal.fromPlatformUserMobile:journal.toPlatformUserMobile"></td>
                                     <td v-html="journal.tip"></td>
                                     <td v-html="journal.createTime"></td>
                                 </tr>
@@ -113,7 +113,7 @@
             search: function () {
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/admin/journal/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {                    
+                this.$http.post('/admin/journal/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
                     if (result.data.status == 1) {
                         this.journals = result.data.data.journals;
                         this.pageHtml = result.data.data.pageHtml;
@@ -143,7 +143,7 @@
                 }
                 startTime = $("#startTime").val();
                 endTime = $("#endTime").val();
-                this.$http.post('/admin/journal/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {                    
+                this.$http.post('/admin/journal/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: page }, { emulateJSON: true }).then(function (result) {
                     if (result.data.status == 1) {
                         this.journals = result.data.data.journals;
                         this.pageHtml = result.data.data.pageHtml;
@@ -159,7 +159,7 @@
             }
         },
         mounted: function () {
-            this.$http.post('/admin/journal/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {               
+            this.$http.post('/admin/journal/list', { mobile: this.mobile, startTime: startTime, endTime: endTime, pageIndex: 1 }, { emulateJSON: true }).then(function (result) {
                 if (result.data.status == 1) {
                     this.journals = result.data.data.journals;
                     this.pageHtml = result.data.data.pageHtml;

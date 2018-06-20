@@ -299,13 +299,16 @@
     <Compile Include="Areas\Admin\Controllers\MerchantController.cs" />
     <Compile Include="Areas\Admin\Controllers\TakeCashController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserController.cs" />
+    <Compile Include="Areas\Admin\Models\Admin\GetJournalViewModel.cs" />
     <Compile Include="Areas\Admin\Models\Admin\GetListViewModel.cs" />
     <Compile Include="Areas\Admin\Models\Admin\ListViewModel.cs" />
     <Compile Include="Areas\Admin\Models\Integral\ListViewModel.cs" />
     <Compile Include="Areas\Admin\Models\Journal\ListViewModel.cs" />
     <Compile Include="Areas\Admin\Models\Log\ListViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\Merchant\GetJournalViewModel.cs" />
     <Compile Include="Areas\Admin\Models\Merchant\ListViewModel.cs" />
     <Compile Include="Areas\Admin\Models\TakeCash\ListViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\User\GetJournalViewModel.cs" />
     <Compile Include="Areas\Admin\Models\User\ListViewModel.cs" />
     <Compile Include="Controllers\GivingController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -320,6 +323,7 @@
     <Compile Include="Models\Journal\ListViewModel.cs" />
     <Compile Include="Models\Login\LoginViewModel.cs" />
     <Compile Include="Models\Spend\ListViewModel.cs" />
+    <Compile Include="Models\User\SearchViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -349,6 +353,7 @@
     <Content Include="Areas\Admin\Views\Journal\List.cshtml" />
     <Content Include="Areas\Admin\Views\Log\List.cshtml" />
     <Content Include="Areas\Admin\Views\Home\Permission.cshtml" />
+    <Content Include="Areas\Admin\Views\Log\List1.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Home.cshtml" />

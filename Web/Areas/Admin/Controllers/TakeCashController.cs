@@ -17,10 +17,12 @@ namespace IMS.Web.Areas.Admin.Controllers
         public IStateService stateService { get; set; }
         public IPlatformUserService platformUserService { get; set; }
         private int pageSize = 10;
+        [Permission("积分管理_积分管理")]
         public ActionResult List()
         {
             return View();
         }
+        [Permission("积分管理_积分管理")]
         [HttpPost]
         public async Task<ActionResult> List(long? stateId, string mobile, DateTime? startTime, DateTime? endTime, int pageIndex = 1)
         {
@@ -58,6 +60,7 @@ namespace IMS.Web.Areas.Admin.Controllers
             return Json(new AjaxResult { Status = 1, Data = model });
             //return View(model);
         }
+        [Permission("积分管理_积分管理")]
         [Permission("积分管理_积分变现")]
         [AdminLog("积分管理", "积分变现")]
         public async Task<ActionResult> TakeCash(string mobile,string strIntegral,string type="消费积分")
@@ -109,6 +112,7 @@ namespace IMS.Web.Areas.Admin.Controllers
             }
             return Json(new AjaxResult { Status = 1, Msg = "变现申请成功" });
         }
+        [Permission("积分管理_积分管理")]
 
         public async Task<ActionResult> Calc(string mobile, string strIntegral, string type = "消费积分")
         {
@@ -153,6 +157,7 @@ namespace IMS.Web.Areas.Admin.Controllers
             }
             return Json(new AjaxResult { Status = 1, Data= amount });
         }
+        [Permission("积分管理_积分管理")]
         public async Task<ActionResult> GetIntegral(string mobile,string type = "消费积分")
         {
             if (string.IsNullOrEmpty(mobile))
@@ -175,6 +180,7 @@ namespace IMS.Web.Areas.Admin.Controllers
             }
             return Json(new AjaxResult { Status = 1, Data = haveIntegral });
         }
+        [Permission("积分管理_积分管理")]
         [Permission("积分管理_确认转账")]
         [AdminLog("积分管理", "确认转账")]
         public async Task<ActionResult> Confirm(long id)

@@ -10,6 +10,7 @@ namespace IMS.DTO
     {
         public string Mobile { get; set; }
         public string Code { get; set; }
+        public string AdderMobile { get; set; }
         public string Description { get; set; }
         public long PlatformIntegral { get; set; }
         public long GivingIntegral { get; set; }

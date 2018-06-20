@@ -75,7 +75,8 @@
                                     <th width="70">类型</th>
                                     <th width="70">积分类型</th>
                                     <th width="70">积分变动</th>
-                                    <th width="70">账号</th>
+                                    <th width="70">来源账号</th>
+                                    <th width="70">去处账号</th>
                                     <th width="120">备注</th>
                                     <th width="80">时间</th>
                                 </tr>
@@ -86,7 +87,9 @@
                                     <td v-html="journal.journalTypeName"></td>
                                     <td v-html="(journal.integralTypeName=='平台积分')?journal.toIntegralTypeName:journal.integralTypeName"></td>
                                     <td v-html="(journal.inIntegral)!=null?'+'+journal.inIntegral:'-'+journal.outIntegral"></td>
-                                    <td v-html="(journal.journalTypeName=='积分消费')?journal.fromPlatformUserMobile:journal.toPlatformUserMobile"></td>
+                                    @*<td v-html="(journal.journalTypeName=='积分消费')?journal.fromPlatformUserMobile:journal.toPlatformUserMobile"></td>*@
+                                    <td v-html="journal.fromPlatformUserMobile"></td>
+                                    <td v-html="(journal.journalTypeName=='平台扣除')?journal.platformUserMobile:journal.toPlatformUserMobile"></td>
                                     <td v-html="journal.tip"></td>
                                     <td v-html="journal.createTime"></td>
                                 </tr>

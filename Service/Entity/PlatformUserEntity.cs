@@ -13,6 +13,7 @@ namespace IMS.Service.Entity
     {
         public string Mobile { get; set; }
         public string Code { get; set; }
+        public string AdderMobile { get; set; }
         public string Description { get; set; }
         public long PlatformIntegral { get; set; } = 0;
         public long GivingIntegral { get; set; } = 0;

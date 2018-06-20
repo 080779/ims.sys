@@ -78,7 +78,7 @@ namespace IMS.Service.Service
                 }
                 if (endTime != null)
                 {
-                    adminLogs = adminLogs.Where(a => a.CreateTime <= endTime);
+                    adminLogs = adminLogs.Where(a => a.CreateTime.Year <= endTime.Value.Year && a.CreateTime.Month <= endTime.Value.Month && a.CreateTime.Day <= endTime.Value.Day);
                 }
                 result.TotalCount = await adminLogs.LongCountAsync();
                 var adminLogsResult = await adminLogs.OrderByDescending(a => a.CreateTime).Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();

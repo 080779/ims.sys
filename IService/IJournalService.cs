@@ -14,8 +14,9 @@ namespace IMS.IService
         Task<JournalSearchResult> GetGivingModelListAsync(long? id, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize);
         Task<JournalSearchResult> GetSpendModelListAsync(long? id, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize);
         Task<JournalSearchResult> GetModelListAsync(string typeName, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize);
-        Task<JournalDTO[]> GetUserModelListAsync(long id);
+        Task<JournalSearchResult> GetUserModelListAsync(long id, int pageIndex, int pageSize);
         Task<JournalSearchResult> GetMerchantModelListAsync(long? id, long? typeId, string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize);
+        Task<JournalSearchResult> GetAgencyModelListAsync(long? id,long? typeId,string mobile, DateTime? startTime, DateTime? endTime, int pageIndex, int pageSize);
     }
     public class JournalSearchResult
     {
