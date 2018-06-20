@@ -353,6 +353,7 @@
     <Content Include="Areas\Admin\Views\Journal\List.cshtml" />
     <Content Include="Areas\Admin\Views\Log\List.cshtml" />
     <Content Include="Areas\Admin\Views\Home\Permission.cshtml" />
+    <Content Include="Areas\Admin\Views\Log\List1.cshtml" />
     <None Include="packages.config" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Home.cshtml" />
