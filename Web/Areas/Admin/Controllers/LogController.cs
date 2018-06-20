@@ -46,19 +46,19 @@ namespace IMS.Web.Areas.Admin.Controllers
             return Json(new AjaxResult { Status = 1, Data = model });
         }
 
-        public ActionResult List1()
-        {
-            return View();
-        }
-        [HttpPost]
-        public async Task<ActionResult> List1(string mobile, DateTime? startTime, DateTime? endTime, int pageIndex = 1)
-        {
-            var result = await adminLogService.GetModelListAsync(mobile, null, startTime, endTime, pageIndex, pageSize);
-            ListViewModel1 model = new ListViewModel1();
-            model.AdminLogs = result.AdminLogs;
-            model.PageResult = PageHelper.GetPagerHtml(result.TotalCount, pageSize, pageIndex);
+        //public ActionResult List1()
+        //{
+        //    return View();
+        //}
+        //[HttpPost]
+        //public async Task<ActionResult> List1(string mobile, DateTime? startTime, DateTime? endTime, int pageIndex = 1)
+        //{
+        //    var result = await adminLogService.GetModelListAsync(mobile, null, startTime, endTime, pageIndex, pageSize);
+        //    ListViewModel1 model = new ListViewModel1();
+        //    model.AdminLogs = result.AdminLogs;
+        //    model.PageResult = PageHelper.GetPagerHtml(result.TotalCount, pageSize, pageIndex);
 
-            return Json(new AjaxResult { Status = 1, Data = model });
-        }
+        //    return Json(new AjaxResult { Status = 1, Data = model });
+        //}
     }
 }

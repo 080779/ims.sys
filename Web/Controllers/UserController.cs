@@ -20,7 +20,8 @@ namespace IMS.Web.Controllers
         [HttpPost]
         public async Task<ActionResult> Add(string mobile,string code,string password)
         {
-            if(string.IsNullOrEmpty(mobile))
+            long id = Convert.ToInt64(Session["Merchant_User_Id"]);
+            if (string.IsNullOrEmpty(mobile))
             {
                 return Json(new AjaxResult { Status = 0, Msg="客户账号不能为空"});
             }
@@ -40,7 +41,7 @@ namespace IMS.Web.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "会员编号已经存在" });
             }
-            if(await platformUserService.AddAsync("客户", mobile, code, "", password)<=0)
+            if(await platformUserService.AddAsync(id,"客户", mobile, code, "", password)<=0)
             {
                 return Json(new AjaxResult { Status = 0, Msg = "添加客户失败" });
             }

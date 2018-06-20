@@ -48,7 +48,7 @@
                     <!---->
                     <div class="search_style">
                         <ul class="search_content clearfix">
-                            <li><label class="l_f">受增账号</label><input v-model="mobile" type="text" class="text_add" placeholder="受增账号" style=" width:150px" /></li>
+                            <li><label class="l_f">商家账号</label><input v-model="mobile" type="text" class="text_add" placeholder="商家账号" style=" width:150px" /></li>
                             <li><label class="l_f">会员编号</label><input v-model="code" type="text" class="text_add" placeholder="会员编号" style=" width:150px" /></li>
                             <li><label class="l_f">添加时间</label><input type="text" class="inline laydate-icon" id="startTime" style=" margin-left:10px;" />至<input type="text" class="inline laydate-icon" id="endTime" style=" margin-left:10px;" /></li>
                             <li style="width:90px;"><button type="button" v-on:click="search(1)" class="btn_search"><i class="icon-search"></i>查询</button></li>
@@ -427,6 +427,7 @@
                     }
                     else if (result.data.status == 302) {
                         window.location.href = result.data.data;
+                        
                     }
                 });
                 layer.open({

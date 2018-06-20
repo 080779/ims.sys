@@ -1,5 +1,6 @@
 ﻿using IMS.Common;
 using IMS.IService;
+using IMS.Web.App_Start.Filter;
 using IMS.Web.Areas.Admin.Models.Journal;
 using System;
 using System.Collections.Generic;
@@ -16,11 +17,13 @@ namespace IMS.Web.Areas.Admin.Controllers
         public IJournalTypeService journalTypeService { get; set; }
         public IPlatformUserService platformUserService { get; set; }
         private int pageSize = 10;
+        [Permission("积分管理_积分管理")]
         public ActionResult List()
         {
             return View();
         }
         [HttpPost]
+        [Permission("积分管理_积分管理")]
         public async Task<ActionResult> List(string mobile, DateTime? startTime, DateTime? endTime, int pageIndex = 1)
         {
             var user = await platformUserService.GetModelAsync("mobile", "PlatformUser201805051709360001");

@@ -17,10 +17,12 @@ namespace IMS.Web.Areas.Admin.Controllers
         public IJournalTypeService journalTypeService { get; set; }
         public IPlatformUserService platformUserService { get; set; }
         private int pageSize = 10;
+        [Permission("积分管理_积分管理")]
         public ActionResult List()
         {
             return View();
         }
+        [Permission("积分管理_积分管理")]
         [HttpPost]
         public async Task<ActionResult> List(long? typeId,string mobile,string code, DateTime? startTime, DateTime? endTime, int pageIndex = 1)
         {
@@ -49,9 +51,9 @@ namespace IMS.Web.Areas.Admin.Controllers
             model.PageCount = pager.PageCount;
             return Json(new AjaxResult { Status = 1, Data = model });
         }
+        [Permission("积分管理_积分管理")]
         [Permission("积分管理_增加积分")]
         [AdminLog("积分管理", "增加积分")]
-
         public async Task<ActionResult> Add(string strIntegral,string tip)
         {
             long userId = Convert.ToInt64(Session["Platform_User_Id"]);

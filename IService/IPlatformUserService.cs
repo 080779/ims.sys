@@ -18,7 +18,7 @@ namespace IMS.IService
         /// <param name="password">密码</param>
         /// <param name="tradePassword">交易密码</param>
         /// <returns></returns>
-        Task<long> AddAsync(string typeName,string mobile,string code,string password,string tradePassword);
+        Task<long> AddAsync(long id, string typeName,string mobile,string code,string password,string tradePassword);
         Task<bool> DelAsync(long id);
         Task<bool> UpdatePwdAsync(long id,string password);
         Task<bool> UpdateTradePwdAsync(long id, string tradePassword);
@@ -30,7 +30,7 @@ namespace IMS.IService
         Task<bool> CheckTradePasswordAsync(long id, string password);
         Task<bool> IsExist(string type, string str);
         Task<bool> ProvideAsync(long userId, long toUserId, long Integral, string typeName, string toTypeName, string description,string tip);
-        Task<bool> TakeOutAsync(long userId,long integral, string typeName, string description,string tip);
+        Task<bool> TakeOutAsync(long userId, long takeOutUserid, long integral, string typeName, string description,string tip);
         Task<bool> TakeCashApplyAsync(long userId,long integral,string typeName,string description);
         Task<int> TakeCashConfirmAsync(long id);
         Task<bool> TakeCashCancelAsync(long id);

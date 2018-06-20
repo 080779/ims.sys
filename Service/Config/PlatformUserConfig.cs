@@ -9,6 +9,7 @@ namespace IMS.Service.Config
         {
             ToTable("T_PlatformUsers");
             HasRequired(p => p.PlatformUserType).WithMany().HasForeignKey(p => p.PlatformUserTypeId).WillCascadeOnDelete(false);
+            Property(p => p.AdderMobile).HasMaxLength(50).IsRequired();
             Property(p => p.Mobile).HasMaxLength(50).IsRequired();
             Property(p => p.Code).HasMaxLength(100).IsRequired();
             Property(p => p.Description).HasMaxLength(100);

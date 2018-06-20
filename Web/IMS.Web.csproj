@@ -104,7 +104,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Admin\Views\Log\List1.cshtml" />
     <Content Include="assets\avatars\avatar.png" />
     <Content Include="assets\avatars\avatar1.png" />
     <Content Include="assets\avatars\avatar2.png" />
@@ -300,11 +299,11 @@
     <Compile Include="Areas\Admin\Controllers\MerchantController.cs" />
     <Compile Include="Areas\Admin\Controllers\TakeCashController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserController.cs" />
+    <Compile Include="Areas\Admin\Models\Admin\GetJournalViewModel.cs" />
     <Compile Include="Areas\Admin\Models\Admin\GetListViewModel.cs" />
     <Compile Include="Areas\Admin\Models\Admin\ListViewModel.cs" />
     <Compile Include="Areas\Admin\Models\Integral\ListViewModel.cs" />
     <Compile Include="Areas\Admin\Models\Journal\ListViewModel.cs" />
-    <Compile Include="Areas\Admin\Models\Log\ListViewModel1.cs" />
     <Compile Include="Areas\Admin\Models\Log\ListViewModel.cs" />
     <Compile Include="Areas\Admin\Models\Merchant\GetJournalViewModel.cs" />
     <Compile Include="Areas\Admin\Models\Merchant\ListViewModel.cs" />

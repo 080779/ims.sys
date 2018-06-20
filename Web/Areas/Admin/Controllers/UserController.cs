@@ -15,12 +15,15 @@ namespace IMS.Web.Areas.Admin.Controllers
     public class UserController : Controller
     {
         public IPlatformUserService platformUserService { get; set; }
+        public IAdminService adminService { get; set; }
         public IJournalService journalService { get; set; }
         private int pageSize = 10;
+        [Permission("用户管理_用户管理")]
         public ActionResult List()
         {
             return View();
         }
+        [Permission("用户管理_用户管理")]
         [HttpPost]
         public async Task<ActionResult> List(string mobile, string code, DateTime? startTime, DateTime? endTime, int pageIndex = 1)
         {
@@ -49,10 +52,13 @@ namespace IMS.Web.Areas.Admin.Controllers
             return Json(new AjaxResult { Status = 1, Data = model });
         }
         [HttpPost]
+        [Permission("用户管理_用户管理")]
         [Permission("用户管理_添加客户")]
         [AdminLog("用户管理", "添加客户")]
         public async Task<ActionResult> Add(string mobile, string code, string password)
         {
+            string adminMobile = (await adminService.GetModelAsync(Convert.ToInt64(Session["Platform_AdminUserId"]))).Mobile;
+            long userId = (await platformUserService.GetModelAsync("mobile", adminMobile)).Id;
             if (string.IsNullOrEmpty(mobile))
             {
                 return Json(new AjaxResult { Status = 0, Msg = "客户账号不能为空" });
@@ -73,12 +79,13 @@ namespace IMS.Web.Areas.Admin.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "会员编号已经存在" });
             }
-            if (await platformUserService.AddAsync("客户", mobile, code, "", password) <= 0)
+            if (await platformUserService.AddAsync(userId,"客户", mobile, code, "", password) <= 0)
             {
                 return Json(new AjaxResult { Status = 0, Msg = "添加客户失败" });
             }
             return Json(new AjaxResult { Status = 1, Msg = "添加客户成功" });
         }
+        [Permission("用户管理_用户管理")]
         [Permission("用户管理_删除用户")]
         [AdminLog("用户管理", "删除用户")]
         public async Task<ActionResult> Del(long id)
@@ -89,6 +96,7 @@ namespace IMS.Web.Areas.Admin.Controllers
             }
             return Json(new AjaxResult { Status = 1, Msg = "删除成功" });
         }
+        [Permission("用户管理_用户管理")]
         [Permission("用户管理_冻结用户")]
         [AdminLog("用户管理", "冻结用户")]
         public async Task<ActionResult> Frozen(long id)
@@ -99,11 +107,13 @@ namespace IMS.Web.Areas.Admin.Controllers
             }
             return Json(new AjaxResult { Status = 1, Msg = "冻结、解冻客户账户操作成功" });
         }
+        [Permission("用户管理_用户管理")]
         [Permission("用户管理_发放积分")]
         [AdminLog("用户管理", "发放积分")]
         public async Task<ActionResult> Provide(long toUserId, string strIntegral, string typeName, string tip)
         {
-            long userId = Convert.ToInt64(Session["Platform_User_Id"]);
+            string adminMobile = (await adminService.GetModelAsync(Convert.ToInt64(Session["Platform_AdminUserId"]))).Mobile;
+            long userId = (await platformUserService.GetModelAsync("mobile",adminMobile)).Id;
             if (string.IsNullOrEmpty(strIntegral))
             {
                 return Json(new AjaxResult { Status = 0, Msg = "发放积分额度不能为空" });
@@ -129,10 +139,13 @@ namespace IMS.Web.Areas.Admin.Controllers
             }
             return Json(new AjaxResult { Status = 1, Msg = "发放成功" });
         }
+        [Permission("用户管理_用户管理")]
         [Permission("用户管理_扣除积分")]
         [AdminLog("用户管理", "扣除积分")]
         public async Task<ActionResult> TakeOut(long toUserId, string strIntegral, string typeName, string tip)
         {
+            string adminMobile = (await adminService.GetModelAsync(Convert.ToInt64(Session["Platform_AdminUserId"]))).Mobile;
+            long userId = (await platformUserService.GetModelAsync("mobile", adminMobile)).Id;
             if (string.IsNullOrEmpty(strIntegral))
             {
                 return Json(new AjaxResult { Status = 0, Msg = "发放积分额度不能为空" });
@@ -169,13 +182,15 @@ namespace IMS.Web.Areas.Admin.Controllers
             {
                 return Json(new AjaxResult { Status = 0, Msg = "请选择积分类型" });
             }
-            var res = await platformUserService.TakeOutAsync(toUserId, integral, typeName, "平台扣除", tip);
+            var res = await platformUserService.TakeOutAsync(userId,toUserId, integral, typeName, "平台扣除", tip);
             if (!res)
             {
                 return Json(new AjaxResult { Status = 0, Msg = "扣除失败" });
             }
             return Json(new AjaxResult { Status = 1, Msg = "扣除成功" });
         }
+        [Permission("用户管理_用户管理")]
+        [Permission("用户管理_用户管理")]
         public async Task<ActionResult> GetIntegral(long toUserId, string typeName)
         {
             var res = await platformUserService.GetModelAsync(toUserId);
@@ -190,6 +205,7 @@ namespace IMS.Web.Areas.Admin.Controllers
             }
             return Json(new AjaxResult { Status = 1, Data = integral });
         }
+        [Permission("用户管理_用户管理")]
         [Permission("用户管理_修改密码")]
         [AdminLog("用户管理", "修改密码")]
         public async Task<ActionResult> EditPwd(long id, string password)
@@ -214,6 +230,7 @@ namespace IMS.Web.Areas.Admin.Controllers
             }
             return Json(new AjaxResult { Status = 1, Msg = "修改成功" });
         }
+        [Permission("用户管理_用户管理")]
         public async Task<ActionResult> GetJournal(long id, int pageIndex = 1)
         {
             JournalSearchResult result = await journalService.GetUserModelListAsync(id, pageIndex, pageSize);
